@@ -243,6 +243,8 @@ ul.help b{color:var(--cy)}
 .handoff{text-align:center;padding:10px 6px}
 .handoff b{display:block;font-size:20px;color:var(--cy);letter-spacing:.14em;margin-bottom:6px}
 .handoff span{display:block;font-size:10px;color:var(--dim);margin-bottom:12px}
+.sqc.taken{opacity:.5}
+.sqc.taken .sqid b{color:#7f93a8}
 </style>
 </head>
 <body>
@@ -1060,7 +1062,8 @@ function onDeath(u, killer) {
       }
     }
   }
-  if (u.side === 'ply') S.dead.push({ name: u.name, cls: u.cls, lvl: u.lvl, def: u.key, chapter: S.chapter });
+  if (u.side === 'ply') S.dead.push({ name: u.name, cls: u.cls, lvl: u.lvl, def: u.key,
+    chapter: S.chapter, owner: u.owner || '' });
 }
 
 /* ================= EXP / LEVELS ================= */
@@ -1364,7 +1367,9 @@ function startChapter() {
   S.screen = 'map'; S.gameover = false;
   S.banner = 'CHAPTER ' + ch; S.bannerT = 1.6;
   say('--- CHAPTER ' + ch + ': ' + S.site + ' / ' + OBJS[S.obj].name + ' ---');
+  if (NET.local) { NET.localActive = 0; S.handoff = localOwners().length > 1; }
   saveGame();
+  netSync();
 }
 
 function spawnReinforcements(n) {
@@ -1430,7 +1435,11 @@ function endPlayerPhase() {
     while (qi < queue.length && queue[qi].chp <= 0) qi++;
     if (qi >= queue.length) { endFoePhase(); return; }
     var u = queue[qi++];
-    aiAct(u, function () { if (checkEnd()) return; schedule(step, 110); });
+    aiAct(u, function () {
+      netSync();
+      if (checkEnd()) return;
+      schedule(step, 110);
+    });
   }
   schedule(step, HEADLESS ? 0 : 420);
 }
@@ -1444,6 +1453,8 @@ function endFoePhase() {
   phaseStart('ply');
   if (checkEnd()) return;
   S.banner = 'PLAYER PHASE'; S.bannerT = 0.9;
+  if (NET.local) { NET.localActive = 0; if (localOwners().length > 1) S.handoff = true; }
+  netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
 function schedule(fn, ms) { if (HEADLESS) { fn(); } else { setTimeout(fn, ms); } }
@@ -1455,6 +1466,7 @@ function chapterClear() {
   say('Chapter ' + S.chapter + ' cleared.');
   rollRewards();
   saveGame();
+  netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
 
@@ -1522,6 +1534,7 @@ function takeReward(i) {
       while (nu.lvl < f.lvl) levelUp(nu);
       S.levelups = [];
       nu.chp = Math.max(1, Math.floor(nu.stats.hp / 2));
+      nu.owner = f.owner || r.owner || '';
       S.units.push(nu);
       say(nu.name + ' is back online.');
     }
@@ -1533,6 +1546,7 @@ function takeReward(i) {
       while (ru.lvl < lv) levelUp(ru);
       S.levelups = [];
       ru.chp = ru.stats.hp;
+      ru.owner = r.owner || '';
       S.units.push(ru);
       say(ru.name + ' joined the echelon.');
     }
@@ -1555,6 +1569,7 @@ function gameOver() {
   say('Echelon lost on chapter ' + S.chapter + '.');
   try { localStorage.removeItem('echelon_run'); } catch (e) { }
   saveBest();
+  netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
 
@@ -1580,7 +1595,7 @@ function newRun(keys) {
 
 /* ================= SAVE ================= */
 function saveGame() {
-  if (HEADLESS) return;
+  if (HEADLESS || netOnline()) return;
   try {
     var data = {
       v: 3, chapter: S.chapter, kits: S.kits, best: S.best, dead: S.dead, uid: S.uid, squadSize: S.squadSize,
@@ -1877,12 +1892,15 @@ function draw() {
     /* shadow + side ring */
     ctx.fillStyle = 'rgba(0,0,0,0.35)';
     ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.3, TP * 0.12, 0, 0, 6.3); ctx.fill();
-    ctx.strokeStyle = isMine(u) ? 'rgba(125,249,255,0.75)' : (u.boss ? 'rgba(255,224,102,0.9)' : 'rgba(255,90,90,0.7)');
+    /* yours, a team mate's, or the enemy: three different rings */
+    var ally = u.side === 'ply';
+    ctx.strokeStyle = isMine(u) ? 'rgba(125,249,255,0.8)'
+      : (ally ? 'rgba(84,240,200,0.6)' : (u.boss ? 'rgba(255,224,102,0.9)' : 'rgba(255,90,90,0.7)'));
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.32, TP * 0.14, 0, 0, 6.3); ctx.stroke();
     var img = getSpr(u.spr, u.pal);
     ctx.save();
-    if (u.acted && isMine(u)) ctx.globalAlpha = 0.55;
+    if (u.acted && ally) ctx.globalAlpha = 0.55;
     ctx.drawImage(img, Math.round(ux), Math.round(uy - 2));
     if (u.boss) ctx.drawImage(getSpr('crown', u.pal), Math.round(ux), Math.round(uy - 8));
     ctx.restore();
@@ -1895,7 +1913,7 @@ function draw() {
     /* hp bar */
     var bw = TP - 14, frac = u.chp / u.stats.hp;
     ctx.fillStyle = '#05080d'; ctx.fillRect(ux + 7, uy + TP - 5, bw, 5);
-    ctx.fillStyle = isMine(u) ? (frac > 0.5 ? '#54f0c8' : frac > 0.25 ? '#ffd166' : '#ff5a5a')
+    ctx.fillStyle = ally ? (frac > 0.5 ? '#54f0c8' : frac > 0.25 ? '#ffd166' : '#ff5a5a')
       : (u.boss ? '#ffb24a' : '#ff5a5a');
     ctx.fillRect(ux + 8, uy + TP - 4, Math.max(0, (bw - 2) * frac), 3);
     if (u.traits.length) { ctx.fillStyle = '#ff8a3a'; ctx.fillRect(ux + TP - 10, uy + 2, 5, 5); }
@@ -1949,20 +1967,24 @@ function draw() {
   ctx.restore();
 }
 
-/* ================= ONLINE VERSUS =================
-   Host-authoritative. The host owns the rules; everyone else sends intents and
-   renders the state the host broadcasts. Every broadcast is absolute, because
-   the room drops messages and never replays them. */
+/* ================= ONLINE CO-OP =================
+   One shared endless run. Everyone picks their own operatives and moves only
+   those; the machines are the enemy. Host-authoritative: the host owns the
+   rules and broadcasts the whole state, because messages drop and are never
+   replayed, so every broadcast has to stand alone. */
 
 var NET = {
   api: null, sub: null, available: false, tried: false,
   code: '', name: '', id: '', host: false, side: null,
   peers: [], lobby: {}, phase: 'idle',   /* idle | lobby | match | done */
-  lastHeard: 0, lastSend: 0, err: '', winner: null, pending: false, keys: [],
+  lastHeard: 0, lastSend: 0, err: '', pending: false, keys: [],
+  localPlayers: [], localActive: 0, localCount: 2,
   mode: null,        /* null | 'create' | 'join' | 'local' */
-  local: false, localStep: 1, keysA: [], keysB: [], copied: ''
+  transport: null,   /* 'room' on the hosted artifact, 'p2p' anywhere else */
+  isCreator: false, p2pLoading: false, p2pQueue: [], peer: null,
+  local: false, localStep: 0, copied: ''
 };
-var VS_LEVEL = 8, VS_MAX = 4, VS_ROUNDS = 20;
+var PER_PLAYER = 4, SQUAD_CAP = 8;
 
 function netId() {
   var a = 'abcdefghijklmnopqrstuvwxyz0123456789', o = '';
@@ -1975,38 +1997,203 @@ function roomCode() {
   return o;
 }
 function netOnline() { return NET.phase === 'match' || NET.phase === 'done'; }
-function mySide() {
-  if (NET.local) return turnSideNow();
-  return NET.side || 'ply';
-}
-function sideName(side) {
-  if (NET.local) return side === 'ply' ? 'PLAYER 1' : 'PLAYER 2';
-  if (side === mySide()) return 'YOU';
-  var o = netOpponent();
-  return (o && o.name) || 'OPPONENT';
-}
-function isMine(u) { return netOnline() ? (u.side === mySide()) : (u.side === 'ply'); }
 function turnSideNow() { return S.phase === 'player' ? 'ply' : 'foe'; }
+function mySide() { return 'ply'; }
+/* who is at the controls right now: online that is always you, on one
+   shared device it is whoever the handoff last passed to */
+function activeOwner() {
+  if (NET.local) {
+    var p = NET.localPlayers[NET.localActive];
+    return p ? p.id : 'P1';
+  }
+  return NET.id;
+}
+function ownerName(id) {
+  if (NET.local) {
+    for (var j = 0; j < NET.localPlayers.length; j++)
+      if (NET.localPlayers[j].id === id) return NET.localPlayers[j].name;
+    return id;
+  }
+  for (var i = 0; i < NET.peers.length; i++)
+    if (String(NET.peers[i].id) === String(id)) return NET.peers[i].name || 'PLAYER';
+  return 'PLAYER';
+}
+function isMine(u) {
+  if (!netOnline()) return u.side === 'ply';
+  return u.side === 'ply' && String(u.owner || '') === String(activeOwner());
+}
 function canAct() {
   if (S.gameover || S.busy) return false;
   if (!netOnline()) return S.phase === 'player';
-  if (NET.local) return NET.phase === 'match' && !S.handoff;
-  return NET.phase === 'match' && turnSideNow() === mySide() && !NET.pending;
+  if (S.screen !== 'map') return false;
+  if (S.phase !== 'player') return false;
+  if (NET.local) return !S.handoff;
+  return !NET.pending;
 }
 
 /* ---------------- capability ---------------- */
 function netInit() {
   if (NET.tried) return;
   NET.tried = true;
+  NET.id = netId();
   try {
-    if (typeof window === 'undefined' || !window.claude || !window.claude.use) return;
-    window.claude.use('room').then(function (r) {
-      if (!r) return;
-      NET.api = r; NET.available = true;
-      NET.id = netId();
-      if (typeof refreshUI === 'function') refreshUI();
-    }, function () { });
+    if (typeof window !== 'undefined' && window.claude && window.claude.use) {
+      window.claude.use('room').then(function (r) {
+        if (r) {
+          NET.api = r; NET.transport = 'room'; NET.available = true;
+        } else {
+          netTryP2P();
+        }
+        if (typeof refreshUI === 'function') refreshUI();
+      }, function () { netTryP2P(); });
+      return;
+    }
   } catch (e) { }
+  netTryP2P();
+}
+
+/* ---------------- peer to peer ----------------
+   Off the hosted page there is no room service, so two browsers talk straight
+   to each other over WebRTC. The only thing in the middle is a public broker
+   that introduces them; the match itself never touches a server. */
+var P2P_LIB = 'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js';
+var P2P_PREFIX = 'hyperfights-v1-';
+
+function netTryP2P() {
+  if (typeof window === 'undefined' || !window.document) return;
+  NET.transport = 'p2p';
+  NET.available = true;        /* the library loads when a lobby is actually opened */
+}
+
+function p2pLoad(cb) {
+  if (typeof window === 'undefined') { cb(false); return; }
+  if (window.Peer) { cb(true); return; }
+  NET.p2pQueue.push(cb);
+  if (NET.p2pLoading) return;
+  NET.p2pLoading = true;
+  var done = function (ok) {
+    NET.p2pLoading = false;
+    var q = NET.p2pQueue; NET.p2pQueue = [];
+    for (var i = 0; i < q.length; i++) { try { q[i](ok); } catch (e) { } }
+  };
+  try {
+    var sc = document.createElement('script');
+    sc.src = P2P_LIB;
+    sc.onload = function () { done(!!window.Peer); };
+    sc.onerror = function () { done(false); };
+    document.body.appendChild(sc);
+    setTimeout(function () { if (NET.p2pLoading) done(!!window.Peer); }, 12000);
+  } catch (e) { done(false); }
+}
+
+/* an adapter with the same shape as the room capability, so the rest of the
+   game does not care which one it is talking over */
+function p2pSub(peer, isCreator) {
+  var handlers = {}, peerCbs = [], conns = [], presences = {}, mine = null;
+  function firePeers() {
+    var list = [];
+    if (mine) list.push(mine);
+    for (var k in presences) list.push(presences[k]);
+    for (var i = 0; i < peerCbs.length; i++) { try { peerCbs[i](list); } catch (e) { } }
+  }
+  function dispatch(topic, data) {
+    var hs = handlers[topic] || [];
+    for (var i = 0; i < hs.length; i++) { try { hs[i]({ data: data }); } catch (e) { } }
+  }
+  function wire(conn, onOpen) {
+    conn.on('open', function () {
+      conns.push(conn);
+      if (mine) { try { conn.send({ tp: '__pres', dt: mine }); } catch (e) { } }
+      dispatch('hello', { id: conn.peer });
+      firePeers();
+      if (onOpen) { try { onOpen(); } catch (e) { } }
+    });
+    conn.on('data', function (msg) {
+      if (!msg || !msg.tp) return;
+      if (msg.tp === '__pres') {
+        if (msg.dt && msg.dt.id) { presences[msg.dt.id] = msg.dt; conn.__pid = msg.dt.id; firePeers(); }
+        return;
+      }
+      dispatch(msg.tp, msg.dt);
+    });
+    var drop = function () {
+      for (var i = conns.length - 1; i >= 0; i--) if (conns[i] === conn) conns.splice(i, 1);
+      if (conn.__pid) delete presences[conn.__pid];
+      firePeers();
+      NET.err = 'Your opponent disconnected.';
+      if (typeof refreshUI === 'function') refreshUI();
+    };
+    conn.on('close', drop);
+    conn.on('error', drop);
+  }
+  if (isCreator) peer.on('connection', wire);
+  return {
+    __wire: wire,
+    on: function (topic, fn) { (handlers[topic] = handlers[topic] || []).push(fn); },
+    emit: function (topic, data) {
+      for (var i = 0; i < conns.length; i++) {
+        try { conns[i].send({ tp: topic, dt: data }); } catch (e) { }
+      }
+    },
+    presence: function (patch) {
+      mine = patch;
+      for (var i = 0; i < conns.length; i++) { try { conns[i].send({ tp: '__pres', dt: patch }); } catch (e) { } }
+      firePeers();
+    },
+    onPeers: function (fn) { peerCbs.push(fn); firePeers(); },
+    leave: function () {
+      for (var i = 0; i < conns.length; i++) { try { conns[i].close(); } catch (e) { } }
+      conns = [];
+      try { peer.destroy(); } catch (e) { }
+    }
+  };
+}
+
+function p2pJoin(code, isCreator, cb) {
+  p2pLoad(function (ok) {
+    if (!ok || !window.Peer) {
+      cb(null, 'Could not load the connection library. Check your internet and try again.');
+      return;
+    }
+    var peer, settled = false;
+    try {
+      peer = isCreator ? new window.Peer(P2P_PREFIX + code) : new window.Peer();
+    } catch (e) { cb(null, 'Could not start a connection.'); return; }
+    NET.peer = peer;
+    var sub = p2pSub(peer, isCreator);
+    peer.on('error', function (err) {
+      var t = (err && err.type) || '';
+      if (t === 'unavailable-id') {
+        if (!settled) { settled = true; cb(null, 'That code is already in use. Pick a new code.'); }
+      } else if (t === 'peer-unavailable') {
+        if (!settled) { settled = true; cb(null, 'No lobby found with that code. Check it and make sure your friend opened theirs first.'); }
+      } else if (t === 'browser-incompatible') {
+        if (!settled) { settled = true; cb(null, 'This browser cannot do peer-to-peer play.'); }
+      } else if (!settled) {
+        settled = true; cb(null, 'Could not reach the lobby. Some networks block this; try another connection.');
+      }
+    });
+    peer.on('open', function () {
+      if (isCreator) {
+        /* the lobby exists as soon as the code is claimed */
+        if (!settled) { settled = true; cb(sub, null); }
+        return;
+      }
+      /* a joiner is only really in once the link to the host is open: settling
+         on peer-open would report success for a code nobody is hosting */
+      var conn;
+      try { conn = peer.connect(P2P_PREFIX + code, { reliable: true }); } catch (e) {
+        if (!settled) { settled = true; cb(null, 'Could not reach that lobby.'); }
+        return;
+      }
+      sub.__wire(conn, function () {
+        if (!settled) { settled = true; cb(sub, null); }
+      });
+    });
+    setTimeout(function () {
+      if (!settled) { settled = true; cb(null, 'Timed out reaching the lobby.'); }
+    }, 15000);
+  });
 }
 
 function netResolve(v, cb) {
@@ -2017,21 +2204,36 @@ function netResolve(v, cb) {
 }
 
 function netJoin(code, name) {
-  if (!NET.api) { NET.err = 'Online is not available on this page.'; return; }
   NET.code = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
   NET.name = String(name || '').toUpperCase().slice(0, 11) || 'PLAYER';
   if (!NET.code) { NET.err = 'Enter a room code.'; return; }
+  if (!NET.transport) { NET.err = 'Online is not available on this page.'; return; }
+  NET.isCreator = (NET.mode === 'create');
   NET.err = ''; NET.phase = 'joining';
   if (typeof refreshUI === 'function') refreshUI();
+
+  if (NET.transport === 'p2p') {
+    p2pJoin(NET.code, NET.isCreator, function (sub, err) {
+      if (!sub) { NET.err = err || 'Could not open that lobby.'; NET.phase = 'idle'; refreshUI(); return; }
+      netAttach(sub);
+    });
+    return;
+  }
   var joined;
   try { joined = NET.api.join('hyperfights-' + NET.code); }
   catch (e) { NET.err = 'Could not open that room.'; NET.phase = 'idle'; refreshUI(); return; }
   netResolve(joined, function (sub) {
     if (!sub) { NET.err = 'Could not open that room.'; NET.phase = 'idle'; refreshUI(); return; }
+    netAttach(sub);
+  });
+}
+
+function netAttach(sub) {
+  {
     NET.sub = sub;
     NET.phase = 'lobby';
     NET.lobby = {};
-    NET.keys = ROSTER.slice(0, VS_MAX).map(function (r) { return r.key; });
+    /* no default picks: in a shared squad they would collide with everyone else */
     try {
       sub.on('state', onNetState);
       sub.on('act', onNetAct);
@@ -2042,14 +2244,15 @@ function netJoin(code, name) {
     netHello();
     S.screen = 'net';
     refreshUI();
-  });
+  }
 }
 
 function netLeave() {
   try { if (NET.sub && NET.sub.leave) NET.sub.leave(); } catch (e) { }
   NET.sub = null; NET.phase = 'idle'; NET.peers = []; NET.lobby = {};
-  NET.side = null; NET.host = false; NET.winner = null; NET.pending = false;
+  NET.side = null; NET.host = false; NET.pending = false; NET.started = false;
   NET.local = false; NET.mode = null; NET.localStep = 1; NET.copied = '';
+  NET.isCreator = false; NET.peer = null;
   S.handoff = false;
   S.screen = 'title';
   if (typeof refreshUI === 'function') refreshUI();
@@ -2059,7 +2262,7 @@ function netPresence() {
   if (!NET.sub) return;
   try {
     NET.sub.presence({
-      id: NET.id, name: NET.name, ready: !!NET.ready,
+      id: NET.id, name: NET.name, ready: !!NET.ready, creator: !!NET.isCreator,
       keys: NET.keys, looks: netLooks(NET.keys)
     });
   } catch (e) { }
@@ -2090,10 +2293,14 @@ function onNetPeers(list) {
   var me = false;
   for (var i = 0; i < NET.peers.length; i++) if (NET.peers[i].id === NET.id) me = true;
   if (!me) NET.peers.push({ id: NET.id, name: NET.name, ready: !!NET.ready, keys: NET.keys, you: true });
-  NET.host = (netHostId() === NET.id);
+  NET.host = (NET.transport === 'p2p') ? !!NET.isCreator : (netHostId() === NET.id);
   if (typeof refreshUI === 'function') refreshUI();
 }
 function netHostId() {
+  if (NET.transport === 'p2p') {
+    for (var i = 0; i < NET.peers.length; i++) if (NET.peers[i].creator) return String(NET.peers[i].id);
+    return NET.isCreator ? NET.id : '';
+  }
   var ids = NET.peers.map(function (p) { return String(p.id || ''); }).filter(Boolean).sort();
   return ids.length ? ids[0] : NET.id;
 }
@@ -2106,137 +2313,153 @@ function netOpponent() {
 }
 function onNetHello() { if (NET.host && NET.phase === 'match') netBroadcast(); else netPresence(); }
 
-/* ---------------- match setup (host only) ---------------- */
-function netStart() {
-  if (!NET.host) return;
-  var opp = netOpponent();
-  if (!opp) { NET.err = 'No opponent in the room yet.'; refreshUI(); return; }
-  var ti = Math.floor(rnd() * LAYOUTS.length);
-  var li = Math.floor(rnd() * LAYOUTS[ti].length);
-  S.terrain = ti; S.layout = li; S.chapter = 1;
-  S.grid = buildGrid(ti, li);
-  S.units = []; S.uid = 1; S.fx = []; S.movers = []; S.busy = 0; S.levelups = [];
-  S.dead = []; S.kits = 0; S.gameover = false; S.rewards = null;
-  S.obj = 'wipe'; S.turn = 1; S.phase = 'player';
-  NET.winner = null;
-
-  var mine = (NET.keys || []).slice(0, VS_MAX);
-  var theirs = (opp.keys || []).slice(0, VS_MAX);
-  if (!theirs.length) theirs = ROSTER.slice(0, VS_MAX).map(function (r) { return r.key; });
-  var myLooks = netLooks(mine), theirLooks = opp.looks || {};
-
-  placeSquad(mine, 'ply', myLooks, 0);
-  placeSquad(theirs, 'foe', theirLooks, 1);
-  NET.side = 'ply';
-  NET.phase = 'match';
-  S.screen = 'map';
-  S.banner = 'ROUND 1'; S.bannerT = 1.4;
-  say('Match started against ' + (opp.name || 'opponent') + '.');
-  netBroadcast();
-  refreshUI();
+/* ---------------- lobby: picks are exclusive ---------------- */
+function allPlayers() {
+  if (NET.local) return NET.localPlayers;
+  return NET.peers.map(function (p) {
+    return { id: String(p.id), name: p.name || 'PLAYER', keys: p.keys || [], looks: p.looks || {}, ready: !!p.ready };
+  });
 }
-
-function placeSquad(keys, side, looks, right) {
-  var used = {}, i;
-  for (i = 0; i < S.units.length; i++) used[S.units[i].x + ',' + S.units[i].y] = 1;
-  var cols = right ? [MAPW - 1, MAPW - 2, MAPW - 3] : [0, 1, 2];
-  var slots = [];
-  for (var c = 0; c < cols.length; c++)
-    for (var y = 0; y < MAPH; y++)
-      if (!TER[S.grid[y][cols[c]]].block) slots.push({ x: cols[c], y: y });
-  for (i = 0; i < keys.length; i++) {
-    var def = charByKey(keys[i]);
-    if (!def) continue;
-    var u = mkUnit(def, side, VS_LEVEL, { fair: true, look: looks[keys[i]] });
-    var spot = null;
-    for (var t = 0; t < slots.length; t++) {
-      var s2 = slots[(i * 3 + t) % slots.length], k = s2.x + ',' + s2.y;
-      if (!used[k]) { used[k] = 1; spot = s2; break; }
-    }
-    if (!spot) spot = { x: cols[0], y: i % MAPH };
-    u.x = spot.x; u.y = spot.y; u.px = u.x; u.py = u.y;
-    S.units.push(u);
+function takenBy(key) {
+  var ps = allPlayers();
+  for (var i = 0; i < ps.length; i++) {
+    var ks = ps[i].keys || [];
+    for (var j = 0; j < ks.length; j++) if (ks[j] === key) return ps[i];
   }
+  return null;
+}
+function squadTotal() {
+  var ps = allPlayers(), n = 0;
+  for (var i = 0; i < ps.length; i++) n += (ps[i].keys || []).length;
+  return n;
+}
+function myKeys() {
+  if (NET.local) {
+    var p = NET.localPlayers[NET.localStep];
+    return p ? p.keys : [];
+  }
+  return NET.keys;
+}
+function pickKey(key) {
+  var mine = myKeys(), at = mine.indexOf(key);
+  if (at >= 0) { mine.splice(at, 1); if (!NET.local) { NET.ready = false; netPresence(); } return true; }
+  var owner = takenBy(key);
+  if (owner) return false;
+  if (mine.length >= PER_PLAYER) return false;
+  if (squadTotal() >= SQUAD_CAP) return false;
+  mine.push(key);
+  if (!NET.local) { NET.ready = false; netPresence(); }
+  return true;
+}
+function lobbyReady() {
+  var ps = allPlayers();
+  if (!ps.length) return false;
+  var picked = 0;
+  for (var i = 0; i < ps.length; i++) {
+    if (!(ps[i].keys || []).length) continue;
+    picked++;
+    if (!NET.local && !ps[i].ready) return false;
+  }
+  return picked > 0 && squadTotal() > 0;
 }
 
-/* ---------------- local two player ---------------- */
-function netStartLocal() {
-  var ti = Math.floor(rnd() * LAYOUTS.length);
-  var li = Math.floor(rnd() * LAYOUTS[ti].length);
-  S.terrain = ti; S.layout = li; S.chapter = 1;
-  S.grid = buildGrid(ti, li);
-  S.units = []; S.uid = 1; S.fx = []; S.movers = []; S.busy = 0; S.levelups = [];
-  S.dead = []; S.kits = 0; S.gameover = false; S.rewards = null; S.handoff = false;
-  S.obj = 'wipe'; S.turn = 1; S.phase = 'player';
-  NET.winner = null; NET.local = true; NET.host = true; NET.side = null;
-  NET.phase = 'match'; NET.pending = false;
-  var a = NET.keysA.length ? NET.keysA : ROSTER.slice(0, VS_MAX).map(function (r) { return r.key; });
-  var b = NET.keysB.length ? NET.keysB : RECRUITS.slice(0, VS_MAX).map(function (r) { return r.key; });
-  placeSquad(a, 'ply', netLooks(a), 0);
-  placeSquad(b, 'foe', netLooks(b), 1);
-  S.screen = 'map';
-  S.banner = 'PLAYER 1'; S.bannerT = 1.4;
-  if (typeof refreshUI === 'function') refreshUI();
+/* ---------------- start the shared run (host only) ---------------- */
+function buildSquad(players) {
+  S.units = []; S.uid = 1;
+  var total = 0;
+  for (var i = 0; i < players.length; i++) {
+    var p = players[i], ks = p.keys || [];
+    for (var j = 0; j < ks.length; j++) {
+      if (total >= SQUAD_CAP) break;
+      var def = charByKey(ks[j]);
+      if (!def) continue;
+      var look = (p.looks && p.looks[ks[j]]) || lookOf(ks[j], def);
+      var u = mkUnit(def, 'ply', 1, { fair: true, look: look });
+      u.owner = String(p.id);
+      S.units.push(u);
+      total++;
+    }
+  }
+  S.squadSize = Math.max(1, total);
+  return total;
 }
-function netHandoffDone() {
+
+function netStartRun() {
+  if (!NET.host && !NET.local) return;
+  var players = allPlayers().filter(function (p) { return (p.keys || []).length; });
+  if (!players.length) { NET.err = 'Nobody has picked an operative yet.'; refreshUI(); return; }
+  S.dead = []; S.kits = 3; S.log = []; S.levelups = []; S.bags = []; S.resumeLayout = null;
+  S.chapter = 1; S.gameover = false; S.rewards = null;
+  buildSquad(players);
+  NET.phase = 'match';
+  NET.started = true;
   S.handoff = false;
-  S.banner = sideName(turnSideNow()); S.bannerT = 1.2;
+  NET.localActive = 0;
+  startChapter();
+  S.screen = 'map';
+  netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
 
-/* ---------------- state wire format ---------------- */
+/* ---------------- wire format ---------------- */
+function wireUnit(u) {
+  return { i: u.id, k: u.key, s: u.side, o: u.owner || '', x: u.x, y: u.y,
+    hp: u.chp, mx: u.stats.hp, st: u.stats, gr: u.grow, lv: u.lvl, ex: u.exp || 0,
+    cl: u.cls, w: u.wpn.id, wp: u.wpn.plus || 0, a: u.acted ? 1 : 0,
+    n: u.name, p: u.pal, sp: u.spr, mv: u.mov, tr: u.traits || [],
+    bs: u.boss ? 1 : 0, mk: u.mark || 0, pm: u.promoted ? 1 : 0 };
+}
+function unitFromWire(r) {
+  var u = { id: r.i, key: r.k, side: r.s, owner: r.o || '', x: r.x, y: r.y, px: r.x, py: r.y,
+    chp: r.hp, stats: {}, grow: {}, lvl: r.lv, exp: r.ex || 0, cls: r.cl,
+    acted: !!r.a, name: r.n, pal: r.p, spr: r.sp, mov: r.mv,
+    traits: r.tr || [], boss: !!r.bs, mark: r.mk || 0, promoted: !!r.pm,
+    flash: 0, wpn: mkWpn(r.w, r.wp || 0), ai: 'hunt', promo: null };
+  for (var k in r.st) u.stats[k] = r.st[k];
+  for (var g in (r.gr || {})) u.grow[g] = r.gr[g];
+  u.stats.hp = r.mx;
+  return u;
+}
 function netState() {
   return {
-    t: S.terrain, l: S.layout, turn: S.turn, phase: S.phase,
-    winner: NET.winner, reason: NET.reason || '', host: NET.id,
-    u: S.units.filter(function (x) { return x.chp > 0; }).map(function (x) {
-      return { i: x.id, k: x.key, s: x.side, x: x.x, y: x.y, hp: x.chp, mx: x.stats.hp,
-        st: x.stats, lv: x.lvl, w: x.wpn.id, wp: x.wpn.plus, a: x.acted ? 1 : 0,
-        n: x.name, p: x.pal, sp: x.spr, mv: x.mov, cl: x.cls };
-    })
+    host: NET.id, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
+    tn: S.turn, ph: S.phase, t: S.terrain, l: S.layout, kt: S.kits,
+    sc: S.screen, rw: S.rewards, lu: S.levelups, dd: S.dead,
+    sq: S.squadSize, lg: S.log.slice(0, 6),
+    u: S.units.filter(function (x) { return x.chp > 0; }).map(wireUnit)
   };
 }
-function netBroadcast() {
-  if (!NET.host || NET.local || !NET.sub) return;
+function netSync() {
+  if (!netOnline() || NET.local) return;
+  if (!NET.host) return;
   NET.lastSend = Date.now();
   netEmit('state', netState());
 }
+function netBroadcast() { netSync(); }
+
 function onNetState(msg) {
   var d = msg && msg.data ? msg.data : msg;
   if (!d || !d.u) return;
-  if (NET.host) return;                 /* the host is the source of truth */
+  if (NET.host) return;
   NET.lastHeard = Date.now();
   applyNetState(d);
 }
 function applyNetState(d) {
-  /* the broadcaster is always the host and always side 'ply'; everyone else is 'foe' */
-  NET.side = (d.host && d.host === NET.id) ? 'ply' : 'foe';
   if (NET.phase === 'lobby' || NET.phase === 'joining') {
-    NET.phase = 'match';
-    S.screen = 'map';
-    S.banner = 'MATCH START'; S.bannerT = 1.4;
+    NET.phase = 'match'; NET.started = true;
+    S.banner = 'CHAPTER ' + d.ch; S.bannerT = 1.4;
   }
-  if (NET.phase === 'match') S.screen = 'map';
-  S.obj = 'wipe'; S.objTurns = 0; S.gameover = false; S.kits = 0;
-  var prev = {};
-  for (var i = 0; i < S.units.length; i++) prev[S.units[i].id] = { hp: S.units[i].chp, x: S.units[i].x, y: S.units[i].y };
+  var prev = {}, i;
+  for (i = 0; i < S.units.length; i++) prev[S.units[i].id] = { hp: S.units[i].chp, x: S.units[i].x, y: S.units[i].y };
   if (S.terrain !== d.t || S.layout !== d.l || !S.grid) {
     S.terrain = d.t; S.layout = d.l; S.grid = buildGrid(d.t, d.l);
   }
   var seen = {}, list = [];
   for (i = 0; i < d.u.length; i++) {
-    var r = d.u[i], def = charByKey(r.k);
-    if (!def) continue;
-    var u = mkUnit(def, r.s, 1, { fair: true, look: { name: r.n, pal: r.p, spr: r.sp } });
-    u.id = r.i; u.lvl = r.lv; u.cls = r.cl || u.cls; u.mov = r.mv;
-    for (var k in r.st) u.stats[k] = r.st[k];
-    u.stats.hp = r.mx; u.chp = r.hp;
-    u.wpn = mkWpn(r.w, r.wp);
-    u.x = r.x; u.y = r.y; u.acted = !!r.a;
+    var u = unitFromWire(d.u[i]);
     var p = prev[u.id];
-    u.px = p ? p.x : u.x; u.py = p ? p.y : u.y;
-    if (p && p.hp > u.chp) fxText(u, p.hp - u.chp, u.side === mySide() ? '#ff6a6a' : '#ffffff');
-    u.px = u.x; u.py = u.y;
+    if (p && p.hp > u.chp) fxText(u, p.hp - u.chp, u.side === 'ply' ? '#ff6a6a' : '#ffffff');
+    else if (p && p.hp < u.chp) fxText(u, '+' + (u.chp - p.hp), '#54f0c8');
     seen[u.id] = 1;
     list.push(u);
   }
@@ -2245,48 +2468,70 @@ function applyNetState(d) {
     if (old.chp > 0 && !seen[old.id]) fxBoom(old);
   }
   S.units = list;
-  S.turn = d.turn; S.phase = d.phase;
-  NET.winner = d.winner || null; NET.reason = d.reason || '';
+  S.chapter = d.ch; S.site = d.site; S.obj = d.ob; S.objTurns = d.ot;
+  S.turn = d.tn; S.phase = d.ph; S.kits = d.kt; S.squadSize = d.sq;
+  S.rewards = d.rw || null; S.levelups = d.lu || []; S.dead = d.dd || [];
+  if (d.lg) S.log = d.lg;
+  S.screen = d.sc || 'map';
+  S.gameover = (S.screen === 'over');
   NET.pending = false;
   S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null;
-  if (NET.winner) { NET.phase = 'done'; S.screen = 'map'; }
-  else if (NET.phase === 'done') { NET.phase = 'match'; }
   if (typeof refreshUI === 'function') refreshUI();
 }
 
 /* ---------------- intents ---------------- */
 function netSubmit(intent) {
-  if (NET.host) { netApply(intent, mySide()); return; }
+  if (NET.local) { netApply(intent, activeOwner()); return; }
+  if (NET.host) { netApply(intent, NET.id); return; }
   NET.pending = true;
   intent.from = NET.id;
   netEmit('act', intent);
   if (typeof refreshUI === 'function') refreshUI();
-  setTimeout(function () { if (NET.pending) { NET.pending = false; refreshUI(); } }, 6000);
+  setTimeout(function () { if (NET.pending) { NET.pending = false; refreshUI(); } }, 8000);
 }
 function onNetAct(msg) {
-  if (!NET.host || NET.phase !== 'match') return;
+  if (!NET.host) return;
   var d = msg && msg.data ? msg.data : msg;
-  if (!d || !d.t) return;
-  /* whoever is not the host plays the other side; never trust the sender's word for it */
-  netApply(d, 'foe');
+  if (!d || !d.t || !d.from) return;
+  netApply(d, String(d.from));
 }
 
-function netApply(intent, side) {
-  if (NET.phase !== 'match') return;
-  if (turnSideNow() !== side) { netBroadcast(); return; }
-  if (intent.t === 'end') { netEndTurn(); return; }
-  if (intent.t === 'resync') { netBroadcast(); return; }
+function netApply(intent, who) {
+  if (!netOnline()) return;
+  if (intent.t === 'resync') { netSync(); return; }
+
+  if (intent.t === 'reward') {
+    if (S.screen !== 'clear' || !S.rewards) { netSync(); return; }
+    var ri = intent.i | 0;
+    if (ri < 0 || ri >= S.rewards.length) { netSync(); return; }
+    var r = S.rewards[ri];
+    if (r.k === 'recruit') r.owner = who;
+    takeReward(ri);
+    netSync();
+    if (typeof refreshUI === 'function') refreshUI();
+    return;
+  }
+  if (S.screen !== 'map' || S.phase !== 'player') { netSync(); return; }
+
+  if (intent.t === 'end') {
+    S.sel = null; S.mode = 'idle';
+    endPlayerPhase();
+    netSync();
+    if (typeof refreshUI === 'function') refreshUI();
+    return;
+  }
   if (intent.t !== 'act') return;
+
   var u = null, i;
   for (i = 0; i < S.units.length; i++) if (S.units[i].id === intent.uid) u = S.units[i];
-  if (!u || u.chp <= 0 || u.side !== side || u.acted) { netBroadcast(); return; }
+  if (!u || u.chp <= 0 || u.side !== 'ply' || u.acted) { netSync(); return; }
+  if (String(u.owner || '') !== String(who)) { netSync(); return; }
 
-  /* validate the move */
   var tx = u.x, ty = u.y;
   if (intent.x !== undefined && intent.y !== undefined) {
     var reach = reachable(u);
     reach[u.x + ',' + u.y] = 0;
-    if (reach[intent.x + ',' + intent.y] === undefined) { netBroadcast(); return; }
+    if (reach[intent.x + ',' + intent.y] === undefined) { netSync(); return; }
     tx = intent.x; ty = intent.y;
   }
   u.x = tx; u.y = ty; u.px = tx; u.py = ty;
@@ -2298,65 +2543,78 @@ function netApply(intent, side) {
       if (intent.a === 'attack' && t.side !== u.side) doCombat(u, t);
       else if (intent.a === 'repair' && t.side === u.side && t.id !== u.id) doHeal(u, t);
     }
+  } else if (intent.a === 'kit' && S.kits > 0 && u.chp < u.stats.hp) {
+    useKit(u);
   }
   u.acted = true;
-  netCheckWin();
-  if (NET.phase === 'match') {
-    var left = S.units.filter(function (x) { return x.chp > 0 && x.side === side && !x.acted; });
-    if (!left.length) { netEndTurn(); return; }
+  if (!checkEnd()) {
+    var left = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply' && !x.acted; });
+    if (!left.length && !NET.local) {
+      endPlayerPhase();
+    } else if (NET.local && !localHasMoves(who)) {
+      /* this player is spent: hand the device on, or close out the round */
+      if (!localAdvance()) localEndRound();
+    }
   }
-  netBroadcast();
-  refreshUI();
-}
-
-function netEndTurn() {
-  if (!NET.host) return;
-  var next = turnSideNow() === 'ply' ? 'foe' : 'ply';
-  S.phase = next === 'ply' ? 'player' : 'foe';
-  if (next === 'ply') S.turn++;
-  phaseStart(next);
-  S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null;
-  netCheckWin();
-  if (NET.phase === 'match' && NET.local) { S.handoff = true; }
-  else if (NET.phase === 'match') { S.banner = (next === mySide() ? 'YOUR TURN' : 'THEIR TURN'); S.bannerT = 1.0; }
-  netBroadcast();
+  netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
 
-function sideHp(side) {
-  var t = 0;
+/* ---------------- one shared device ---------------- */
+function localOwners() {
+  var out = [];
+  for (var i = 0; i < NET.localPlayers.length; i++) {
+    var p = NET.localPlayers[i];
+    if ((p.keys || []).length) out.push(p.id);
+  }
+  return out;
+}
+function localHasMoves(ownerId) {
   for (var i = 0; i < S.units.length; i++) {
     var u = S.units[i];
-    if (u.chp > 0 && u.side === side) t += u.chp;
+    if (u.chp > 0 && u.side === 'ply' && String(u.owner) === String(ownerId) && !u.acted) return true;
   }
-  return t;
+  return false;
 }
-function netCheckWin() {
-  var a = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply'; }).length;
-  var b = S.units.filter(function (x) { return x.chp > 0 && x.side === 'foe'; }).length;
-  if (a && b) {
-    /* nobody can stall the match out: past the round limit the healthier squad takes it */
-    if (S.turn > VS_ROUNDS) {
-      var ha = sideHp('ply'), hb = sideHp('foe');
-      NET.winner = ha === hb ? 'draw' : (ha > hb ? 'ply' : 'foe');
-      NET.reason = 'round limit';
-      NET.phase = 'done';
-      netBroadcast();
+function localAdvance() {
+  var owners = localOwners();
+  for (var step = 1; step <= owners.length; step++) {
+    var idx = (NET.localActive + step) % owners.length;
+    var oid = owners[idx];
+    if (localHasMoves(oid)) {
+      NET.localActive = idx;
+      S.handoff = true;
+      S.sel = null; S.mode = 'idle';
+      if (typeof refreshUI === 'function') refreshUI();
+      return true;
     }
-    return;
   }
-  NET.winner = a ? 'ply' : (b ? 'foe' : 'draw');
-  NET.reason = 'wipe';
-  NET.phase = 'done';
-  netBroadcast();
+  return false;
+}
+function netHandoffDone() {
+  S.handoff = false;
+  S.banner = ownerName(activeOwner()); S.bannerT = 1.1;
+  if (typeof refreshUI === 'function') refreshUI();
+}
+function localEndRound() {
+  S.sel = null; S.mode = 'idle';
+  endPlayerPhase();
+  NET.localActive = 0;
+  var owners = localOwners();
+  if (owners.length > 1 && S.screen === 'map') S.handoff = true;
+  if (typeof refreshUI === 'function') refreshUI();
+}
+function netStartLocal() {
+  NET.local = true; NET.host = true; NET.phase = 'lobby';
+  netStartRun();
 }
 
-/* keep the guest honest about drops: ask again if nothing has arrived */
+/* ---------------- drops ---------------- */
 function netTick() {
-  if (NET.phase !== 'match') return;
+  if (!netOnline() || NET.local) return;
   var now = Date.now();
   if (NET.host) {
-    if (now - NET.lastSend > 2500) netBroadcast();
+    if (now - NET.lastSend > 2500) netSync();
   } else if (now - NET.lastHeard > 5000) {
     NET.lastHeard = now;
     netEmit('act', { t: 'resync', from: NET.id });
@@ -2436,41 +2694,26 @@ function refreshUI() {
   var foes = allies('foe').length;
   var objTxt = OBJS[S.obj] ? OBJS[S.obj].name : '';
   if (S.obj === 'hold') objTxt += ' ' + Math.min(S.turn, S.objTurns + 1) + '/' + (S.objTurns + 1);
-  if (netOnline()) {
-    var opp = netOpponent(), th = THEMES[S.terrain || 0];
-    var aLeft = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply'; }).length;
-    var bLeft = S.units.filter(function (x) { return x.chp > 0 && x.side === 'foe'; }).length;
-    var mineLeft = NET.local ? aLeft : S.units.filter(function (x) { return x.chp > 0 && x.side === mySide(); }).length;
-    var theirLeft = NET.local ? bLeft : S.units.filter(function (x) { return x.chp > 0 && x.side !== mySide(); }).length;
-    var myTurn = NET.local ? true : turnSideNow() === mySide();
-    hud.innerHTML =
-      '<div class="hleft"><b>' + (NET.local ? 'LOCAL VERSUS' : 'VS ' + esc((opp && opp.name) || 'OPPONENT')) + '</b>' +
-      '<span>' + esc(th.name) + (NET.local ? '' : ' &middot; ROOM ' + esc(NET.code)) + '</span></div>' +
-      '<div class="hmid"><b>' + (NET.winner ? 'MATCH OVER'
-        : (NET.local ? sideName(turnSideNow()) + "'S TURN" : (myTurn ? 'YOUR TURN' : 'THEIR TURN'))) + '</b>' +
-      '<span>' + (NET.local ? 'P1 ' + aLeft + ' &middot; P2 ' + bLeft : 'YOU ' + mineLeft + ' &middot; THEM ' + theirLeft) + '</span></div>' +
-      '<div class="hright">' +
-      '<span class="pill ' + (myTurn ? 'ply' : 'foe') + '">ROUND ' + Math.min(S.turn, VS_ROUNDS) + '/' + VS_ROUNDS + '</span>' +
-      '<button class="mini" data-act="danger">' + (S.danger ? 'ZONE ON' : 'ZONE OFF') + '</button>' +
-      (NET.winner ? '<button class="mini" data-act="netleave">LEAVE</button>'
-        : '<button class="mini" data-act="end"' + (myTurn ? '' : ' disabled') + '>END TURN</button>') +
-      '</div>';
-    panel.innerHTML = netPanel();
-    roster.innerHTML = netRoster();
-    return;
-  }
   hud.innerHTML =
     '<div class="hleft"><b>CH ' + S.chapter + '</b><span>' + esc(S.site) + '</span></div>' +
     '<div class="hmid"><b>' + objTxt + '</b><span>' + (OBJS[S.obj] ? OBJS[S.obj].desc : '') + '</span></div>' +
     '<div class="hright">' +
     '<span class="pill ' + (S.phase === 'player' ? 'ply' : 'foe') + '">' + (S.phase === 'player' ? 'YOUR TURN' : 'ENEMY') + ' &middot; T' + S.turn + '</span>' +
     '<span class="pill">HOSTILES ' + foes + '</span>' +
+    (netOnline() ? '<span class="pill' + (canAct() ? ' ply' : '') + '">' +
+      (NET.local ? esc(ownerName(activeOwner())) : squadOwners().length + ' PLAYERS') + '</span>' : '') +
     '<button class="mini" data-act="danger">' + (S.danger ? 'ZONE ON' : 'ZONE OFF') + '</button>' +
-    '<button class="mini" data-act="end">END TURN</button>' +
+    netEndButton() +
     '</div>';
 
   /* panel */
   var h = '';
+  var top = coopPanelTop();
+  if (top) {
+    panel.innerHTML = top;
+    roster.innerHTML = S.handoff ? '' : rosterStrip();
+    return;
+  }
   if (S.phase !== 'player') {
     h = '<div class="hint">Enemy phase &mdash; hold on.</div>';
   } else if (S.mode === 'act' && S.sel) {
@@ -2506,71 +2749,51 @@ function refreshUI() {
   }
   panel.innerHTML = h;
 
-  /* roster */
+  roster.innerHTML = rosterStrip();
+}
+
+function rosterStrip() {
   var ps = allies('ply'), rh = '';
+  if (netOnline()) ps = ps.filter(isMine);
   for (var i = 0; i < ps.length; i++) {
     var p = ps[i], fr = p.chp / p.stats.hp;
     rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
       '<span class="rnm">' + esc(p.name) + '</span>' +
       '<span class="rlv">L' + p.lvl + '</span>' + bar(fr, hpCol(fr)) + '</button>';
   }
-  roster.innerHTML = rh;
+  return rh;
 }
 
-function netPanel() {
-  if (NET.winner) {
-    var won = NET.winner === mySide();
-    var title = NET.winner === 'draw' ? 'DRAW'
-      : (NET.local ? sideName(NET.winner) + ' WINS' : (won ? 'YOU WIN' : 'YOU LOSE'));
-    return '<div class="ucard"><div class="uhead"><span class="unm">' + title + '</span>' +
-      '<span class="ucls">ROUND ' + S.turn + '</span></div>' +
-      '<div class="urow small">' + (NET.reason === 'round limit'
-        ? 'Round limit reached. Decided on surviving HP: P1 ' + sideHp('ply') + ', P2 ' + sideHp('foe') + '.'
-        : (NET.winner === 'draw' ? 'Both squads fell.'
-          : (NET.local ? 'The other squad is gone.' : (won ? 'Their squad is gone.' : 'Your squad is gone.')))) + '</div></div>' +
-      '<div class="acts"><button data-act="netleave">BACK TO TITLE</button></div>';
+function squadOwners() {
+  var seen = {}, out = [];
+  for (var i = 0; i < S.units.length; i++) {
+    var u = S.units[i];
+    if (u.side !== 'ply' || !u.owner) continue;
+    if (!seen[u.owner]) { seen[u.owner] = 1; out.push(u.owner); }
   }
-  if (S.handoff) {
-    return '<div class="handoff"><b>' + sideName(turnSideNow()) + '</b>' +
-      '<span>Pass the device over, then tap to take your turn.</span>' +
-      '<button data-act="handoff">I AM ' + sideName(turnSideNow()) + '</button></div>';
-  }
-  if (NET.pending) return '<div class="hint">Sending your move...</div>';
-  if (turnSideNow() !== mySide()) {
-    return '<div class="hint">Waiting for your opponent.</div>' +
-      (S.inspect ? unitCard(S.inspect) : (S.tileInfo ? terCard(S.tileInfo.x, S.tileInfo.y) : ''));
-  }
-  if (S.mode === 'act' && S.sel) {
-    var u = S.sel, tgts = attackableFrom(u), heals = u.wpn.heal ? healableFrom(u) : [];
-    return '<div class="acts">' +
-      (tgts.length ? '<button data-act="attack">ATTACK (' + tgts.length + ')</button>' : '<button disabled>NO TARGET</button>') +
-      (u.wpn.heal ? (heals.length ? '<button data-act="repair">REPAIR (' + heals.length + ')</button>' : '<button disabled>NO ALLY</button>') : '') +
-      '<button data-act="wait">WAIT</button>' +
-      '<button class="ghost" data-act="cancel">CANCEL</button></div>' + unitCard(u);
-  }
-  if ((S.mode === 'target' || S.mode === 'healt') && S.sel) {
-    if (S.target) {
-      return (S.mode === 'target' ? forecastCard(S.sel, S.target) : healCard(S.sel, S.target)) +
-        '<div class="acts"><button data-act="confirm">' + (S.mode === 'target' ? 'ENGAGE' : 'REPAIR') + '</button>' +
-        '<button class="ghost" data-act="back">BACK</button></div>';
-    }
-    return '<div class="hint">' + (S.mode === 'target' ? 'Tap an enemy in range.' : 'Tap an ally in range.') + '</div>' +
-      '<div class="acts"><button class="ghost" data-act="back">BACK</button></div>';
-  }
-  if (S.mode === 'move' && S.sel) return '<div class="hint">Tap a blue tile to move, or tap ' + esc(S.sel.name) + ' again to act in place.</div>' + unitCard(S.sel);
-  if (S.tileInfo) return terCard(S.tileInfo.x, S.tileInfo.y) + '<div class="acts"><button class="ghost" data-act="cleartile">CLOSE</button></div>';
-  if (S.inspect) return unitCard(S.inspect) + '<div class="acts"><button class="ghost" data-act="clearinspect">CLOSE</button></div>';
-  return '<div class="hint">Your move. Tap one of your operatives.</div>';
+  return out;
 }
-function netRoster() {
-  if (S.handoff) return '';
-  var ps = S.units.filter(function (u) { return u.chp > 0 && u.side === mySide(); }), rh = '';
-  for (var i = 0; i < ps.length; i++) {
-    var p = ps[i], fr = p.chp / p.stats.hp;
-    rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
-      '<span class="rnm">' + esc(p.name) + '</span><span class="rlv">L' + p.lvl + '</span>' + bar(fr, hpCol(fr)) + '</button>';
+function netEndButton() {
+  if (!netOnline()) return '<button class="mini" data-act="end">END TURN</button>';
+  if (S.screen !== 'map' || S.phase !== 'player') return '<button class="mini" disabled>END TURN</button>';
+  if (NET.local) {
+    var owners = localOwners(), more = false;
+    for (var i = 0; i < owners.length; i++) if (owners[i] !== activeOwner() && localHasMoves(owners[i])) more = true;
+    if (more) return '<button class="mini" data-act="pass">PASS ON</button>';
+    return '<button class="mini" data-act="end">END ROUND</button>';
   }
-  return rh;
+  return '<button class="mini" data-act="end"' + (canAct() ? '' : ' disabled') + '>END TURN</button>';
+}
+function coopPanelTop() {
+  if (!netOnline()) return '';
+  if (S.handoff) {
+    return '<div class="handoff"><b>' + esc(ownerName(activeOwner())) + '</b>' +
+      '<span>Pass the device over, then tap to move your operatives.</span>' +
+      '<button data-act="handoff">I AM ' + esc(ownerName(activeOwner())) + '</button></div>';
+  }
+  if (S.phase !== 'player') return '<div class="hint">Enemy phase.</div>';
+  if (NET.pending) return '<div class="hint">Sending your move...</div>';
+  return '';
 }
 
 function terCard(x, y) {
@@ -2634,7 +2857,7 @@ function renderTitle() {
     '<div class="tbtns">' +
     (hasSave() ? '<button data-act="continue">CONTINUE RUN</button>' : '') +
     '<button data-act="tosquad">NEW RUN</button>' +
-    '<button class="ghost" data-act="online">VERSUS 1V1</button>' +
+    '<button class="ghost" data-act="online">CO-OP RUN</button>' +
     '<button class="ghost" data-act="help">HOW TO PLAY</button>' +
     '</div>' +
     '<p class="tbest">DEEPEST CHAPTER REACHED: ' + S.best + '</p>' +
@@ -2690,74 +2913,97 @@ function renderSquad() {
 }
 
 /* ---------------- online lobby ---------------- */
-function squadCards(selected, actName) {
+function coopCards(mineKeys, actName) {
   return ALLCHARS.map(function (r) {
-    var lk = lookOf(r.key, r), on = selected.indexOf(r.key) >= 0;
-    var u = mkUnit(r, 'ply', VS_LEVEL, { fair: true, look: lk });
+    var lk = lookOf(r.key, r);
+    var owner = takenBy(r.key);
+    var mine = mineKeys.indexOf(r.key) >= 0;
+    var other = owner && !mine;
     var cells = STATK.map(function (k) {
-      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + u.stats[k] + '</span></div>';
+      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + r.base[k] + '</span><em>' + r.grow[k] + '%</em></div>';
     }).join('');
-    return '<div class="sqc' + (on ? ' on' : '') + '">' +
+    return '<div class="sqc' + (mine ? ' on' : '') + (other ? ' taken' : '') + '">' +
       '<div class="sqtop"><canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
-      '<div class="sqid"><b>' + esc(lk.name) + '</b><span>' + esc(r.cls) + ' &middot; LV ' + VS_LEVEL + '</span>' +
-      '<i>' + esc(WPN[r.wpn].name) + ' &middot; MOV ' + r.mov + '</i></div></div>' +
+      '<div class="sqid"><b>' + esc(lk.name) + '</b><span>' + esc(r.cls) + '</span>' +
+      '<i>' + esc(WPN[r.wpn].name) + ' &middot; ' + (WPN[r.wpn].heal ? 'REPAIR' : (WPN[r.wpn].mag ? 'MAG' : 'PHYS')) +
+      ' &middot; MOV ' + r.mov + '</i></div></div>' +
       '<div class="tsg">' + cells + '</div>' +
-      '<div class="sqbtns"><button class="' + (on ? '' : 'ghost') + '" data-act="' + actName + '" data-key="' + r.key + '">' +
-      (on ? 'PICKED' : 'PICK') + '</button></div></div>';
+      '<div class="sqbtns">' + (other
+        ? '<button disabled>TAKEN BY ' + esc(owner.name) + '</button>'
+        : '<button class="' + (mine ? '' : 'ghost') + '" data-act="' + actName + '" data-key="' + r.key + '">' +
+          (mine ? 'YOURS' : 'PICK') + '</button>') +
+      '</div></div>';
   }).join('');
 }
 
 function renderNet() {
   var t = $('squad-screen'), h = '';
 
-  /* ---- menu ---- */
   if (!NET.mode) {
-    h = '<div class="sqbox"><div class="sqhead"><h2>VERSUS</h2>' +
-      '<p class="osub">Four operatives a side, level ' + VS_LEVEL + ', one map, last squad standing.</p></div>' +
+    h = '<div class="sqbox"><div class="sqhead"><h2>CO-OP</h2>' +
+      '<p class="osub">One shared endless run. Everyone picks their own operatives and moves only those. ' +
+      'The machines get harder every chapter, same as solo.</p></div>' +
       '<div class="vsmenu">' +
       '<button class="vopt" data-act="netmode" data-v="create"><b>CREATE LOBBY</b>' +
-      '<span>Start a room and get a code to send your friend.</span></button>' +
+      '<span>Start a room and get a code to send your friends.</span></button>' +
       '<button class="vopt" data-act="netmode" data-v="join"><b>JOIN LOBBY</b>' +
-      '<span>Type the code your friend sent you.</span></button>' +
+      '<span>Type the code a friend sent you.</span></button>' +
       '<button class="vopt" data-act="netmode" data-v="local"><b>SAME DEVICE</b>' +
-      '<span>Two players passing one screen. Works in any browser, online or not.</span></button>' +
+      '<span>Everyone shares one screen, passing it round each turn. Works offline.</span></button>' +
       '</div>' +
-      (NET.available ? '' : '<p class="netnote">Online lobbies need the hosted page on claude.ai. ' +
-        'On a downloaded copy of the file only SAME DEVICE works.</p>') +
+      (NET.available
+        ? '<p class="netnote">' + (NET.transport === 'p2p'
+            ? 'Online here runs browser to browser. Everyone needs to be online at the same time.'
+            : "Online here runs on this page's live rooms.") + '</p>'
+        : '<p class="netnote">Online is unavailable on this page. SAME DEVICE still works.</p>') +
       '<div class="acts"><button class="ghost" data-act="totitle">BACK</button></div></div>';
     t.innerHTML = h; return;
   }
 
-  /* ---- same device: each player drafts in turn ---- */
+  /* ---- same device ---- */
   if (NET.mode === 'local') {
-    var step = NET.localStep, picked = step === 1 ? NET.keysA : NET.keysB;
-    h = '<div class="sqbox"><div class="sqhead"><h2>PLAYER ' + step + ', PICK YOUR SQUAD</h2>' +
-      '<p class="osub">Up to ' + VS_MAX + ' operatives. Hand the device over when you are done.' +
-      (step === 2 ? ' Player 1 deploys on the left, you deploy on the right.' : '') + '</p></div>' +
-      '<div class="sqgrid">' + squadCards(picked, 'localpick') + '</div>' +
-      '<div class="sqbar"><span class="sqcount">SQUAD <b>' + picked.length + '</b> / ' + VS_MAX + '</span>' +
+    if (!NET.localPlayers.length) {
+      h = '<div class="sqbox"><div class="sqhead"><h2>SAME DEVICE</h2>' +
+        '<p class="osub">How many of you are playing? You will take turns picking, then pass the device round ' +
+        'each round so everyone moves their own operatives.</p></div>' +
+        '<div class="vsmenu">' +
+        [2, 3, 4].map(function (n) {
+          return '<button class="vopt" data-act="localcount" data-v="' + n + '"><b>' + n + ' PLAYERS</b>' +
+            '<span>Up to ' + Math.min(PER_PLAYER, Math.floor(SQUAD_CAP / n)) + ' operatives each.</span></button>';
+        }).join('') +
+        '</div><div class="acts"><button class="ghost" data-act="netmenu">BACK</button></div></div>';
+      t.innerHTML = h; return;
+    }
+    var me = NET.localPlayers[NET.localStep];
+    var last = NET.localStep >= NET.localPlayers.length - 1;
+    h = '<div class="sqbox"><div class="sqhead"><h2>' + esc(me.name) + ', PICK YOUR OPERATIVES</h2>' +
+      '<p class="osub">Up to ' + PER_PLAYER + ' each, ' + SQUAD_CAP + ' in the squad all told. ' +
+      'Anyone already taken is greyed out. Hand the device on when you are done.</p></div>' +
+      '<div class="plrs">' + NET.localPlayers.map(function (p, i) {
+        return '<div class="plr' + (i === NET.localStep ? ' you' : '') + '"><b>' + esc(p.name) + '</b>' +
+          '<span>' + (p.keys.length ? p.keys.length + ' PICKED' : 'NOT PICKED') + '</span></div>';
+      }).join('') + '</div>' +
+      '<div class="sqgrid">' + coopCards(me.keys, 'localpick') + '</div>' +
+      '<div class="sqbar"><span class="sqcount">SQUAD <b>' + squadTotal() + '</b> / ' + SQUAD_CAP + '</span>' +
       '<button class="ghost" data-act="netmenu">BACK</button>' +
-      '<button ' + (picked.length ? '' : 'disabled ') + 'data-act="localnext">' +
-      (step === 1 ? 'PASS TO PLAYER 2' : 'START MATCH') + '</button></div></div>';
+      '<button ' + (me.keys.length ? '' : 'disabled ') + 'data-act="localnext">' +
+      (last ? 'START RUN' : 'PASS ON') + '</button></div></div>';
     t.innerHTML = h; paintPortraits(t); return;
   }
 
-  /* ---- online, not connected yet ---- */
+  /* ---- online, before connecting ---- */
   if (!NET.available) {
     h = '<div class="sqbox"><div class="sqhead"><h2>ONLINE LOBBY</h2>' +
-      '<p class="osub">This copy of the game cannot reach other players. Online lobbies run on the hosted ' +
-      'page on claude.ai; a downloaded file has nothing to connect to. Open the artifact link, and share ' +
-      'that page with your friend with edit access so they can send moves. SAME DEVICE works here either way.</p></div>' +
+      '<p class="osub">This copy cannot reach other players. SAME DEVICE works here either way.</p></div>' +
       '<div class="acts"><button data-act="netmode" data-v="local">PLAY SAME DEVICE</button>' +
       '<button class="ghost" data-act="netmenu">BACK</button></div></div>';
     t.innerHTML = h; return;
   }
-
   if (NET.phase === 'idle' || NET.phase === 'joining') {
     var creating = NET.mode === 'create';
     h = '<div class="sqbox"><div class="sqhead"><h2>' + (creating ? 'CREATE LOBBY' : 'JOIN LOBBY') + '</h2>' +
       '<p class="osub">' + (creating
-        ? 'This is your room code. Send it to your friend, then wait for them here.'
+        ? 'This is your room code. Send it to your friends, then wait for them here.'
         : 'Type the code your friend gave you.') + '</p></div>' +
       '<div class="netform">' +
       '<label class="sklab">YOUR NAME</label>' +
@@ -2772,42 +3018,40 @@ function renderNet() {
       '<div class="acts">' +
       '<button data-act="netjoin">' + (NET.phase === 'joining' ? 'CONNECTING...' : (creating ? 'OPEN LOBBY' : 'JOIN')) + '</button>' +
       '<button class="ghost" data-act="netmenu">BACK</button></div>' +
-      '<p class="netnote">Your friend opens the same page and uses JOIN LOBBY with this code. ' +
-      'They need edit access to the page, not just view access, or their moves will not send.</p>' +
+      '<p class="netnote">' + (NET.transport === 'room'
+        ? 'Your friends open the same page and use JOIN LOBBY with this code. They need edit access to the page, ' +
+          'not just view access, or their moves will not send.'
+        : 'Your friends open this same site and use JOIN LOBBY with this code. Open your lobby first and leave ' +
+          'this page open.') + '</p>' +
       '</div></div>';
     t.innerHTML = h; return;
   }
 
-  /* ---- lobby ---- */
-  var roster = NET.peers.map(function (p) {
+  /* ---- online lobby ---- */
+  var ps = allPlayers();
+  var roster = ps.map(function (p) {
     var you = String(p.id) === NET.id;
     return '<div class="plr' + (you ? ' you' : '') + '"><b>' + esc(p.name || 'PLAYER') + '</b>' +
-      '<span>' + (you ? 'YOU' : 'OPPONENT') + (netHostId() === String(p.id) ? ' &middot; HOST' : '') + '</span>' +
-      '<span class="' + (p.ready ? 'rdy' : 'dim') + '">' + (p.ready ? 'READY' : 'CHOOSING') + '</span></div>';
+      '<span>' + (you ? 'YOU' : 'PLAYER') + (netHostId() === String(p.id) ? ' &middot; HOST' : '') + '</span>' +
+      '<span class="' + (p.ready ? 'rdy' : 'dim') + '">' + ((p.keys || []).length
+        ? (p.ready ? 'READY' : (p.keys.length + ' PICKED')) : 'CHOOSING') + '</span></div>';
   }).join('');
-  var waiting = NET.peers.length < 2;
   h = '<div class="sqbox"><div class="sqhead"><h2>LOBBY ' + esc(NET.code) + '</h2>' +
-    '<p class="osub">' + (waiting
-      ? 'Waiting for someone to join with this code.'
-      : 'Pick up to ' + VS_MAX + ' operatives, then press READY. ' +
-        (NET.host ? 'You are the host and start the match.' : 'The host starts the match.')) + '</p>' +
+    '<p class="osub">' + (ps.length < 2
+      ? 'Waiting for someone to join with this code. Leave this page open.'
+      : 'Pick up to ' + PER_PLAYER + ' operatives each, ' + SQUAD_CAP + ' in the squad all told, then press READY. ' +
+        (NET.host ? 'You are the host and start the run.' : 'The host starts the run.')) + '</p>' +
     '<div class="acts"><button class="ghost" data-act="netcopy">' + (NET.copied === 'code' ? 'COPIED' : 'COPY CODE') + '</button></div></div>' +
     '<div class="plrs">' + roster + '</div>' +
-    '<div class="sqgrid">' + squadCards(NET.keys, 'nettoggle') + '</div>' +
-    '<div class="sqbar"><span class="sqcount">SQUAD <b>' + NET.keys.length + '</b> / ' + VS_MAX + '</span>' +
+    (NET.err ? '<p class="neterr">' + esc(NET.err) + '</p>' : '') +
+    '<div class="sqgrid">' + coopCards(NET.keys, 'nettoggle') + '</div>' +
+    '<div class="sqbar"><span class="sqcount">SQUAD <b>' + squadTotal() + '</b> / ' + SQUAD_CAP + '</span>' +
     '<button class="ghost" data-act="netleave">LEAVE</button>' +
     '<button class="' + (NET.ready ? 'ghost' : '') + '" data-act="netready">' + (NET.ready ? 'NOT READY' : 'READY') + '</button>' +
-    (NET.host ? '<button ' + (netCanStart() ? '' : 'disabled ') + 'data-act="netstart">START</button>' : '') +
+    (NET.host ? '<button ' + (lobbyReady() ? '' : 'disabled ') + 'data-act="netstart">START RUN</button>' : '') +
     '</div></div>';
   t.innerHTML = h;
   paintPortraits(t);
-}
-
-function netCanStart() {
-  var opp = netOpponent();
-  if (!opp) return false;
-  if (!NET.ready || !opp.ready) return false;
-  return NET.keys.length > 0;
 }
 
 /* ---------------- appearance ---------------- */
@@ -2855,6 +3099,8 @@ function renderHelp() {
     '<li><b>Death is permanent</b> unless you pick up a Resurrection reward. Lose everyone and the run ends.</li>' +
     '<li><b>ZONE</b> shades every tile the enemy can reach and hit this turn. Use it.</li>' +
     '<li><b>Tap any empty tile</b> to read what it does.</li>' +
+    '<li><b>Co-op.</b> One shared endless run. Everyone picks their own operatives and moves only those; ' +
+    'anyone can end the turn once the squad is done. Lose the whole squad and the run is over for everybody.</li>' +
     '</ul>' +
     '<h3 class="lgh">TILE MARKS</h3><div class="legend">' +
     '<div class="lg"><canvas class="lgc" data-t="node"></canvas><div><b>REPAIR NODE</b><span>cross mark &middot; heals 15% max HP at the start of your turn</span></div></div>' +
@@ -2952,6 +3198,7 @@ function onTile(tx, ty) {
       return;
     }
     if (u && isMine(u)) { selectUnit(u); return; }
+    if (u && u.side === 'ply') { S.inspect = u; deselect(); S.inspect = u; refreshUI(); return; }
     if (u) { S.inspect = u; deselect(); S.inspect = u; refreshUI(); return; }
     deselect(); return;
   }
@@ -2966,7 +3213,7 @@ function doAction(act, el) {
   if (act === 'netmenu') {
     if (NET.sub) { try { NET.sub.leave(); } catch (e) { } NET.sub = null; }
     NET.mode = null; NET.phase = 'idle'; NET.err = ''; NET.copied = '';
-    NET.local = false; NET.localStep = 1; NET.keysA = []; NET.keysB = [];
+    NET.local = false; NET.localStep = 0; NET.localPlayers = [];
     refreshUI(); return;
   }
   if (act === 'netmode') {
@@ -2974,7 +3221,14 @@ function doAction(act, el) {
     NET.mode = m; NET.err = ''; NET.copied = '';
     if (m === 'create') NET.code = roomCode();
     if (m === 'join') NET.code = '';
-    if (m === 'local') { NET.localStep = 1; NET.keysA = []; NET.keysB = []; }
+    if (m === 'local') { NET.localStep = 0; NET.localPlayers = []; }
+    refreshUI(); return;
+  }
+  if (act === 'localcount') {
+    var n = parseInt(el.getAttribute('data-v'), 10) || 2;
+    NET.localPlayers = [];
+    for (var li = 0; li < n; li++) NET.localPlayers.push({ id: 'P' + (li + 1), name: 'PLAYER ' + (li + 1), keys: [] });
+    NET.localStep = 0; NET.local = true;
     refreshUI(); return;
   }
   if (act === 'netcopy') {
@@ -2988,19 +3242,14 @@ function doAction(act, el) {
     return;
   }
   if (act === 'netroll') { NET.code = roomCode(); NET.copied = ''; refreshUI(); return; }
-  if (act === 'localpick') {
-    var lk = el.getAttribute('data-key');
-    var arr = NET.localStep === 1 ? NET.keysA : NET.keysB;
-    var at2 = arr.indexOf(lk);
-    if (at2 >= 0) arr.splice(at2, 1);
-    else if (arr.length < VS_MAX) arr.push(lk);
-    refreshUI(); return;
-  }
+  if (act === 'localpick') { pickKey(el.getAttribute('data-key')); refreshUI(); return; }
   if (act === 'localnext') {
-    if (NET.localStep === 1) { if (!NET.keysA.length) return; NET.localStep = 2; refreshUI(); return; }
-    if (!NET.keysB.length) return;
+    var cur = NET.localPlayers[NET.localStep];
+    if (!cur || !cur.keys.length) return;
+    if (NET.localStep < NET.localPlayers.length - 1) { NET.localStep++; refreshUI(); return; }
     netStartLocal(); return;
   }
+  if (act === 'pass') { if (!localAdvance()) { localEndRound(); } return; }
   if (act === 'handoff') { netHandoffDone(); return; }
   if (act === 'netjoin') {
     var nEl = $('netname'), cEl = $('netcode');
@@ -3008,14 +3257,9 @@ function doAction(act, el) {
     return;
   }
   if (act === 'netleave') { netLeave(); return; }
-  if (act === 'nettoggle') {
-    var nk = el.getAttribute('data-key'), at = NET.keys.indexOf(nk);
-    if (at >= 0) NET.keys.splice(at, 1);
-    else if (NET.keys.length < VS_MAX) NET.keys.push(nk);
-    NET.ready = false; netPresence(); refreshUI(); return;
-  }
+  if (act === 'nettoggle') { pickKey(el.getAttribute('data-key')); refreshUI(); return; }
   if (act === 'netready') { NET.ready = !NET.ready; netPresence(); refreshUI(); return; }
-  if (act === 'netstart') { netStart(); return; }
+  if (act === 'netstart') { netStartRun(); return; }
   if (act === 'tosquad') {
     S.pick = {};
     for (var pi = 0; pi < ROSTER.length; pi++) S.pick[ROSTER[pi].key] = true;
@@ -3046,11 +3290,15 @@ function doAction(act, el) {
   if (act === 'help') { S.prevScreen = S.screen; S.screen = 'help'; refreshUI(); return; }
   if (act === 'closehelp') { S.screen = S.prevScreen || 'title'; refreshUI(); return; }
   if (act === 'totitle') { S.screen = 'title'; refreshUI(); return; }
-  if (act === 'reward') { takeReward(parseInt(el.getAttribute('data-i'), 10)); refreshUI(); return; }
+  if (act === 'reward') {
+    var rIdx = parseInt(el.getAttribute('data-i'), 10);
+    if (netOnline()) { netSubmit({ t: 'reward', i: rIdx }); return; }
+    takeReward(rIdx); refreshUI(); return;
+  }
   if (S.screen !== 'map') return;
   if (act === 'end') {
     if (netOnline()) {
-      if (NET.local) { if (!S.handoff) { deselect(); netEndTurn(); refreshUI(); } return; }
+      if (NET.local) { if (!S.handoff) { deselect(); localEndRound(); } return; }
       if (canAct()) { deselect(); netSubmit({ t: 'end' }); }
       return;
     }
@@ -3070,7 +3318,10 @@ function doAction(act, el) {
   var s = S.sel;
   if (act === 'attack') { S.mode = 'target'; S.target = null; var t = attackableFrom(s); if (t.length === 1) S.target = t[0]; refreshUI(); return; }
   if (act === 'repair') { S.mode = 'healt'; S.target = null; var hh = healableFrom(s); if (hh.length === 1) S.target = hh[0]; refreshUI(); return; }
-  if (act === 'kit') { if (netOnline()) return; useKit(s); finishAct(s); return; }
+  if (act === 'kit') {
+    if (netOnline()) { netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y, a: 'kit' }); deselect(); return; }
+    useKit(s); finishAct(s); return;
+  }
   if (act === 'wait') {
     if (netOnline()) { netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y, a: 'wait' }); deselect(); return; }
     finishAct(s); return;
@@ -3165,12 +3416,14 @@ if (typeof window !== 'undefined') {
     canReachTarget: canReachTarget, wRange: wRange, dist: dist, ter: ter, foesOf: foesOf,
     healableFrom: healableFrom, useKit: useKit, wpnPlus: wpnPlus, inBounds: inBounds,
     refreshUI: refreshUI, selectUnit: selectUnit, squadKeys: squadKeys, applyLooks: applyLooks,
-    NET: NET, netJoin: netJoin, netStart: netStart, netSubmit: netSubmit, netApply: netApply,
-    netStartLocal: netStartLocal, netHandoffDone: netHandoffDone, sideName: sideName, roomCode: roomCode,
-    VS_ROUNDS: VS_ROUNDS, VS_MAX: VS_MAX, sideHp: sideHp, distField: distField,
+    NET: NET, netJoin: netJoin, netStartRun: netStartRun, netSubmit: netSubmit, netApply: netApply,
+    netStartLocal: netStartLocal, netHandoffDone: netHandoffDone, roomCode: roomCode,
     onNetPeers: onNetPeers, onNetState: onNetState, onNetAct: onNetAct, netState: netState,
-    applyNetState: applyNetState, canAct: canAct, isMine: isMine, netEndTurn: netEndTurn,
-    netCheckWin: netCheckWin, placeSquad: placeSquad, mySide: mySide, netTick: netTick,
+    applyNetState: applyNetState, canAct: canAct, isMine: isMine, netTick: netTick, netSync: netSync,
+    PER_PLAYER: PER_PLAYER, SQUAD_CAP: SQUAD_CAP, distField: distField, pickKey: pickKey,
+    takenBy: takenBy, squadTotal: squadTotal, allPlayers: allPlayers, lobbyReady: lobbyReady,
+    localOwners: localOwners, localAdvance: localAdvance, localEndRound: localEndRound,
+    activeOwner: activeOwner, ownerName: ownerName, buildSquad: buildSquad, rosterStrip: rosterStrip,
     ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS,
     MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
     LAYOUTS: LAYOUTS, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
