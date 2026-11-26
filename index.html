@@ -97,7 +97,12 @@ h1 span{display:block;font-size:.42em;color:var(--cy);letter-spacing:.44em;margi
 .sc{background:#091120;border:1px solid #17263a;border-radius:2px;padding:3px 2px;text-align:center}
 .sc b{display:block;font-size:8px;color:var(--dim);letter-spacing:.1em}
 .sc span{display:block;font-size:12px;color:#eaf6ff}
-.sc em{display:block;font-size:8px;color:#5f7d96;font-style:normal}
+.sc em{display:block;font-size:10px;color:var(--gr);font-style:normal;font-weight:700;margin-top:3px}
+.stat-sheet-label{display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap;margin-top:9px;color:var(--dim);font-size:9px;letter-spacing:.08em}
+.stat-sheet-label strong{color:var(--gr);font-weight:700}
+.sc .grow-label{display:block;font-size:8px;letter-spacing:.04em;color:#8fa7bd;margin-top:2px}
+.tsc em{font-size:9px;font-weight:700}
+.tsc .grow-label{display:block;font-size:7px;color:#8fa7bd;margin-top:2px}
 
 .fcast{display:flex;align-items:stretch;gap:6px;margin-bottom:8px}
 .fcol{flex:1;background:#091120;border:1px solid #17263a;border-radius:3px;padding:7px}
@@ -245,6 +250,23 @@ ul.help b{color:var(--cy)}
 .handoff span{display:block;font-size:10px;color:var(--dim);margin-bottom:12px}
 .sqc.taken{opacity:.5}
 .sqc.taken .sqid b{color:#7f93a8}
+.owner-legend{display:flex;flex-wrap:wrap;gap:5px 14px;padding:6px 8px;background:#0c1420;border:1px solid #1d2b40;border-radius:4px;font-size:10px}
+#owner-legend:empty{display:none}
+
+.route-wallet{display:flex;justify-content:space-between;align-items:center;margin:12px 0;gap:8px;padding:9px;background:#151c29;border:1px solid #675735;border-radius:6px;color:#ffd166;font-size:12px}.route-wallet span{font-size:9px;color:#c6b181}.route-map{padding:14px 8px;background:radial-gradient(ellipse at top,#19334b,#070e17);border:1px solid #34526b;border-radius:8px;text-align:center}.route-start{display:inline-block;padding:9px 12px;border:1px solid #54f0c8;border-radius:20px;color:#54f0c8;font-size:10px;font-weight:bold}.route-start.next{color:#7df9ff;border-color:#7df9ff}.route-branch,.route-merge{height:28px;width:50%;margin:auto;border:1px dashed #69869d;border-bottom:0;border-radius:10px 10px 0 0;position:relative}.route-merge{transform:rotate(180deg)}.route-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}.route-choices .rew{text-align:center;min-width:0;padding:12px 7px;border-color:#527993;background:linear-gradient(#142b3e,#0b1524)}.route-choices i{font-style:normal;font-size:28px;color:#7df9ff;display:block;margin-bottom:7px}.route-all,.wheel-key{font-size:9px;line-height:1.7;color:#a9bfd4;text-align:center;margin:12px 0}.route-title{color:#ffd166;margin:12px 0 0}.route-result{padding:12px;border:1px solid #3d846c;background:#0c2822;color:#b8ffdb;border-radius:6px;font-size:12px;margin:10px 0;line-height:1.6}.route-item{border:1px solid #27425c;border-radius:5px;padding:9px;margin:6px 0;background:#091120;font-size:11px}.route-item>b{color:#54f0c8;display:block}.route-item>span{display:block;color:#ffd166;font-size:10px;margin:5px 0}.route-buy{display:flex;flex-wrap:wrap;gap:4px}.route-buy .rew{padding:6px;font-size:9px}.obox>.rew{width:100%;margin:4px 0}.route-inventory{margin-top:12px;color:#9ab0c6;font-size:10px;line-height:1.7}.route-inventory summary{cursor:pointer;color:#7df9ff}.fortune-wheel{margin:18px auto;width:145px;height:145px;border:5px solid #dfba70;border-radius:50%;background:conic-gradient(#b74150 0deg 54deg,#7058ba 54deg 72deg,#c5a245 72deg 252deg,#289c76 252deg 306deg,#427db1 306deg 324deg,#687585 324deg 360deg);display:grid;place-items:center;box-shadow:0 0 20px #dfba7040;position:relative}.fortune-wheel-wrap{position:relative;width:145px;margin:18px auto}.fortune-wheel-wrap .fortune-wheel{margin:0}.fortune-wheel-wrap::before{content:"▼";position:absolute;top:-14px;left:50%;transform:translateX(-50%);color:#fff;font-size:22px;z-index:2}.fortune-wheel span{font-size:30px;color:#fff;text-shadow:0 2px 3px #000}.fortune-wheel.landed{animation:route-spin .9s ease-out both}@keyframes route-spin{to{transform:rotate(var(--spin))}}.route-chest{text-align:center;color:#ffd166;font-size:75px;text-shadow:0 0 24px #ffd16655;margin:12px}
+/* High-detail customization */
+.skinbox{max-width:660px;max-height:calc(100dvh - 28px);overflow:auto;overscroll-behavior:contain}
+.skprev{align-items:center;gap:16px}
+.skprev canvas.big{width:144px;height:144px;background:radial-gradient(ellipse at center,#21344b,#080e18 76%);border-color:#27425c;box-shadow:inset 0 0 24px #03060c}
+.skname{overflow-wrap:anywhere;font-size:19px}.sqid b,.unm,.rnm{overflow-wrap:anywhere}.sqtop canvas{width:54px;height:54px}.ch canvas{width:48px;height:48px}
+.partgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:6px;margin-bottom:8px}
+.partpick{display:grid;grid-template-columns:38px 1fr;grid-template-rows:auto auto;align-items:center;gap:3px 7px;background:#091120;border:1px solid #24354b;padding:7px;border-radius:4px;cursor:pointer;min-width:0}
+.partpick input{grid-row:1/3;width:38px;height:34px;border:0;padding:0;background:none;cursor:pointer;min-width:0}
+.partpick span{font-size:10px;line-height:1.2;color:#d7e5f2}.partpick output{font-size:9px;color:var(--dim);letter-spacing:.02em}
+.skinbox .acts{position:sticky;bottom:-16px;padding:9px 0 5px;background:#0c1724;border-top:1px solid #27425c;margin:14px 0 0;z-index:1}
+#skinname{text-transform:none}.skinbox .sklab{color:var(--cy)}
+@media(max-width:420px){.skprev canvas.big{width:108px;height:108px}.partgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.partpick{grid-template-columns:32px 1fr;padding:5px;gap:3px 5px}.partpick input{width:32px;height:32px}.skinbox{padding:11px}.skinbox .acts{bottom:-11px}}
+.item-rarity{font-size:9px;font-weight:700;letter-spacing:.08em;display:inline-block;margin-right:3px}.rarity-card{border-color:var(--rarity);border-left-width:3px}.item-top{display:flex;align-items:center;gap:9px;color:#d7e5f2}.item-top b{font-size:11px;line-height:1.5}.item-icon{display:grid;place-items:center;flex:none;width:34px;height:34px;font-style:normal;font-size:23px;color:var(--rarity);background:radial-gradient(circle,#21354a,#0a101a);border:1px solid var(--rarity);border-radius:5px}.item-odds{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:12px;padding:8px;background:#0a1320;border:1px solid #27425c;border-radius:4px;font-size:9px;line-height:1.5}.item-odds b{width:100%;color:#a9bfd4;font-size:9px}
 </style>
 </head>
 <body>
@@ -253,6 +275,7 @@ ul.help b{color:var(--cy)}
   <div id="squad-screen"></div>
   <div id="game-screen">
     <div id="hud"></div>
+    <div id="owner-legend"></div>
     <div id="cvwrap"><canvas id="cv"></canvas></div>
     <div id="panel"></div>
     <div id="roster"></div>
@@ -565,6 +588,21 @@ var CHASSIS = [
   { id: 'drone',      name: 'ORB CORE' }
 ];
 
+/* Independent appearance channels. Custom palettes travel as a compact, validated ID. */
+var COLOR_PARTS = [['A','Primary armour'],['B','Secondary armour'],['C','Armour trim'],['V','Visor / eyes'],['S','Face / skin'],['W','Weapon body'],['X','Weapon grip'],['G','Energy lights'],['H','Energy core'],['K','Outline / joints']];
+function validPal(id) { return typeof id === 'string' && (Object.prototype.hasOwnProperty.call(PALS,id) || /^custom_[0-9a-f]{60}$/.test(id)); }
+function paletteOf(id) {
+  if (typeof id === 'string' && /^custom_[0-9a-f]{60}$/.test(id)) {
+    var p = {}; COLOR_PARTS.forEach(function(part,i){p[part[0]]='#'+id.slice(7+i*6,13+i*6);}); return p;
+  }
+  return validPal(id) ? PALS[id] : PALS.foe;
+}
+function paletteId(p) { return 'custom_'+COLOR_PARTS.map(function(part){return p[part[0]].slice(1).toLowerCase();}).join(''); }
+function cleanName(n) { return String(n||'').replace(/[^a-zA-Z0-9 ._'\-]/g,'').slice(0,24).trim(); }
+function safeLook(l,def) {
+  l=l||{};
+  return {pal:validPal(l.pal)?l.pal:def.pal,spr:CHASSIS.some(function(c){return c.id===l.spr;})?l.spr:def.spr,name:cleanName(l.name)||def.name};
+}
 /* per-character look overrides, kept across runs */
 var LOOKS = {};
 function loadLooks() {
@@ -573,7 +611,7 @@ function loadLooks() {
 function saveLooks() { try { localStorage.setItem('hf_looks', JSON.stringify(LOOKS)); } catch (e) { } }
 function lookOf(key, def) {
   var l = LOOKS[key] || {};
-  return { pal: l.pal || def.pal, spr: l.spr || def.spr, name: l.name || def.name };
+  return safeLook(l,def);
 }
 
 /* ---------------- weapons ---------------- */
@@ -752,7 +790,7 @@ var S = {
   sel: null, mode: 'idle', reach: null, atkTiles: null, hoverPath: null,
   target: null, danger: false, kits: 2, log: [], fx: [], movers: [],
   busy: 0, best: 1, dead: [], uid: 1, bannerT: 0, banner: '', gameover: false,
-  rewards: null, levelups: [], shake: 0, cursor: null, inspect: null
+  gold:60, route:null, shrine:null, rewards: null, levelups: [], shake: 0, cursor: null, inspect: null
 };
 
 function say(t) { S.log.unshift(t); if (S.log.length > 40) S.log.pop(); }
@@ -764,7 +802,7 @@ var STATN = { hp: 'HP', str: 'STR', mag: 'MAG', skl: 'SKL', def: 'DEF', res: 'RE
 function mkUnit(def, side, lvl, opt) {
   opt = opt || {};
   var look;
-  if (opt.look) look = { name: opt.look.name || def.name, spr: opt.look.spr || def.spr, pal: opt.look.pal || def.pal };
+  if (opt.look) look = safeLook(opt.look,def);
   else if (side === 'ply' && !opt.fair) look = lookOf(def.key || def.name, def);
   else look = { name: def.name, spr: def.spr, pal: def.pal };
   var u = {
@@ -966,13 +1004,13 @@ function canReachTarget(u, t) {
 function spdOf(u) { return u.stats.spd + (u.traits.indexOf('overclock') >= 0 ? 3 : 0); }
 function avoidOf(u) {
   var t = ter(u.x, u.y);
-  return spdOf(u) * 2 + u.stats.lck + t.avo + (u.traits.indexOf('overclock') >= 0 ? 10 : 0);
+  return spdOf(u) * 2 + u.stats.lck + t.avo + (shrineBonus(u,'focus')?10:0) + (u.traits.indexOf('overclock') >= 0 ? 10 : 0);
 }
 function forecast(a, d) {
   var w = a.wpn, mag = w.mag;
-  var atk = (mag ? a.stats.mag : a.stats.str) + w.mt;
+  var atk = (mag ? a.stats.mag : a.stats.str) + w.mt + (shrineBonus(a,'power')?2:0);
   var tt = ter(d.x, d.y);
-  var dv = (mag ? d.stats.res : d.stats.def + tt.def);
+  var dv = (mag ? d.stats.res : d.stats.def + tt.def)+(shrineBonus(d,'guard')?2:0);
   var tri = triangle(w.type, d.wpn.type);
   var dmg = Math.max(0, atk + tri.dmg - dv - (d.traits.indexOf('shield') >= 0 ? 3 : 0));
   /* accuracy from a compressed skill-vs-evasion gap, so the curve stays sane
@@ -980,7 +1018,7 @@ function forecast(a, d) {
   var off = a.stats.skl * 2 + Math.floor(a.stats.lck / 2);
   var gap = off - avoidOf(d);
   var comp = Math.round(42 * gap / (Math.abs(gap) + 26));
-  var hit = clamp(w.hit + comp + tri.hit + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 5, 100);
+  var hit = clamp(w.hit + comp + tri.hit + (shrineBonus(a,'focus')?15:0) + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 5, 100);
   var crit = clamp(w.crit + Math.floor(a.stats.skl / 2) - d.stats.lck, 0, 60);
   var dbl = spdOf(a) >= spdOf(d) + 4;
   return { dmg: dmg, hit: Math.round(hit), crit: Math.round(crit), dbl: dbl, tri: tri };
@@ -1263,10 +1301,18 @@ var SITES = ['ORBITAL DOCK', 'COOLANT SPINE', 'RELAY VAULT', 'ASH FOUNDRY', 'SIG
 function foeLevel(ch) { return Math.min(MAXLVL, 1 + Math.floor((ch - 1) * 1.3)); }
 /* once hostiles hit the level cap they escalate in marks instead */
 function foeMark(ch) { var over = ch - 15; return over <= 0 ? 0 : Math.ceil(over / 4); }
-function foeCount(ch) {
-  var base = Math.min(12, 3 + Math.floor(ch * 0.55));
-  var sq = S.squadSize || 5;
-  return Math.max(2, Math.round(base * (0.55 + 0.09 * sq)));
+/* Threat budget uses the original deployed unit count, not the current survivors.
+   Every extra starting operative adds at least one hostile in every chapter. */
+function startingSquadSize() {
+  return Math.max(1, Math.min(8, Math.floor(Number(S.squadSize) || 1)));
+}
+function foeCount(ch, squadSize) {
+  var sq = squadSize === undefined ? startingSquadSize() : Math.max(1, Math.min(8, Math.floor(Number(squadSize) || 1)));
+  var escalation = Math.min(9, Math.max(0, Math.floor((ch - 1) * 0.55)));
+  return sq + 1 + Math.round(escalation * (0.45 + 0.11 * sq));
+}
+function reinforcementCount(ch) {
+  return Math.min(12, 1 + Math.floor((startingSquadSize() - 1) / 2) + Math.floor(ch / 7));
 }
 function wpnPlus(ch) { return Math.min(14, Math.floor((ch - 1) / 2.5)); }
 function traitChance(ch) { return ch < 9 ? 0 : Math.min(0.65, (ch - 8) * 0.07); }
@@ -1321,7 +1367,7 @@ function startChapter() {
   /* foes */
   var pool = foePool(ch), lvl = foeLevel(ch), n = foeCount(ch), plus = wpnPlus(ch), tc = traitChance(ch);
   var mark = foeMark(ch);
-  if (S.obj === 'boss') n = Math.max(2, Math.round(n * 0.7));
+  if (S.obj === 'boss') n = Math.max(1, n - 2); /* one commander joins the escorts */
   var tkeys = Object.keys(TRAITS);
   function spawnFoe(def, isBoss, lv) {
     var f = mkUnit(def, 'foe', lv, { plus: plus, boss: isBoss, mark: mark > 0 ? mark + (isBoss ? 1 : 0) : 0,
@@ -1342,9 +1388,21 @@ function startChapter() {
       used[k] = 1; f.x = sx; f.y = sy; f.px = sx; f.py = sy;
       S.units.push(f); return f;
     }
-    var p = placeNear(MAPW - 2, Math.floor(MAPH / 2), used);
+    /* Crowded boards: use any reachable free tile, farthest from the squad first. */
+    var free = Object.keys(open).map(function (k) {
+      var a = k.split(','); return { x: +a[0], y: +a[1], k: k };
+    }).filter(function (p) { return !used[p.k] && !ter(p.x, p.y).block && !unitAt(p.x, p.y); });
+    free.sort(function (a, b) { return b.x - a.x || Math.abs(a.y - MAPH / 2) - Math.abs(b.y - MAPH / 2); });
+    if (!free.length) return null;
+    var p = free[0]; used[p.k] = 1;
     f.x = p.x; f.y = p.y; f.px = p.x; f.py = p.y; S.units.push(f); return f;
   }
+  if (S.obj === 'boss') {
+    var bd = BOSSES[(Math.floor(ch / 5) - 1) % BOSSES.length];
+    var b = spawnFoe(bd, true, Math.min(MAXLVL, lvl + 1 + Math.floor(ch / 10)));
+    if (b) { b.boss = true; S.bossId = b.id; say('Commander detected: ' + b.name + '.'); }
+    else { S.obj = 'wipe'; S.bossId = null; }
+  } else S.bossId = null;
   var magPool = pool.filter(function (p) { return WPN[FOES[p].wpn].mag; });
   var magWant = magPool.length ? Math.max(1, Math.round(n * 0.28)) : 0;
   for (var j = 0; j < n; j++) {
@@ -1353,15 +1411,9 @@ function startChapter() {
     else pick = pool[RNG.int(pool.length)];
     spawnFoe(FOES[pick], false, lvl);
   }
-  if (S.obj === 'boss') {
-    var bd = BOSSES[(Math.floor(ch / 5) - 1) % BOSSES.length];
-    var b = spawnFoe(bd, true, Math.min(MAXLVL, lvl + 1 + Math.floor(ch / 10)));
-    b.boss = true; S.bossId = b.id;
-    say('Commander detected: ' + b.name + '.');
-  } else S.bossId = null;
   if (S.obj === 'hold') {
     var waves = 1 + Math.floor(ch / 8);
-    for (var w = 1; w <= waves; w++) S.reinforce.push({ turn: 1 + w * 2, n: 2 + Math.floor(ch / 7) });
+    for (var w = 1; w <= waves; w++) S.reinforce.push({ turn: 1 + w * 2, n: reinforcementCount(ch) });
   }
 
   S.screen = 'map'; S.gameover = false;
@@ -1373,17 +1425,22 @@ function startChapter() {
 }
 
 function spawnReinforcements(n) {
-  var pool = foePool(S.chapter), lvl = foeLevel(S.chapter), plus = wpnPlus(S.chapter), used = {};
-  for (var i = 0; i < n; i++) {
-    var f = mkUnit(FOES[pool[RNG.int(pool.length)]], 'foe', lvl, { plus: plus, mark: foeMark(S.chapter) });
-    for (var t = 0; t < 200; t++) {
-      var sx = RNG.range(MAPW - 3, MAPW - 1), sy = RNG.range(0, MAPH - 1);
-      if (ter(sx, sy).block || unitAt(sx, sy) || used[sx + ',' + sy]) continue;
-      used[sx + ',' + sy] = 1; f.x = sx; f.y = sy; f.px = sx; f.py = sy; S.units.push(f); break;
-    }
+  var pool = foePool(S.chapter), lvl = foeLevel(S.chapter), plus = wpnPlus(S.chapter);
+  var players = allies('ply'), spawned = 0;
+  if (!players.length) return;
+  var open = openTiles(players[0].x, players[0].y), free = [];
+  for (var y = 0; y < MAPH; y++) for (var x = MAPW - 3; x < MAPW; x++) {
+    if (!ter(x, y).block && !unitAt(x, y) && open[x + ',' + y]) free.push({ x:x, y:y });
   }
-  say('Reinforcements inbound (' + n + ').');
-  S.banner = 'REINFORCEMENTS'; S.bannerT = 1.2;
+  while (spawned < n && free.length) {
+    var pos = free.splice(RNG.int(free.length), 1)[0];
+    var f = mkUnit(FOES[pool[RNG.int(pool.length)]], 'foe', lvl, { plus: plus, mark: foeMark(S.chapter) });
+    f.x = pos.x; f.y = pos.y; f.px = pos.x; f.py = pos.y; S.units.push(f); spawned++;
+  }
+  if (spawned) {
+    say('Reinforcements inbound (' + spawned + ').');
+    S.banner = 'REINFORCEMENTS'; S.bannerT = 1.2;
+  }
 }
 
 /* ================= TURN FLOW ================= */
@@ -1459,12 +1516,98 @@ function endFoePhase() {
 }
 function schedule(fn, ms) { if (HEADLESS) { fn(); } else { setTimeout(fn, ms); } }
 
+/* ================= BETWEEN-BATTLE ROUTES ================= */
+var ROUTES = {
+  wheel: {name:'FORTUNE WHEEL', icon:'◈', desc:'Spin once: win or lose gold, gain a permanent stat, find or lose an item.'},
+  shop: {name:'GROWTH MARKET', icon:'▣', desc:'Spend shared gold on growth modules for your operatives.'},
+  chest: {name:'SALVAGE CHEST', icon:'▤', desc:'Open a sealed crate. Gold, a growth item, or nothing.'},
+  forge: {name:'WEAPON FORGE', icon:'⚒', desc:'Upgrade a weapon: +1 might and +3 percentage points to every growth, max 3 levels.'},
+  shrine: {name:'SIGNAL SHRINE', icon:'✧', desc:'Bless the whole squad for the next battle only.'},
+  camp: {name:'RECOVERY CAMP', icon:'✚', desc:'Heal, recruit a new operative, or recover a fallen ally.'}
+};
+var ROUTE_ITEMS = ['Vital Core','Power Coil','Hex Prism','Targeting Lens','Armor Matrix','Ward Circuit','Reflex Chip','Fortune Relic'];
+function resetRoute(){ S.gold=60; S.route=null; S.shrine=null; }
+function routeRandom(a){return a[Math.floor(rnd()*a.length)];}
+/* Growth module rarity is rolled only after an item has been awarded. */
+var ITEM_RARITIES = [
+  {id:'common',name:'Common',chance:50,bonus:5,color:'#b9c7d4',prefix:'Standard'},
+  {id:'uncommon',name:'Uncommon',chance:28,bonus:10,color:'#54f0a0',prefix:'Refined'},
+  {id:'rare',name:'Rare',chance:15,bonus:15,color:'#64b5ff',prefix:'Advanced'},
+  {id:'epic',name:'Epic',chance:6,bonus:20,color:'#c18aff',prefix:'Exalted'},
+  {id:'legendary',name:'Legendary',chance:1,bonus:25,color:'#ffd166',prefix:'Mythic'}
+];
+var ITEM_ICONS={hp:'✚',str:'⚡',mag:'✧',skl:'◎',def:'⬟',res:'◈',spd:'➤',lck:'✦'};
+function itemRarity(it){return ITEM_RARITIES.filter(function(t){return t.id===it.rarity;})[0] || ITEM_RARITIES.filter(function(t){return t.bonus===it.bonus;})[0] || ITEM_RARITIES[0];}
+function routeItem(){var k=Math.floor(rnd()*STATK.length),roll=rnd()*100,t=ITEM_RARITIES[0];for(var j=0;j<ITEM_RARITIES.length;j++){t=ITEM_RARITIES[j];if(roll<t.chance)break;roll-=t.chance;}return {s:STATK[k],name:t.prefix+' '+ROUTE_ITEMS[k],bonus:t.bonus,rarity:t.id};}
+function itemLabel(it){var t=itemRarity(it);return '<span class="item-rarity" style="color:'+t.color+'">'+t.name.toUpperCase()+'</span> '+esc(it.name)+' · +'+it.bonus+'% '+STATN[it.s]+' growth';}
+function itemOdds(){return '<div class="item-odds"><b>GROWTH ITEM RARITIES</b>'+ITEM_RARITIES.map(function(t){return '<span style="color:'+t.color+'">'+t.name+' '+t.chance+'% · +'+t.bonus+'%</span>';}).join('')+'</div>';}
+/* Camp has a 10% chance of appearing anywhere on a two-choice map. */
+function routeChoices(){var keys=Object.keys(ROUTES).filter(function(k){return k!=='camp';}),camp=rnd()<0.10,a=keys.splice(Math.floor(rnd()*keys.length),1)[0],b=camp?'camp':routeRandom(keys);return rnd()<0.5?[a,b]:[b,a];}
+function routeGold(n){var prev=S.gold;S.gold=Math.max(0,S.gold+n);return S.gold-prev;}
+function routeUnit(id){return allies('ply').filter(function(u){return u.id===id;})[0];}
+function routeGrant(u,item){if(!u.items)u.items=[];u.items.push({s:item.s,name:item.name,bonus:item.bonus,rarity:itemRarity(item).id});u.grow[item.s]+=item.bonus;return u.name+' received '+item.name+' ['+itemRarity(item).name+'] (+'+item.bonus+'% '+STATN[item.s]+' growth).';}
+function routeLoss(){var pairs=[];allies('ply').forEach(function(u){(u.items||[]).forEach(function(it,i){pairs.push({u:u,i:i});});});if(!pairs.length)return 'No growth items to lose. Nothing was taken.';var p=routeRandom(pairs),it=p.u.items.splice(p.i,1)[0];p.u.grow[it.s]-=it.bonus;return p.u.name+' lost '+it.name+' (-'+it.bonus+'% '+STATN[it.s]+' growth).';}
+function routeFinish(msg){S.route.stage='result';S.route.message=msg;say(msg);}
+function beginRoute(){var choices=routeChoices();var earn=20+S.chapter*3+Math.min(20,(S.squadSize||1)*2);routeGold(earn);S.route={ch:S.chapter,rev:0,stage:'choose',choices:choices,node:null,earn:earn,stock:[],message:''};}
+function routeAction(cmd,arg,id,rev,ch,who){
+  var r=S.route;if(S.screen!=='clear'||!r||r.rev!==rev||r.ch!==ch)return false;
+  var live=allies('ply'),u=routeUnit(id),cost,it,msg;
+  if(!live.length)return false;
+  if(cmd==='choose'&&r.stage==='choose'&&r.choices.indexOf(arg)>=0){r.node=arg;r.stage='visit';if(arg==='shop'){for(var j=0;j<4;j++){it=routeItem();it.price=it.bonus*3+10;it.sold=false;r.stock.push(it);}}}
+  else if(cmd==='spin'&&r.stage==='visit'&&r.node==='wheel'){
+    var chance=rnd()*100,roll=chance<15?0:chance<20?1:chance<70?2:chance<85?3:chance<90?4:5,v=routeRandom(live),k=routeRandom(STATK);r.roll=roll;
+    if(roll===0)msg='Lost '+(-routeGold(-(25+Math.floor(rnd()*31))))+' gold.';
+    if(roll===1){v.stats[k]++;if(k==='hp')v.chp++;msg=v.name+' gained +1 '+STATN[k]+' permanently.';}
+    if(roll===2)msg='Won '+routeGold(30+Math.floor(rnd()*51))+' gold!';
+    if(roll===3)msg=routeGrant(v,routeItem());
+    if(roll===4)msg=routeLoss();
+    if(roll===5)msg="Nothing happens. No gold, items or stats changed.";
+    routeFinish(msg);
+  }else if(cmd==='open'&&r.stage==='visit'&&r.node==='chest'){
+    var q=rnd();routeFinish(q<0.65?'Found '+routeGold(25+Math.floor(rnd()*41))+' gold!':q<0.85?routeGrant(routeRandom(live),routeItem()):'The chest was empty.');
+  }else if(cmd==='buy'&&r.stage==='visit'&&r.node==='shop'&&u){
+    it=r.stock[Number(arg)];if(!it||it.sold||S.gold<it.price)return false;routeGold(-it.price);it.sold=true;r.message=routeGrant(u,it);say(r.message);
+  }else if(cmd==='forge'&&r.stage==='visit'&&r.node==='forge'&&u){
+    var lv=u.forgeLv||0;cost=35+lv*20;if(lv>=3||S.gold<cost)return false;routeGold(-cost);u.forgeLv=lv+1;u.wpn.plus++;u.wpn.mt++;STATK.forEach(function(k){u.grow[k]+=3;});routeFinish(u.name+' weapon Lv '+u.forgeLv+'/3: +1 might, +3% all growth rates.');
+  }else if(cmd==='bless'&&r.stage==='visit'&&r.node==='shrine'&&['power','guard','focus'].indexOf(arg)>=0){
+    S.shrine={kind:arg,ch:S.chapter+1};routeFinish(({power:'Power: +2 attack',guard:'Guard: +2 defense and resistance',focus:'Focus: +15 hit and +10 avoid'})[arg]+' for the next fight.');
+  }else if(cmd==='camp'&&r.stage==='visit'&&r.node==='camp'){
+    if(arg==='heal'){live.forEach(function(v){v.chp=v.stats.hp;});S.kits+=2;routeFinish('Squad fully healed. Received 2 repair kits.');}
+    else if(arg==='revive'&&S.dead.length&&live.length<SQUAD_CAP){var f=S.dead.pop(),def=charByKey(f.def);if(!def)return false;var nu=mkUnit(def,'ply',1,{});while(nu.lvl<f.lvl&&!atMax(nu))levelUp(nu);nu.owner=f.owner||who||'';nu.chp=nu.stats.hp;S.units.push(nu);routeFinish(nu.name+' returned to the squad.');}
+    else if(arg==='recruit'&&live.length<SQUAD_CAP){var pool=ALLCHARS.filter(function(d){return !live.some(function(v){return v.key===d.key;});});if(!pool.length)return false;var nu=mkUnit(routeRandom(pool),'ply',1,{});while(nu.lvl<Math.max(1,Math.floor(avgLevel()*0.85))&&!atMax(nu))levelUp(nu);nu.owner=who||'';nu.chp=nu.stats.hp;S.units.push(nu);routeFinish(nu.name+' joined the squad.');}else return false;
+  }else if(cmd==='next'&&(r.stage==='result'||(r.stage==='visit'&&['shop','forge'].indexOf(r.node)>=0))){S.route=null;S.rewards=null;S.chapter++;startChapter();refreshUI();return true;}
+  else return false;
+  r.rev++;saveGame();netSync();refreshUI();return true;
+}
+function shrineBonus(u,kind){return u.side==='ply'&&S.shrine&&S.shrine.ch===S.chapter&&S.shrine.kind===kind;}
+function routeBtn(cmd,arg,id,label,disabled){return '<button class="rew" data-act="route" data-cmd="'+cmd+'" data-v="'+arg+'" data-id="'+(id||0)+'"'+(disabled?' disabled':'')+'>'+label+'</button>';}
+function routeRender(){var r=S.route;if(!r)return '';var h='<div class="route-wallet"><b>◈ '+S.gold+' GOLD</b><span>VICTORY +'+r.earn+' GOLD</span></div>';
+  if(r.stage==='choose'){
+    h+='<p class="osub">Choose one of two routes. The other path closes. Recovery Camps are rare (10% of maps).</p><div class="route-map"><div class="route-start">✓ CHAPTER '+S.chapter+' CLEARED</div><div class="route-branch"></div><div class="route-choices">';
+    r.choices.forEach(function(k){var d=ROUTES[k];h+=routeBtn('choose',k,0,'<i>'+d.icon+'</i><b>'+d.name+'</b><span>'+d.desc+'</span>');});
+    h+='</div><div class="route-merge"></div><div class="route-start next">CHAPTER '+(S.chapter+1)+' →</div></div><div class="route-all">POSSIBLE DESTINATIONS: '+Object.keys(ROUTES).map(function(k){return ROUTES[k].icon+' '+ROUTES[k].name;}).join(' · ')+'</div>';
+  }else{var d=ROUTES[r.node];h+='<h3 class="route-title">'+d.icon+' '+d.name+'</h3><p class="osub">'+d.desc+'</p>';
+    if(r.node==='wheel'){h+='<div class="fortune-wheel-wrap"><div class="fortune-wheel'+(r.stage==='result'?' landed':'')+'" style="--spin:'+(360*4-([27,63,162,279,315,342][r.roll]||27))+'deg"><span>◆</span></div></div><div class="wheel-key"><span style="color:#e77a86">15% Lose gold</span> · <span style="color:#b29af5">5% Permanent stat</span><br><span style="color:#ffd166">50% Win gold</span> · <span style="color:#54f0c8">15% Win item</span><br><span style="color:#8fbcf3">5% Lose item</span> · <span style="color:#a9bfd4">10% Nothing</span></div>';}
+    if(r.message)h+='<p class="route-result">'+esc(r.message)+'</p>';
+    if(r.stage==='result')h+=routeBtn('next','',0,'<b>CONTINUE TO CHAPTER '+(S.chapter+1)+'</b>');
+    else if(r.node==='wheel')h+=routeBtn('spin','',0,'<b>SPIN THE WHEEL</b>');
+    else if(r.node==='chest')h+='<div class="route-chest">▣</div>'+routeBtn('open','',0,'<b>OPEN CHEST</b><span>65% gold / 20% item / 15% empty</span>');
+    else if(r.node==='shop'){r.stock.forEach(function(it,i){h+='<div class="route-item rarity-card" style="--rarity:'+itemRarity(it).color+'"><div class="item-top"><i class="item-icon">'+(ITEM_ICONS[it.s]||'◆')+'</i><b>'+itemLabel(it)+'</b></div><span>'+it.price+' gold'+(it.sold?' · SOLD':'')+'</span><div class="route-buy">';if(!it.sold)allies('ply').forEach(function(u){h+=routeBtn('buy',i,u.id,esc(u.name),S.gold<it.price);});h+='</div></div>';});h+=routeBtn('next','',0,'<b>LEAVE SHOP</b>');}
+    else if(r.node==='forge'){allies('ply').forEach(function(u){var lv=u.forgeLv||0,c=35+lv*20;h+=routeBtn('forge','',u.id,'<b>'+esc(u.name)+' · '+lv+'/3</b><span>'+(lv>=3?'MAX LEVEL':c+' gold · +1 might / +3% all growth')+'</span>',lv>=3||S.gold<c);});h+=routeBtn('next','',0,'<b>LEAVE FORGE</b>');}
+    else if(r.node==='shrine'){h+=routeBtn('bless','power',0,'<b>POWER</b><span>+2 attack</span>')+routeBtn('bless','guard',0,'<b>GUARD</b><span>+2 DEF and RES</span>')+routeBtn('bless','focus',0,'<b>FOCUS</b><span>+15 hit / +10 avoid</span>');}
+    else if(r.node==='camp'){h+=routeBtn('camp','heal',0,'<b>REST</b><span>Full heal +2 repair kits</span>')+routeBtn('camp','revive',0,'<b>RESCUE FALLEN ALLY</b>',!S.dead.length||allies('ply').length>=SQUAD_CAP)+routeBtn('camp','recruit',0,'<b>RECRUIT RANDOM OPERATIVE</b>',allies('ply').length>=SQUAD_CAP||!ALLCHARS.some(function(d){return !allies('ply').some(function(u){return u.key===d.key;});}));}
+  }
+  var inventory=[];allies('ply').forEach(function(u){(u.items||[]).forEach(function(it){inventory.push(esc(u.name)+' · '+itemLabel(it));});});
+  if(r.node==='wheel'||r.node==='chest'||r.node==='shop')h+=itemOdds();
+  h+='<details class="route-inventory"><summary>GROWTH INVENTORY ('+inventory.length+')</summary><p>'+(inventory.join('<br>')||'No items yet.')+'</p></details>';return h;
+}
+
 /* ================= CHAPTER CLEAR / REWARDS ================= */
 function chapterClear() {
   S.screen = 'clear';
   S.best = Math.max(S.best, S.chapter);
   say('Chapter ' + S.chapter + ' cleared.');
-  rollRewards();
+  S.shrine=null; S.rewards=null; beginRoute();
   saveGame();
   netSync();
   if (typeof refreshUI === 'function') refreshUI();
@@ -1583,7 +1726,7 @@ function newRun(keys) {
   if (!keys || !keys.length) keys = ROSTER.map(function (r) { return r.key; });
   S.units = []; S.dead = []; S.uid = 1; S.chapter = 1; S.kits = 3; S.log = []; S.levelups = [];
   S.bags = []; S.resumeLayout = null;
-  S.squadSize = keys.length;
+  resetRoute(); S.squadSize = keys.length;
   for (var i = 0; i < keys.length; i++) {
     var def = charByKey(keys[i]);
     if (def) S.units.push(mkUnit(def, 'ply', 1, {}));
@@ -1599,9 +1742,9 @@ function saveGame() {
   try {
     var data = {
       v: 3, chapter: S.chapter, kits: S.kits, best: S.best, dead: S.dead, uid: S.uid, squadSize: S.squadSize,
-      bags: S.bags, layout: S.layout,
+      bags: S.bags, layout: S.layout, gold:S.gold, route:S.route, shrine:S.shrine, screen:S.screen, levelups:S.levelups, terrain:S.terrain, site:S.site, obj:S.obj, turn:S.turn, objTurns:S.objTurns,
       units: allies('ply').map(function (u) {
-        return { key: u.key, lvl: u.lvl, exp: u.exp, over: u.over || 0, stats: u.stats, grow: u.grow, chp: u.chp,
+        return { id:u.id, x:u.x, y:u.y, items:u.items||[], forgeLv:u.forgeLv||0, key: u.key, lvl: u.lvl, exp: u.exp, over: u.over || 0, stats: u.stats, grow: u.grow, chp: u.chp,
           wpn: u.wpn.id, plus: u.wpn.plus, promoted: u.promoted, cls: u.cls, mov: u.mov };
       })
     };
@@ -1621,12 +1764,14 @@ function loadGame() {
     var all = ALLCHARS;
     S.units = []; S.uid = d.uid || 1; S.chapter = d.chapter || 1; S.kits = d.kits || 0;
     S.dead = d.dead || []; S.best = Math.max(S.best, d.best || 1); S.squadSize = d.squadSize || d.units.length;
+    S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null;
     S.bags = d.bags || []; S.resumeLayout = (typeof d.layout === 'number') ? d.layout : null;
     for (var i = 0; i < d.units.length; i++) {
       var s = d.units[i];
       var def = all.filter(function (x) { return x.key === s.key; })[0];
       if (!def) continue;
       var u = mkUnit(def, 'ply', 1, { plus: s.plus || 0 });
+      if(s.id)u.id=s.id; u.items=s.items||[];u.forgeLv=s.forgeLv||0;u.x=u.px=s.x||0;u.y=u.py=s.y||0;
       u.lvl = s.lvl; u.exp = s.exp; u.over = s.over || 0; u.promoted = !!s.promoted;
       u.cls = s.cls || u.cls; u.mov = s.mov || u.mov;
       for (var j = 0; j < STATK.length; j++) { u.stats[STATK[j]] = s.stats[STATK[j]]; u.grow[STATK[j]] = s.grow[STATK[j]]; }
@@ -1634,8 +1779,8 @@ function loadGame() {
       S.units.push(u);
     }
     if (!S.units.length) return false;
-    S.levelups = [];
-    startChapter();
+    S.levelups = d.levelups||[];
+    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.grid=buildGrid(d.terrain,d.layout);S.site=d.site;S.obj=d.obj;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
     return true;
   } catch (e) { return false; }
 }
@@ -1645,21 +1790,49 @@ var cv, ctx, sprCache = {}, bgCanvas = null, bgCh = -1, bgLayout = -1;
 
 function px(c, x, y, w, h, col) { c.fillStyle = col; c.fillRect(x * SC, y * SC, w * SC, h * SC); }
 
+function tintPart(hex,n) {
+  var h=parseInt(hex.slice(1),16), r=(h>>16)&255,g=(h>>8)&255,b=h&255;
+  function f(v){return Math.round(n>=0?v+(255-v)*n:v*(1+n));}
+  return 'rgb('+f(r)+','+f(g)+','+f(b)+')';
+}
 function getSpr(spr, pal) {
   var key = spr + '|' + pal;
   if (sprCache[key]) return sprCache[key];
   var cnv = document.createElement('canvas');
   cnv.width = TILE * SC; cnv.height = TILE * SC;
   var c = cnv.getContext('2d');
-  var rows = SPR[spr], p = PALS[pal] || PALS.foe;
+  var rows = Object.prototype.hasOwnProperty.call(SPR,spr)?SPR[spr]:SPR.grunt, p = paletteOf(pal);
+  var light={},dark={},glint={};
+  Object.keys(p).forEach(function(k){light[k]=tintPart(p[k],.26);dark[k]=tintPart(p[k],-.29);glint[k]=tintPart(p[k],.58);});
+  function at(x,y){return rows[y]&&rows[y][x]||'.';}
+  function dot(x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h);}
   for (var r = 0; r < rows.length; r++) {
     for (var q = 0; q < rows[r].length; q++) {
       var ch = rows[r][q];
       if (ch === '.') continue;
       var col = p[ch]; if (!col) continue;
-      c.fillStyle = col; c.fillRect(q * SC, r * SC, SC, SC);
+      var x=q*SC,y=r*SC;
+      dot(x,y,SC,SC,col);
+      if (spr==='crown' || ch==='K' || SC<3) continue;
+      var top=at(q,r-1),left=at(q-1,r),bottom=at(q,r+1),right=at(q+1,r);
+      /* Metallic bevels follow the silhouette instead of repeating a checkerboard. */
+      if(top!==ch) dot(x,y,SC,1,light[ch]);
+      if(left!==ch) dot(x,y+1,1,SC-1,light[ch]);
+      if(bottom!==ch) dot(x,y+SC-1,SC,1,dark[ch]);
+      if(right!==ch) dot(x+SC-1,y+1,1,SC-1,dark[ch]);
+      if(ch==='V'||ch==='G'||ch==='H') {
+        if(top!==ch) dot(x,y,SC,1,glint[ch]);
+        if(ch==='H') dot(x+1,y+1,1,1,glint[ch]);
+      }
+      /* Rivets, armour grooves, and etched weapon sections. */
+      if((ch==='A'||ch==='C') && (r===7||r===11) && (q===4||q===11)) dot(x+1,y+1,1,1,glint[ch]);
+      if((ch==='A'||ch==='B') && r===10 && top===ch && bottom===ch) dot(x,y+SC-1,SC,1,dark[ch]);
+      if(ch==='W' && r%3===1 && top===ch) dot(x,y,SC,1,dark[ch]);
+      if(ch==='S' && r>=5 && q%3===0) dot(x+1,y+SC-1,1,1,dark[ch]);
     }
   }
+  /* Cap cache size: dragging color pickers must not accumulate endless canvases. */
+  if(Object.keys(sprCache).length>=192) sprCache={};
   sprCache[key] = cnv;
   return cnv;
 }
@@ -1894,7 +2067,7 @@ function draw() {
     ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.3, TP * 0.12, 0, 0, 6.3); ctx.fill();
     /* yours, a team mate's, or the enemy: three different rings */
     var ally = u.side === 'ply';
-    ctx.strokeStyle = isMine(u) ? 'rgba(125,249,255,0.8)'
+    ctx.strokeStyle = onlineOwnerHP(u) ? ownerHpInfo(u.owner).color : isMine(u) ? 'rgba(125,249,255,0.8)'
       : (ally ? 'rgba(84,240,200,0.6)' : (u.boss ? 'rgba(255,224,102,0.9)' : 'rgba(255,90,90,0.7)'));
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.32, TP * 0.14, 0, 0, 6.3); ctx.stroke();
@@ -1913,8 +2086,7 @@ function draw() {
     /* hp bar */
     var bw = TP - 14, frac = u.chp / u.stats.hp;
     ctx.fillStyle = '#05080d'; ctx.fillRect(ux + 7, uy + TP - 5, bw, 5);
-    ctx.fillStyle = ally ? (frac > 0.5 ? '#54f0c8' : frac > 0.25 ? '#ffd166' : '#ff5a5a')
-      : (u.boss ? '#ffb24a' : '#ff5a5a');
+    ctx.fillStyle = unitHpColor(u, frac, true);
     ctx.fillRect(ux + 8, uy + TP - 4, Math.max(0, (bw - 2) * frac), 3);
     if (u.traits.length) { ctx.fillStyle = '#ff8a3a'; ctx.fillRect(ux + TP - 10, uy + 2, 5, 5); }
   }
@@ -1936,7 +2108,7 @@ function draw() {
       ctx.globalAlpha = 1;
     } else if (f.k === 'boom') {
       ctx.globalAlpha = 1 - pr;
-      var pp = PALS[f.pal] || PALS.foe;
+      var pp = paletteOf(f.pal);
       for (var b = 0; b < 8; b++) {
         var ang = b * 0.785, rr = pr * 40;
         ctx.fillStyle = b % 2 ? pp.V : pp.A;
@@ -1982,7 +2154,7 @@ var NET = {
   mode: null,        /* null | 'create' | 'join' | 'local' */
   transport: null,   /* 'room' on the hosted artifact, 'p2p' anywhere else */
   isCreator: false, p2pLoading: false, p2pQueue: [], peer: null,
-  local: false, localStep: 0, copied: ''
+  local: false, localStep: 0, copied: '', ownerColors: null
 };
 var PER_PLAYER = 4, SQUAD_CAP = 8;
 
@@ -1995,6 +2167,61 @@ function roomCode() {
   var a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', o = '';
   for (var i = 0; i < 4; i++) o += a.charAt(Math.floor(rnd() * a.length));
   return o;
+}
+/* Online ownership colors: host assigns a stable slot and broadcasts it. */
+var OWNER_HP_PALETTE = ['#54d9ff','#54f0a0','#b38aff','#ffd166','#ff9e42','#f78ed8','#b8e85c','#a9baff'];
+function ownerSlotColor(slot) {
+  return OWNER_HP_PALETTE[slot] || 'hsl(' + ((slot * 137.508) % 360).toFixed(1) + ',85%,72%)';
+}
+function readOwnerColors(raw) {
+  var map = Object.create(null);
+  if (!raw || typeof raw !== 'object') return map;
+  Object.keys(raw).forEach(function (id) {
+    var p = raw[id];
+    if (p && Number.isInteger(p.slot) && p.slot >= 0 && p.slot < 10000)
+      map[id] = {slot:p.slot, name:String(p.name || 'PLAYER').slice(0, 40)};
+  });
+  return map;
+}
+function assignOwnerColors(previous) {
+  var map = readOwnerColors(previous), used = Object.create(null), host = String(netHostId());
+  Object.keys(map).forEach(function (id) { used[map[id].slot] = true; });
+  allPlayers().slice().sort(function (a,b) {
+    return a.id === b.id ? 0 : a.id === host ? -1 : b.id === host ? 1 : a.id < b.id ? -1 : 1;
+  }).forEach(function (p) {
+    if (!map[p.id]) {
+      var slot = 0; while (used[slot]) slot++;
+      map[p.id] = {slot:slot, name:p.name}; used[slot] = true;
+    } else map[p.id].name = p.name;
+  });
+  return map;
+}
+function ownerHpInfo(id) {
+  var map = NET.ownerColors || assignOwnerColors(null), p = map[String(id)];
+  return p ? {color:ownerSlotColor(p.slot), name:p.name} : {color:'#b0bac7',name:ownerName(id)};
+}
+function onlineOwnerHP(u) { return netOnline() && !NET.local && u.side === 'ply' && !!u.owner; }
+function unitHpColor(u, f, mapView) {
+  if (onlineOwnerHP(u)) return ownerHpInfo(u.owner).color;
+  if (u.side !== 'ply' && (mapView || (netOnline() && !NET.local))) return u.boss ? '#ffb24a' : '#ff5a5a';
+  return hpCol(f);
+}
+function ownerHpLegend() {
+  if (!netOnline() || NET.local) return '';
+  var map = NET.ownerColors || assignOwnerColors(null);
+  var ids = Object.keys(map).filter(function(id) {
+    return S.units.some(function(u) { return u.side === 'ply' && String(u.owner) === id; }) ||
+      S.dead.some(function(u) { return String(u.owner) === id; });
+  }).sort(function(a,b) { return map[a].slot - map[b].slot; });
+  return '<div class="owner-legend" aria-label="Player health bar colors">' + ids.map(function(id) {
+    var p = ownerHpInfo(id);
+    return '<span style="color:' + p.color + '"><b>● ' + esc(p.name) + (id === String(NET.id) ? ' (YOU)' : '') + '</b></span>';
+  }).join('') + '</div>';
+}
+function onOwnerColors(msg) {
+  var d = msg && msg.data ? msg.data : msg;
+  if (NET.local || NET.host || !d || String(d.host) !== String(netHostId()) || NET.phase !== 'lobby') return;
+  NET.ownerColors = readOwnerColors(d.colors); refreshUI();
 }
 function netOnline() { return NET.phase === 'match' || NET.phase === 'done'; }
 function turnSideNow() { return S.phase === 'player' ? 'ply' : 'foe'; }
@@ -2089,11 +2316,14 @@ function p2pLoad(cb) {
 /* an adapter with the same shape as the room capability, so the rest of the
    game does not care which one it is talking over */
 function p2pSub(peer, isCreator) {
-  var handlers = {}, peerCbs = [], conns = [], presences = {}, mine = null;
+  var handlers = {}, peerCbs = [], conns = [], presences = Object.create(null), mine = null, hostRoster = null;
   function firePeers() {
     var list = [];
     if (mine) list.push(mine);
-    for (var k in presences) list.push(presences[k]);
+    if (!isCreator && hostRoster) {
+      hostRoster.forEach(function(p) { if (p && p.id && (!mine || p.id !== mine.id)) list.push(p); });
+    } else { for (var k in presences) list.push(presences[k]); }
+    if (isCreator) conns.forEach(function(conn) { try { conn.send({tp:'__roster',dt:list}); } catch(e) {} });
     for (var i = 0; i < peerCbs.length; i++) { try { peerCbs[i](list); } catch (e) { } }
   }
   function dispatch(topic, data) {
@@ -2110,6 +2340,10 @@ function p2pSub(peer, isCreator) {
     });
     conn.on('data', function (msg) {
       if (!msg || !msg.tp) return;
+      if (msg.tp === '__roster') {
+        if (!isCreator && Array.isArray(msg.dt)) { hostRoster = msg.dt; firePeers(); }
+        return;
+      }
       if (msg.tp === '__pres') {
         if (msg.dt && msg.dt.id) { presences[msg.dt.id] = msg.dt; conn.__pid = msg.dt.id; firePeers(); }
         return;
@@ -2119,6 +2353,7 @@ function p2pSub(peer, isCreator) {
     var drop = function () {
       for (var i = conns.length - 1; i >= 0; i--) if (conns[i] === conn) conns.splice(i, 1);
       if (conn.__pid) delete presences[conn.__pid];
+      if (!isCreator) hostRoster = null;
       firePeers();
       NET.err = 'Your opponent disconnected.';
       if (typeof refreshUI === 'function') refreshUI();
@@ -2232,12 +2467,13 @@ function netAttach(sub) {
   {
     NET.sub = sub;
     NET.phase = 'lobby';
-    NET.lobby = {};
+    NET.lobby = {}; NET.ownerColors = null;
     /* no default picks: in a shared squad they would collide with everyone else */
     try {
       sub.on('state', onNetState);
       sub.on('act', onNetAct);
       sub.on('hello', onNetHello);
+      sub.on('ownerColors', onOwnerColors);
       sub.onPeers(onNetPeers);
     } catch (e) { }
     netPresence();
@@ -2249,7 +2485,7 @@ function netAttach(sub) {
 
 function netLeave() {
   try { if (NET.sub && NET.sub.leave) NET.sub.leave(); } catch (e) { }
-  NET.sub = null; NET.phase = 'idle'; NET.peers = []; NET.lobby = {};
+  NET.sub = null; NET.phase = 'idle'; NET.peers = []; NET.lobby = {}; NET.ownerColors = null;
   NET.side = null; NET.host = false; NET.pending = false; NET.started = false;
   NET.local = false; NET.mode = null; NET.localStep = 1; NET.copied = '';
   NET.isCreator = false; NET.peer = null;
@@ -2294,6 +2530,10 @@ function onNetPeers(list) {
   for (var i = 0; i < NET.peers.length; i++) if (NET.peers[i].id === NET.id) me = true;
   if (!me) NET.peers.push({ id: NET.id, name: NET.name, ready: !!NET.ready, keys: NET.keys, you: true });
   NET.host = (NET.transport === 'p2p') ? !!NET.isCreator : (netHostId() === NET.id);
+  if (NET.host && NET.phase === 'lobby' && !NET.local) {
+    NET.ownerColors = assignOwnerColors(NET.ownerColors);
+    netEmit('ownerColors', {host:NET.id, colors:NET.ownerColors});
+  }
   if (typeof refreshUI === 'function') refreshUI();
 }
 function netHostId() {
@@ -2317,7 +2557,7 @@ function onNetHello() { if (NET.host && NET.phase === 'match') netBroadcast(); e
 function allPlayers() {
   if (NET.local) return NET.localPlayers;
   return NET.peers.map(function (p) {
-    return { id: String(p.id), name: p.name || 'PLAYER', keys: p.keys || [], looks: p.looks || {}, ready: !!p.ready };
+    var mine=String(p.id)===String(NET.id); return { id: String(p.id), name: p.name || 'PLAYER', keys: mine?NET.keys:(p.keys || []), looks: mine?netLooks(NET.keys):(p.looks || {}), ready: mine?!!NET.ready:!!p.ready };
   });
 }
 function takenBy(key) {
@@ -2373,7 +2613,7 @@ function buildSquad(players) {
       if (total >= SQUAD_CAP) break;
       var def = charByKey(ks[j]);
       if (!def) continue;
-      var look = (p.looks && p.looks[ks[j]]) || lookOf(ks[j], def);
+      var look = (p.looks && p.looks[ks[j]]) || ((NET.local || String(p.id)===String(NET.id)) ? lookOf(ks[j],def) : def);
       var u = mkUnit(def, 'ply', 1, { fair: true, look: look });
       u.owner = String(p.id);
       S.units.push(u);
@@ -2389,7 +2629,8 @@ function netStartRun() {
   var players = allPlayers().filter(function (p) { return (p.keys || []).length; });
   if (!players.length) { NET.err = 'Nobody has picked an operative yet.'; refreshUI(); return; }
   S.dead = []; S.kits = 3; S.log = []; S.levelups = []; S.bags = []; S.resumeLayout = null;
-  S.chapter = 1; S.gameover = false; S.rewards = null;
+  resetRoute(); S.chapter = 1; S.gameover = false; S.rewards = null;
+  if (!NET.local) NET.ownerColors = assignOwnerColors(NET.ownerColors);
   buildSquad(players);
   NET.phase = 'match';
   NET.started = true;
@@ -2404,15 +2645,15 @@ function netStartRun() {
 /* ---------------- wire format ---------------- */
 function wireUnit(u) {
   return { i: u.id, k: u.key, s: u.side, o: u.owner || '', x: u.x, y: u.y,
-    hp: u.chp, mx: u.stats.hp, st: u.stats, gr: u.grow, lv: u.lvl, ex: u.exp || 0,
+    it:u.items||[], fl:u.forgeLv||0, hp: u.chp, mx: u.stats.hp, st: u.stats, gr: u.grow, lv: u.lvl, ex: u.exp || 0,
     cl: u.cls, w: u.wpn.id, wp: u.wpn.plus || 0, a: u.acted ? 1 : 0,
     n: u.name, p: u.pal, sp: u.spr, mv: u.mov, tr: u.traits || [],
     bs: u.boss ? 1 : 0, mk: u.mark || 0, pm: u.promoted ? 1 : 0 };
 }
 function unitFromWire(r) {
   var u = { id: r.i, key: r.k, side: r.s, owner: r.o || '', x: r.x, y: r.y, px: r.x, py: r.y,
-    chp: r.hp, stats: {}, grow: {}, lvl: r.lv, exp: r.ex || 0, cls: r.cl,
-    acted: !!r.a, name: r.n, pal: r.p, spr: r.sp, mov: r.mv,
+    items:r.it||[], forgeLv:r.fl||0, chp: r.hp, stats: {}, grow: {}, lvl: r.lv, exp: r.ex || 0, cls: r.cl,
+    acted: !!r.a, name: cleanName(r.n)||'OPERATIVE', pal: validPal(r.p)?r.p:(r.s==='ply'?'vex':'foe'), spr: Object.prototype.hasOwnProperty.call(SPR,r.sp)?r.sp:'grunt', mov: r.mv,
     traits: r.tr || [], boss: !!r.bs, mark: r.mk || 0, promoted: !!r.pm,
     flash: 0, wpn: mkWpn(r.w, r.wp || 0), ai: 'hunt', promo: null };
   for (var k in r.st) u.stats[k] = r.st[k];
@@ -2422,9 +2663,9 @@ function unitFromWire(r) {
 }
 function netState() {
   return {
-    host: NET.id, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
+    host: NET.id, ownerColors: NET.ownerColors, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
     tn: S.turn, ph: S.phase, t: S.terrain, l: S.layout, kt: S.kits,
-    sc: S.screen, rw: S.rewards, lu: S.levelups, dd: S.dead,
+    gold:S.gold, route:S.route, shrine:S.shrine, sc: S.screen, rw: S.rewards, lu: S.levelups, dd: S.dead,
     sq: S.squadSize, lg: S.log.slice(0, 6),
     u: S.units.filter(function (x) { return x.chp > 0; }).map(wireUnit)
   };
@@ -2445,10 +2686,13 @@ function onNetState(msg) {
   applyNetState(d);
 }
 function applyNetState(d) {
+  if (d.ownerColors) NET.ownerColors = readOwnerColors(d.ownerColors);
   if (NET.phase === 'lobby' || NET.phase === 'joining') {
+    S.skinKey=null;
     NET.phase = 'match'; NET.started = true;
     S.banner = 'CHAPTER ' + d.ch; S.bannerT = 1.4;
   }
+  var inspectedId = S.screen === 'map' && d.sc === 'map' && S.chapter === d.ch && S.inspect ? S.inspect.id : null;
   var prev = {}, i;
   for (i = 0; i < S.units.length; i++) prev[S.units[i].id] = { hp: S.units[i].chp, x: S.units[i].x, y: S.units[i].y };
   if (S.terrain !== d.t || S.layout !== d.l || !S.grid) {
@@ -2468,8 +2712,10 @@ function applyNetState(d) {
     if (old.chp > 0 && !seen[old.id]) fxBoom(old);
   }
   S.units = list;
+  S.inspect = inspectedId === null ? null : list.filter(function(u) { return u.id === inspectedId; })[0] || null;
   S.chapter = d.ch; S.site = d.site; S.obj = d.ob; S.objTurns = d.ot;
   S.turn = d.tn; S.phase = d.ph; S.kits = d.kt; S.squadSize = d.sq;
+  S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null;
   S.rewards = d.rw || null; S.levelups = d.lu || []; S.dead = d.dd || [];
   if (d.lg) S.log = d.lg;
   S.screen = d.sc || 'map';
@@ -2500,6 +2746,10 @@ function netApply(intent, who) {
   if (!netOnline()) return;
   if (intent.t === 'resync') { netSync(); return; }
 
+  if (intent.t === 'route') {
+    if(NET.local||String(who)===String(NET.id)||allPlayers().some(function(p){return String(p.id)===String(who);}))routeAction(intent.cmd,intent.arg,intent.id,intent.rev,intent.ch,who);
+    netSync();return;
+  }
   if (intent.t === 'reward') {
     if (S.screen !== 'clear' || !S.rewards) { netSync(); return; }
     var ri = intent.i | 0;
@@ -2630,11 +2880,11 @@ function bar(frac, col) {
 function hpCol(f) { return f > 0.5 ? '#54f0c8' : f > 0.25 ? '#ffd166' : '#ff5a5a'; }
 
 function statGrid(u) {
-  var h = '<div class="sgrid">';
+  var h = '<div class="stat-sheet-label"><b>STAT SHEET</b><strong>GROWTH % / LEVEL</strong></div><div class="sgrid">';
   for (var i = 0; i < STATK.length; i++) {
     var k = STATK[i];
     h += '<div class="sc"><b>' + STATN[k] + '</b><span>' + (k === 'hp' ? u.chp + '/' + u.stats.hp : u.stats[k]) +
-      '</span><em>' + u.grow[k] + '%</em></div>';
+      '</span><small class="grow-label">GROWTH</small><em>' + (typeof u.grow[k] === 'number' ? u.grow[k] + '%' : '&mdash;') + '</em></div>';
   }
   return h + '</div>';
 }
@@ -2643,15 +2893,15 @@ function unitCard(u, extra) {
   var f = u.chp / u.stats.hp;
   var tr = u.traits.map(function (t) { return '<span class="tag">' + TRAITS[t].name + '</span>'; }).join('');
   return '<div class="ucard">' +
-    '<div class="uhead"><span class="unm">' + esc(u.name) + '</span>' +
+    '<div class="uhead"><span class="unm">' + (onlineOwnerHP(u) ? '<span style="color:' + ownerHpInfo(u.owner).color + '">[' + esc(ownerHpInfo(u.owner).name) + (isMine(u) ? ' / YOU' : '') + '] </span>' : '') + esc(u.name) + '</span>' +
     '<span class="ucls">' + (u.side === 'ply' ? esc(u.cls) : (u.boss ? 'COMMANDER' : 'HOSTILE')) +
     ' &middot; LV ' + u.lvl + (u.mark ? ' &middot; MK-' + roman(u.mark + 1) : '') +
     (u.side === 'ply' ? ' &middot; ' + (atMax(u) ? 'MAX' : u.exp + '/100 XP') : '') + '</span></div>' +
-    '<div class="urow">' + bar(f, hpCol(f)) + '<span class="hpn">' + u.chp + '/' + u.stats.hp + '</span></div>' +
+    '<div class="urow">' + bar(f, unitHpColor(u, f, false)) + '<span class="hpn">' + u.chp + '/' + u.stats.hp + '</span></div>' +
     '<div class="urow small">' + esc(wpnLabel(u.wpn)) + ' &middot; MT ' + u.wpn.mt + ' &middot; RNG ' + u.wpn.rmin + '-' + wRange(u) +
     ' &middot; ' + (u.wpn.mag ? 'MAG' : 'PHYS') + ' &middot; MOV ' + u.mov + '</div>' +
     (tr ? '<div class="urow">' + tr + '</div>' : '') +
-    statGrid(u) + (extra || '') + '</div>';
+    (u.side==='ply'?'<div class="urow small">FORGE LV '+(u.forgeLv||0)+'/3 · GROWTH ITEMS '+(u.items||[]).length+'</div>':'') + statGrid(u) + (extra || '') + '</div>';
 }
 
 /* ================= FORECAST CARD ================= */
@@ -2683,7 +2933,7 @@ function refreshUI() {
   $('game-screen').style.display = inGame ? 'flex' : 'none';
   $('overlay').style.display = (S.screen === 'clear' || S.screen === 'over' || S.screen === 'help' || S.skinKey) ? 'flex' : 'none';
 
-  if (S.skinKey) { renderSkin(); return; }
+  if (S.skinKey) { if(S.screen!=='squad'&&S.screen!=='net'){S.skinKey=null;} else {if(!$('overlay').querySelector('.skinbox[data-skin="'+S.skinKey+'"]')) renderSkin(); return;} }
   if (S.screen === 'title') { renderTitle(); return; }
   if (S.screen === 'squad') { renderSquad(); return; }
   if (S.screen === 'net') { renderNet(); return; }
@@ -2699,13 +2949,17 @@ function refreshUI() {
     '<div class="hmid"><b>' + objTxt + '</b><span>' + (OBJS[S.obj] ? OBJS[S.obj].desc : '') + '</span></div>' +
     '<div class="hright">' +
     '<span class="pill ' + (S.phase === 'player' ? 'ply' : 'foe') + '">' + (S.phase === 'player' ? 'YOUR TURN' : 'ENEMY') + ' &middot; T' + S.turn + '</span>' +
+    '<span class="pill" style="color:#ffd166">GOLD ' + S.gold + '</span>' +
+    (S.shrine && S.shrine.ch===S.chapter ? '<span class="pill" style="color:#54f0c8">SHRINE '+S.shrine.kind.toUpperCase()+'</span>' : '') +
     '<span class="pill">HOSTILES ' + foes + '</span>' +
+    '<span class="pill" title="Enemy scaling uses original deployed squad size">START SQUAD ' + startingSquadSize() + '</span>' +
     (netOnline() ? '<span class="pill' + (canAct() ? ' ply' : '') + '">' +
       (NET.local ? esc(ownerName(activeOwner())) : squadOwners().length + ' PLAYERS') + '</span>' : '') +
     '<button class="mini" data-act="danger">' + (S.danger ? 'ZONE ON' : 'ZONE OFF') + '</button>' +
     netEndButton() +
     '</div>';
 
+  $('owner-legend').innerHTML = ownerHpLegend();
   /* panel */
   var h = '';
   var top = coopPanelTop();
@@ -2758,8 +3012,8 @@ function rosterStrip() {
   for (var i = 0; i < ps.length; i++) {
     var p = ps[i], fr = p.chp / p.stats.hp;
     rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
-      '<span class="rnm">' + esc(p.name) + '</span>' +
-      '<span class="rlv">L' + p.lvl + '</span>' + bar(fr, hpCol(fr)) + '</button>';
+      '<span class="rnm"' + (onlineOwnerHP(p) ? ' style="color:' + ownerHpInfo(p.owner).color + '"' : '') + '>' + esc(p.name) + '</span>' +
+      '<span class="rlv">L' + p.lvl + '</span>' + bar(fr, unitHpColor(p, fr, false)) + '</button>';
   }
   return rh;
 }
@@ -2884,7 +3138,7 @@ function renderSquad() {
     var lk = lookOf(r.key, r), on = !!S.pick[r.key];
     var w = WPN[r.wpn];
     var cells = STATK.map(function (k) {
-      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + r.base[k] + '</span><em>' + r.grow[k] + '%</em></div>';
+      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + r.base[k] + '</span><small class="grow-label">GROWTH</small><em>' + r.grow[k] + '%</em></div>';
     }).join('');
     return '<div class="sqc' + (on ? ' on' : '') + '">' +
       '<div class="sqtop">' +
@@ -2903,7 +3157,7 @@ function renderSquad() {
     '<div class="sqbox">' +
     '<div class="sqhead"><h2>SELECT SQUAD</h2>' +
     '<p class="osub">Choose one to ' + MAXSQUAD + ' operatives. A smaller squad faces fewer hostiles ' +
-    'but has fewer bodies and levels faster. Appearance is yours to set and sticks between runs.</p></div>' +
+    'but has fewer bodies and levels faster. Chapter 1 starts with one more hostile than your squad size. Appearance is yours to set and sticks between runs.</p></div>' +
     '<div class="sqgrid">' + cards + '</div>' +
     '<div class="sqbar"><span class="sqcount">SQUAD <b>' + chosen.length + '</b> / ' + MAXSQUAD + '</span>' +
     '<button class="ghost" data-act="totitle">BACK</button>' +
@@ -2919,8 +3173,9 @@ function coopCards(mineKeys, actName) {
     var owner = takenBy(r.key);
     var mine = mineKeys.indexOf(r.key) >= 0;
     var other = owner && !mine;
+    if(other && owner.looks && owner.looks[r.key]) lk=safeLook(owner.looks[r.key],r);
     var cells = STATK.map(function (k) {
-      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + r.base[k] + '</span><em>' + r.grow[k] + '%</em></div>';
+      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + r.base[k] + '</span><small class="grow-label">GROWTH</small><em>' + r.grow[k] + '%</em></div>';
     }).join('');
     return '<div class="sqc' + (mine ? ' on' : '') + (other ? ' taken' : '') + '">' +
       '<div class="sqtop"><canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
@@ -2929,9 +3184,9 @@ function coopCards(mineKeys, actName) {
       ' &middot; MOV ' + r.mov + '</i></div></div>' +
       '<div class="tsg">' + cells + '</div>' +
       '<div class="sqbtns">' + (other
-        ? '<button disabled>TAKEN BY ' + esc(owner.name) + '</button>'
+        ? '<button disabled' + (!NET.local ? ' style="color:' + ownerHpInfo(owner.id).color + ';filter:none;opacity:.85"' : '') + '>TAKEN BY ' + esc(owner.name) + '</button>'
         : '<button class="' + (mine ? '' : 'ghost') + '" data-act="' + actName + '" data-key="' + r.key + '">' +
-          (mine ? 'YOURS' : 'PICK') + '</button>') +
+          (mine ? 'YOURS' : 'PICK') + '</button><button class="ghost" data-act="skin" data-key="' + r.key + '">CUSTOMIZE</button>') +
       '</div></div>';
   }).join('');
 }
@@ -2942,7 +3197,7 @@ function renderNet() {
   if (!NET.mode) {
     h = '<div class="sqbox"><div class="sqhead"><h2>CO-OP</h2>' +
       '<p class="osub">One shared endless run. Everyone picks their own operatives and moves only those. ' +
-      'The machines get harder every chapter, same as solo.</p></div>' +
+      'Enemy counts scale with the total starting squad across all players and increase each chapter.</p></div>' +
       '<div class="vsmenu">' +
       '<button class="vopt" data-act="netmode" data-v="create"><b>CREATE LOBBY</b>' +
       '<span>Start a room and get a code to send your friends.</span></button>' +
@@ -3031,7 +3286,7 @@ function renderNet() {
   var ps = allPlayers();
   var roster = ps.map(function (p) {
     var you = String(p.id) === NET.id;
-    return '<div class="plr' + (you ? ' you' : '') + '"><b>' + esc(p.name || 'PLAYER') + '</b>' +
+    return '<div class="plr' + (you ? ' you' : '') + '" style="border-left:4px solid ' + ownerHpInfo(p.id).color + '"><b style="color:' + ownerHpInfo(p.id).color + '">● ' + esc(p.name || 'PLAYER') + '</b>' +
       '<span>' + (you ? 'YOU' : 'PLAYER') + (netHostId() === String(p.id) ? ' &middot; HOST' : '') + '</span>' +
       '<span class="' + (p.ready ? 'rdy' : 'dim') + '">' + ((p.keys || []).length
         ? (p.ready ? 'READY' : (p.keys.length + ' PICKED')) : 'CHOOSING') + '</span></div>';
@@ -3059,6 +3314,8 @@ function renderSkin() {
   var key = S.skinKey, def = charByKey(key);
   if (!def) { S.skinKey = null; return; }
   var lk = lookOf(key, def);
+  var palette=paletteOf(lk.pal);
+  var channels=COLOR_PARTS.map(function(part){var k=part[0], v=palette[k];return '<label class="partpick"><input type="color" data-part="'+k+'" value="'+v+'" aria-label="'+part[1]+'"><span>'+part[1]+'</span><output data-hex="'+k+'">'+v.toUpperCase()+'</output></label>';}).join('');
   var swatches = SCHEMES.map(function (sc) {
     var p = PALS[sc.id];
     return '<button class="sw' + (lk.pal === sc.id ? ' on' : '') + '" data-act="setpal" data-key="' + key + '" data-v="' + sc.id + '">' +
@@ -3070,14 +3327,15 @@ function renderSkin() {
       '<canvas class="tspr" data-spr="' + c.id + '" data-pal="' + lk.pal + '"></canvas>' +
       '<span>' + c.name + '</span></button>';
   }).join('');
-  $('overlay').innerHTML = '<div class="obox skinbox">' +
-    '<h2>APPEARANCE</h2>' +
+  $('overlay').innerHTML = '<div class="obox skinbox" data-skin="'+key+'">' +
+    '<h2>OPERATIVE CUSTOMIZATION</h2>' +
     '<div class="skprev"><canvas class="tspr big" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
     '<div><b class="skname">' + esc(lk.name) + '</b><span class="dim">' + esc(def.cls) + '</span>' +
     '<p class="dim small">Stats and weapon stay the same whatever they look like.</p></div></div>' +
-    '<label class="sklab">CALLSIGN</label>' +
-    '<input id="skinname" maxlength="11" value="' + esc(lk.name).replace(/"/g, '&quot;') + '" autocomplete="off" spellcheck="false">' +
-    '<label class="sklab">COLOUR</label><div class="swgrid">' + swatches + '</div>' +
+    '<label class="sklab" for="skinname">CHARACTER NAME · UP TO 24 CHARACTERS</label>' +
+    '<input id="skinname" maxlength="24" value="' + esc(lk.name).replace(/"/g, '&quot;') + '" autocomplete="off" spellcheck="false">' +
+    '<label class="sklab">CUSTOM COLOURS · TAP EACH PART TO EDIT</label><div class="partgrid">'+channels+'</div>' +
+    '<label class="sklab">PRESET PALETTES</label><div class="swgrid">' + swatches + '</div>' +
     '<label class="sklab">CHASSIS</label><div class="chgrid">' + frames + '</div>' +
     '<div class="acts"><button data-act="skindone">DONE</button>' +
     '<button class="ghost" data-act="skinreset" data-key="' + key + '">RESET</button></div></div>';
@@ -3096,7 +3354,7 @@ function renderHelp() {
     '<li><b>Levels.</b> Promotion at ' + PROMOLVL + ' (new class, +MOV, bonus stats), hard cap at ' + MAXLVL + '. ' +
     'At the cap, experience becomes OVERDRIVE instead: single stat points, still weighted by growth.</li>' +
     '<li><b>Marks.</b> Once hostiles hit the cap too they come back as MK-II, MK-III and worse. That part never stops.</li>' +
-    '<li><b>Death is permanent</b> unless you pick up a Resurrection reward. Lose everyone and the run ends.</li>' +
+    '<li><b>Death is permanent</b> unless you rescue a fallen ally at a Recovery Camp. Lose everyone and the run ends.</li>' +
     '<li><b>ZONE</b> shades every tile the enemy can reach and hit this turn. Use it.</li>' +
     '<li><b>Tap any empty tile</b> to read what it does.</li>' +
     '<li><b>Co-op.</b> One shared endless run. Everyone picks their own operatives and moves only those; ' +
@@ -3128,6 +3386,7 @@ function renderClear() {
         (l.gains.promo ? '<span class="promo">PROMOTED: ' + esc(l.gains.promo) + '</span>' : '') + '</div>';
     }).join('') + '</div>';
   }
+  if(S.route){$('overlay').innerHTML=h+routeRender()+'</div>';return;}
   h += '<p class="osub">Pick one upgrade. Next chapter is harder.</p><div class="rews">';
   (S.rewards || []).forEach(function (r, i) {
     h += '<button class="rew" data-act="reward" data-i="' + i + '"><b>' + esc(r.t) + '</b><span>' + esc(r.d) + '</span></button>';
@@ -3276,20 +3535,21 @@ function doAction(act, el) {
     if (!keys.length) return;
     S.screen = 'map'; newRun(keys); refreshUI(); return;
   }
-  if (act === 'skin') { S.skinKey = el.getAttribute('data-key'); refreshUI(); return; }
-  if (act === 'skindone') { S.skinKey = null; saveLooks(); refreshUI(); return; }
-  if (act === 'skinreset') { delete LOOKS[el.getAttribute('data-key')]; saveLooks(); refreshUI(); return; }
+  if (act === 'skin') { S.skinKey = el.getAttribute('data-key'); if(S.screen==='net'&&!NET.local&&NET.phase==='lobby'&&NET.ready){NET.ready=false;netPresence();} refreshUI(); return; }
+  if (act === 'skindone') { S.skinKey = null; saveLooks(); if(S.screen==='net'&&!NET.local&&NET.phase==='lobby'){NET.ready=false;netPresence();} refreshUI(); return; }
+  if (act === 'skinreset') { delete LOOKS[el.getAttribute('data-key')]; saveLooks(); renderSkin(); return; }
   if (act === 'setpal' || act === 'setspr') {
     var k = el.getAttribute('data-key'), v = el.getAttribute('data-v');
     if (!LOOKS[k]) LOOKS[k] = {};
     LOOKS[k][act === 'setpal' ? 'pal' : 'spr'] = v;
-    saveLooks(); applyLooks(); refreshUI(); return;
+    saveLooks(); renderSkin(); return;
   }
   if (act === 'new') { S.screen = 'squad'; doAction('tosquad', el); return; }
   if (act === 'continue') { if (!loadGame()) { S.screen = 'squad'; doAction('tosquad', el); return; } refreshUI(); return; }
   if (act === 'help') { S.prevScreen = S.screen; S.screen = 'help'; refreshUI(); return; }
   if (act === 'closehelp') { S.screen = S.prevScreen || 'title'; refreshUI(); return; }
   if (act === 'totitle') { S.screen = 'title'; refreshUI(); return; }
+  if(act==='route'){if(!S.route)return;var it={t:'route',cmd:el.getAttribute('data-cmd'),arg:el.getAttribute('data-v'),id:Number(el.getAttribute('data-id')),rev:S.route.rev,ch:S.route.ch};if(netOnline())netSubmit(it);else routeAction(it.cmd,it.arg,it.id,it.rev,it.ch,'');return;}
   if (act === 'reward') {
     var rIdx = parseInt(el.getAttribute('data-i'), 10);
     if (netOnline()) { netSubmit({ t: 'reward', i: rIdx }); return; }
@@ -3388,16 +3648,29 @@ function boot() {
       el.value = (el.id === 'netname') ? NET.name : NET.code;
       return;
     }
+    if(el && S.skinKey && el.type==='color' && el.hasAttribute('data-part')) {
+      var part=el.getAttribute('data-part'), value=String(el.value||'').toLowerCase(), def=charByKey(S.skinKey);
+      if(!def||!COLOR_PARTS.some(function(p){return p[0]===part;})||!/^#[0-9a-f]{6}$/.test(value))return;
+      var pal=Object.assign({},paletteOf(lookOf(S.skinKey,def).pal));pal[part]=value;
+      if(!LOOKS[S.skinKey])LOOKS[S.skinKey]={};
+      var token=paletteId(pal);LOOKS[S.skinKey].pal=token;saveLooks();
+      var overlay=$('overlay');overlay.querySelectorAll('.tspr').forEach(function(c){c.setAttribute('data-pal',token);});
+      overlay.querySelectorAll('.sw.on').forEach(function(b){b.classList.remove('on');});
+      var out=overlay.querySelector('[data-hex="'+part+'"]');if(out)out.textContent=value.toUpperCase();
+      paintPortraits(overlay);return;
+    }
     if (el && el.id === 'skinname' && S.skinKey) {
-      var v = String(el.value || '').toUpperCase().replace(/[^A-Z0-9 \-]/g, '').slice(0, 11).trim();
+      var raw=String(el.value||'').replace(/[^a-zA-Z0-9 ._'\-]/g,'').slice(0,24);if(el.value!==raw)el.value=raw;
+      var v=cleanName(raw);
       if (!LOOKS[S.skinKey]) LOOKS[S.skinKey] = {};
       if (v) LOOKS[S.skinKey].name = v; else delete LOOKS[S.skinKey].name;
-      saveLooks(); applyLooks();
+      saveLooks();
       var lbl = document.querySelector ? document.querySelector('.skname') : null;
       if (lbl) lbl.textContent = v || (charByKey(S.skinKey) || {}).name || '';
     }
   });
   document.addEventListener('keydown', function (e) {
+    if(S.skinKey || (e.target && /^(INPUT|TEXTAREA|SELECT)$/.test(e.target.tagName))) return;
     if (e.key === 'e' || e.key === 'E') doAction('end');
     if (e.key === 'd' || e.key === 'D') doAction('danger');
     if (e.key === 'Escape') { if (S.mode === 'act' || S.mode === 'target' || S.mode === 'healt') doAction(S.mode === 'act' ? 'cancel' : 'back'); }
@@ -3410,7 +3683,7 @@ if (typeof window !== 'undefined' && !HEADLESS) {
 }
 if (typeof window !== 'undefined') {
   window.__GAME = { S: S, newRun: newRun, aiAct: aiAct, endPlayerPhase: endPlayerPhase, allies: allies,
-    takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
+    routeAction:routeAction, routeChoices:routeChoices, routeItem:routeItem, itemRarity:itemRarity, saveGame:saveGame, loadGame:loadGame, routeRender:routeRender, takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
     foeLevel: foeLevel, foeCount: foeCount, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
     doCombat: doCombat, doHeal: doHeal, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
     canReachTarget: canReachTarget, wRange: wRange, dist: dist, ter: ter, foesOf: foesOf,
@@ -3424,7 +3697,7 @@ if (typeof window !== 'undefined') {
     takenBy: takenBy, squadTotal: squadTotal, allPlayers: allPlayers, lobbyReady: lobbyReady,
     localOwners: localOwners, localAdvance: localAdvance, localEndRound: localEndRound,
     activeOwner: activeOwner, ownerName: ownerName, buildSquad: buildSquad, rosterStrip: rosterStrip,
-    ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS,
+    ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS, paletteOf:paletteOf, paletteId:paletteId, lookOf:lookOf, getSpr:getSpr, netLooks:netLooks, wireUnit:wireUnit, unitFromWire:unitFromWire,
     MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
     LAYOUTS: LAYOUTS, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
     cvRef: function () { return cv; },
