@@ -267,6 +267,43 @@ ul.help b{color:var(--cy)}
 #skinname{text-transform:none}.skinbox .sklab{color:var(--cy)}
 @media(max-width:420px){.skprev canvas.big{width:108px;height:108px}.partgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.partpick{grid-template-columns:32px 1fr;padding:5px;gap:3px 5px}.partpick input{width:32px;height:32px}.skinbox{padding:11px}.skinbox .acts{bottom:-11px}}
 .item-rarity{font-size:9px;font-weight:700;letter-spacing:.08em;display:inline-block;margin-right:3px}.rarity-card{border-color:var(--rarity);border-left-width:3px}.item-top{display:flex;align-items:center;gap:9px;color:#d7e5f2}.item-top b{font-size:11px;line-height:1.5}.item-icon{display:grid;place-items:center;flex:none;width:34px;height:34px;font-style:normal;font-size:23px;color:var(--rarity);background:radial-gradient(circle,#21354a,#0a101a);border:1px solid var(--rarity);border-radius:5px}.item-odds{display:flex;flex-wrap:wrap;gap:5px 10px;margin-top:12px;padding:8px;background:#0a1320;border:1px solid #27425c;border-radius:4px;font-size:9px;line-height:1.5}.item-odds b{width:100%;color:#a9bfd4;font-size:9px}
+/* Keep long promotion/route menus reachable on mobile. */
+#overlay{align-items:safe center}.obox{flex-shrink:0;margin:auto;}
+
+/* Readable battle workspace and inventory */
+#game-screen{max-width:1120px;gap:10px}#app{padding:12px 12px 24px}
+.battle-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(205px,260px);gap:10px;align-items:start;position:relative}
+.battle-main{min-width:0;display:flex;flex-direction:column;gap:10px}
+#inventory-sheet{min-width:0;max-height:70vh;overflow:auto;background:#0c1420;border:1px solid #30465c;border-radius:7px;padding:12px;scrollbar-color:#54758d #0a111b}
+.inv-head{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px}.inv-head h3{font-size:15px;color:#eaf6ff}.inv-head .mini{display:none}
+.inv-summary{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}.inv-summary span{font-size:12px;padding:7px;background:#152237;border-radius:4px;color:#d7e5f2}.inv-summary b{color:#ffd166}
+.inv-group{margin:8px 0 12px;border:1px solid #2a4056;border-radius:5px;padding:9px;background:#0a111b}.inv-group h4{font-size:13px;overflow-wrap:anywhere;margin-bottom:5px}.inv-meta{font-size:11px;color:#a9bfd4;line-height:1.5}.inv-item{border-left:3px solid var(--rarity);margin-top:7px;padding:7px;background:#142032;font-size:12px;line-height:1.45;overflow-wrap:anywhere}.inv-item b{display:block;color:var(--rarity);font-size:10px}.inv-empty{font-size:12px;color:#a9bfd4;line-height:1.6}.inv-toggle{display:none}
+#hud{padding:10px;gap:9px}.hleft b,.hmid b{font-size:14px}.hleft span,.hmid span{font-size:11px;color:#a9bfd4;white-space:normal}.pill{font-size:11px;padding:5px 9px}.hright{gap:6px}.hright .mini{font-size:11px;padding:8px 10px}.save-btn{color:#ffd166!important;border-color:#8b733e!important}.save-note{font-size:12px;color:#a9bfd4;line-height:1.6;margin:8px 0}.save-error{color:#ff9c9c;font-size:12px;line-height:1.5;margin:8px 0}.route-save{margin:12px 0 4px;padding-bottom:10px;border-bottom:1px solid #30465c;display:flex;align-items:center;flex-wrap:wrap;gap:8px}.route-save .save-note{flex:1;margin:0;min-width:120px}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:0}button{font-family:inherit;font-size:13px;line-height:1.25;letter-spacing:.035em;min-height:40px}.obox{max-width:680px;padding:20px;border-radius:9px}.obox h2{font-size:24px}.osub,.tdesc,.hint,.sqbio,.netnote,.route-all,.wheel-key,.route-inventory{font-size:13px;line-height:1.6;color:#b6c9db}.sqid b,.tr b{font-size:15px}.sqid span,.sqid i,.tr i,.tr span,.lg span,.plr span{font-size:11px;color:#a9bfd4;line-height:1.5}.tsc b,.tsc em,.tsc span{font-size:11px}.tsc span{font-size:15px}.tsc{padding:5px 2px}.sqgrid{gap:12px}.sqc{padding:12px}.sqbtns button{font-size:12px}.sqbar{gap:8px}.rew{padding:14px}.rew b,.vopt b{font-size:15px}.rew span,.vopt span{font-size:13px;line-height:1.5;color:#b6c9db}.route-buy .rew{font-size:12px;padding:8px}.route-item,.route-result{font-size:13px}.route-item>span,.item-top b,.item-rarity,.item-odds,.item-odds b{font-size:12px}.item-icon{display:none}.route-wallet{font-size:15px}.route-wallet span{font-size:12px}.ucard{font-size:13px}.unm{font-size:16px}.ucls,.urow.small,.hpn{font-size:12px;color:#b6c9db}.sc b,.sc em,.grow-label{font-size:11px!important}.sc span{font-size:16px}.sc{padding:6px 2px}.stat-sheet-label{font-size:11px}.fcol b,.frow{font-size:13px}.rnm{font-size:12px;overflow-wrap:anywhere}.rlv{font-size:11px}.rchip{padding:8px}.lv b,.lv span{font-size:12px}.partpick span,.partpick output,.sklab,.sw span,.ch span{font-size:11px}.lg b{font-size:13px}ul.help li{font-size:13px}.tbtns button{min-width:132px}.tbest,.tfoot{font-size:11px}.route-choices .rew{padding:14px 9px}.route-choices i{font-size:26px}.route-start{font-size:12px}
+@media(max-width:700px){#app{padding:8px 7px 20px}.battle-layout{display:block}.inv-toggle{display:inline-block}.battle-main{gap:8px}#inventory-sheet{display:none;position:absolute;right:0;top:0;z-index:12;width:min(85%,290px);max-height:70vh;box-shadow:-8px 8px 30px #000b}#inventory-sheet.open{display:block}.inv-head .mini{display:inline-block}.obox{padding:13px}.hright{margin-left:0}.hmid{flex:1 1 100%;order:0}.hleft{flex:1}.hright .mini{padding:8px}.route-choices .rew b{font-size:13px}.route-choices .rew span{font-size:12px}.sqbar{flex-wrap:wrap}.sqcount{font-size:12px}.sqbox{padding-bottom:110px}}
+
+.promo-growth{display:block;color:var(--gr)!important;line-height:1.5;margin-top:4px;white-space:normal}
+
+#combat-replay{position:fixed;inset:0;z-index:200;background:#03060ee8;display:flex;align-items:center;justify-content:center;padding:14px;touch-action:manipulation}
+.duelbox{width:min(680px,100%);background:linear-gradient(160deg,#16293d,#080d19);border:1px solid #426882;border-radius:12px;padding:16px;box-shadow:0 0 50px #0b749355}
+.duelbox header{display:flex;justify-content:space-between;align-items:center;gap:8px;color:#7df9ff;font-size:13px}.duel-arena{display:grid;grid-template-columns:minmax(0,1fr) 64px minmax(0,1fr);align-items:center;gap:10px;margin:16px 0;background:radial-gradient(ellipse at 50% 80%,#2b5265 0%,#0c182a 50%,#08111d 100%);border-radius:8px;padding:12px 6px}.duel-unit{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;text-align:center}.duel-unit b{color:#eaf6ff;overflow-wrap:anywhere;font-size:clamp(10px,2.8vw,15px)}.duel-unit small{color:#9eb5ca;font-size:10px}.duel-unit canvas{width:min(100%,144px);aspect-ratio:1;image-rendering:pixelated;filter:drop-shadow(0 8px 8px #000);transition:opacity .2s}.duel-unit#duel-d canvas{transform:scaleX(-1)}.duel-hp{width:100%;height:10px;background:#02050a;border:1px solid #426882;overflow:hidden;border-radius:5px}.duel-hp i{display:block;height:100%;transition:width .25s}.duel-unit span{font-size:12px;color:#eaf6ff}.duel-center{text-align:center;display:grid;gap:12px;color:#9eb5ca}.duel-center strong{font-size:clamp(11px,3vw,17px);color:#ffd166;overflow-wrap:anywhere}.duelbox p{text-align:center;color:#d5e7f6;font-size:13px;min-height:18px}.duel-unit.down canvas{opacity:.22}.duel-unit.lunge canvas{animation:duel-lunge .35s ease}.duel-unit#duel-d.lunge canvas{animation:duel-lunge-right .35s ease}.duel-unit.impact{animation:duel-impact .3s ease}@keyframes duel-lunge{50%{transform:translateX(16%) scale(1.09)}}@keyframes duel-lunge-right{50%{transform:translateX(-16%) scaleX(-1) scale(1.09)}}@keyframes duel-impact{30%{filter:brightness(2);transform:translateX(4px)}70%{transform:translateX(-4px)}}
+
+/* Cinematic location panels: self-contained vector art and low-cost CSS motion. */
+.route-scene{--scene:#7df9ff;position:relative;overflow:hidden;border:1px solid var(--scene);border-radius:10px;background:#07101c;margin:12px 0 16px;box-shadow:0 0 24px color-mix(in srgb,var(--scene) 15%,transparent);isolation:isolate}
+.route-scene-art{display:block;width:100%;height:auto;aspect-ratio:640/250;background:#080e19;overflow:hidden}
+.route-scene-art svg{display:block;width:100%;height:100%}
+.scene-header{position:absolute;top:12px;left:12px;right:12px;text-shadow:0 2px 6px #000,0 0 8px #000;pointer-events:none}
+.scene-header small{display:block;font-size:10px;letter-spacing:.15em;color:var(--scene);font-weight:800}
+.scene-header h3{font-size:clamp(16px,4vw,24px);color:#fff;margin:4px 0;line-height:1.12;letter-spacing:.04em}
+.scene-dialog{position:relative;display:flex;gap:10px;align-items:flex-start;padding:13px;background:linear-gradient(120deg,#111e2c,#080f19);border-top:1px solid var(--scene);line-height:1.5;font-size:14px;color:#dbeaf5}
+.scene-avatar{color:var(--scene);border:1px solid var(--scene);background:#080f19;display:grid;place-items:center;border-radius:5px;width:38px;height:38px;font-size:23px;flex:0 0 38px}
+.scene-dialog b{display:block;color:var(--scene);font-size:11px;letter-spacing:.08em;margin-bottom:4px}.scene-dialog p{margin:0}.scene-dialog .scene-status{display:block;font-size:11px;color:#a5bdce;margin-top:6px}
+.scene-ring{transform-box:fill-box;transform-origin:center;animation:scene-rotate 13s linear infinite}.scene-ring.reverse{animation-direction:reverse;animation-duration:19s}.scene-glow{animation:scene-pulse 3s ease-in-out infinite}.scene-float{animation:scene-float 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.scene-scan{animation:scene-scan 3s linear infinite}.scene-spark{animation:scene-spark 1.8s ease-out infinite}.scene-spark:nth-child(2n){animation-delay:-.8s}.scene-spark:nth-child(3n){animation-delay:-1.4s}.scene-conveyor{animation:scene-conveyor 4s linear infinite}.scene-scroll{animation:scene-scroll 7s linear infinite}.scene-blink{animation:scene-blink 2.4s steps(1,end) infinite}.scene-blink:nth-child(2n){animation-delay:-1s}
+@keyframes scene-rotate{to{transform:rotate(360deg)}}@keyframes scene-pulse{0%,100%{opacity:.4}50%{opacity:1}}@keyframes scene-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}@keyframes scene-scan{0%{transform:translateY(-35px);opacity:0}15%,85%{opacity:.9}100%{transform:translateY(120px);opacity:0}}@keyframes scene-spark{0%{transform:translate(0,12px);opacity:1}100%{transform:translate(14px,-55px);opacity:0}}@keyframes scene-conveyor{to{transform:translateX(48px)}}@keyframes scene-scroll{to{transform:translateY(-48px)}}@keyframes scene-blink{0%,75%,100%{opacity:.9}76%,90%{opacity:.25}}
+.route-choices .rew{border-top:3px solid var(--route-accent,#7df9ff)}.route-choices .rew i{color:var(--route-accent,#7df9ff)}.route-choices .rew .scene-preview{display:block;font-size:10px;letter-spacing:.06em;color:var(--route-accent,#7df9ff);margin:0 0 6px}
+@media(max-width:480px){.scene-header{top:8px;left:9px}.scene-header small{font-size:9px}.scene-dialog{padding:10px;font-size:13px}.scene-avatar{width:32px;height:32px;flex-basis:32px;font-size:19px}.route-scene-art{aspect-ratio:640/290}.scene-dialog .scene-status{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.route-scene *{animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -276,9 +313,10 @@ ul.help b{color:var(--cy)}
   <div id="game-screen">
     <div id="hud"></div>
     <div id="owner-legend"></div>
-    <div id="cvwrap"><canvas id="cv"></canvas></div>
-    <div id="panel"></div>
-    <div id="roster"></div>
+    <div class="battle-layout"><div class="battle-main">
+      <div id="cvwrap"><canvas id="cv"></canvas></div>
+      <div id="panel"></div><div id="roster"></div>
+    </div><aside id="inventory-sheet" aria-label="Squad item sheet"></aside></div>
   </div>
 </div>
 <div id="overlay"></div>
@@ -603,12 +641,15 @@ function safeLook(l,def) {
   l=l||{};
   return {pal:validPal(l.pal)?l.pal:def.pal,spr:CHASSIS.some(function(c){return c.id===l.spr;})?l.spr:def.spr,name:cleanName(l.name)||def.name};
 }
-/* per-character look overrides, kept across runs */
+/* Setup cosmetics are run-scoped. Deployed units carry their own saved cosmetics. */
 var LOOKS = {};
-function loadLooks() {
-  try { var r = localStorage.getItem('hf_looks'); if (r) LOOKS = JSON.parse(r) || {}; } catch (e) { LOOKS = {}; }
+function resetLooks() {
+  Object.keys(LOOKS).forEach(function(k){delete LOOKS[k];});
+  S.skinKey=null;
+  try { localStorage.removeItem('hf_looks'); } catch(e) { }
 }
-function saveLooks() { try { localStorage.setItem('hf_looks', JSON.stringify(LOOKS)); } catch (e) { } }
+function loadLooks() { resetLooks(); }
+function saveLooks() { /* Draft only; actual unit appearance is saved with the run. */ }
 function lookOf(key, def) {
   var l = LOOKS[key] || {};
   return safeLook(l,def);
@@ -647,46 +688,46 @@ function triangle(a, b) {
 /* ---------------- player roster ----------------
    every unit: base stats total exactly 60, growths total exactly 300 */
 var ROSTER = [
-  { key: 'vex', name: 'VEX', cls: 'VANGUARD', promo: 'WARLORD', spr: 'vanguard', pal: 'vex', mov: 5, wpn: 'blade',
-    base: { hp: 20, str: 10, mag: 0, skl: 8, def: 8, res: 3, spd: 7, lck: 4 },
-    grow: { hp: 70, str: 50, mag: 0, skl: 45, def: 40, res: 20, spd: 45, lck: 30 },
-    bio: 'Breach specialist. Arc blade, ablative plate. Holds the line and ends arguments.' },
-  { key: 'kestrel', name: 'KESTREL', cls: 'SKIRMISHER', promo: 'PHANTOM', spr: 'skirmisher', pal: 'kestrel', mov: 6, wpn: 'smg',
-    base: { hp: 17, str: 8, mag: 0, skl: 11, def: 5, res: 4, spd: 11, lck: 4 },
-    grow: { hp: 55, str: 45, mag: 0, skl: 55, def: 25, res: 25, spd: 60, lck: 35 },
-    bio: 'Runs the flanks. Twin SMGs, doubles almost everything, dies to a stiff breeze.' },
-  { key: 'nova', name: 'NOVA', cls: 'TECHNOMANCER', promo: 'ARCHIVIST', spr: 'techno', pal: 'nova', mov: 5, wpn: 'tech',
-    base: { hp: 15, str: 2, mag: 12, skl: 9, def: 4, res: 10, spd: 6, lck: 2 },
-    grow: { hp: 50, str: 5, mag: 60, skl: 50, def: 20, res: 55, spd: 45, lck: 15 },
-    bio: 'Weaponized code. Hits RES instead of DEF, which is how armour dies.' },
-  { key: 'rampart', name: 'RAMPART', cls: 'BULWARK', promo: 'CITADEL', spr: 'heavy', pal: 'rampart', mov: 4, wpn: 'lance',
-    base: { hp: 24, str: 11, mag: 0, skl: 6, def: 12, res: 2, spd: 3, lck: 2 },
-    grow: { hp: 80, str: 55, mag: 0, skl: 35, def: 55, res: 15, spd: 35, lck: 25 },
-    bio: 'A door with opinions. Soaks physical damage; hex code goes straight through.' },
-  { key: 'echo', name: 'ECHO', cls: 'MEDTECH', promo: 'LIFEWARDEN', spr: 'medic', pal: 'echo', mov: 5, wpn: 'staff',
-    base: { hp: 16, str: 3, mag: 9, skl: 7, def: 5, res: 9, spd: 8, lck: 3 },
-    grow: { hp: 55, str: 10, mag: 50, skl: 40, def: 25, res: 50, spd: 45, lck: 25 },
-    bio: 'Mend drone repairs allies for MAG+8. Keep her alive and the squad stays alive.' }
+  { key: 'vex', name: 'VEX', cls: 'BLADE COMMANDER', promo: 'WARLORD', spr: 'vanguard', pal: 'vex', mov: 5, wpn: 'blade',
+    base: { hp: 20, str: 11, mag: 0, skl: 9, def: 7, res: 3, spd: 7, lck: 3 },
+    grow: { hp: 65, str: 65, mag: 0, skl: 50, def: 35, res: 20, spd: 45, lck: 20 },
+    bio: 'Reliable frontline finisher; builds damage against wounded targets.' },
+  { key: 'kestrel', name: 'KESTREL', cls: 'GUN RUNNER', promo: 'PHANTOM', spr: 'skirmisher', pal: 'kestrel', mov: 6, wpn: 'smg',
+    base: { hp: 16, str: 9, mag: 0, skl: 10, def: 4, res: 3, spd: 14, lck: 4 },
+    grow: { hp: 45, str: 50, mag: 0, skl: 55, def: 20, res: 20, spd: 80, lck: 30 },
+    bio: 'Fast close-range attacker; chains kills and evades return fire.' },
+  { key: 'nova', name: 'NOVA', cls: 'PLASMA ARTILLERIST', promo: 'ARCHIVIST', spr: 'techno', pal: 'nova', mov: 5, wpn: 'tech',
+    base: { hp: 16, str: 0, mag: 14, skl: 9, def: 3, res: 9, spd: 6, lck: 3 },
+    grow: { hp: 45, str: 0, mag: 75, skl: 45, def: 15, res: 50, spd: 45, lck: 25 },
+    bio: 'Area damage specialist with powerful magical attacks.' },
+  { key: 'rampart', name: 'RAMPART', cls: 'AEGIS KNIGHT', promo: 'CITADEL', spr: 'heavy', pal: 'rampart', mov: 4, wpn: 'lance',
+    base: { hp: 23, str: 5, mag: 0, skl: 6, def: 16, res: 5, spd: 3, lck: 2 },
+    grow: { hp: 75, str: 25, mag: 0, skl: 35, def: 85, res: 40, spd: 25, lck: 15 },
+    bio: 'Physical tank whose armour directly powers attacks.' },
+  { key: 'echo', name: 'ECHO', cls: 'TRAUMA SPECIALIST', promo: 'LIFEWARDEN', spr: 'medic', pal: 'echo', mov: 5, wpn: 'staff',
+    base: { hp: 18, str: 0, mag: 12, skl: 7, def: 5, res: 10, spd: 5, lck: 3 },
+    grow: { hp: 65, str: 0, mag: 70, skl: 35, def: 30, res: 65, spd: 20, lck: 15 },
+    bio: 'High-output healer who protects nearby wounded allies.' }
 ];
 
 /* later recruits, same 60 / 300 budget */
 var RECRUITS = [
-  { key: 'glitch', name: 'GLITCH', cls: 'MARKSMAN', promo: 'LONGSHOT', spr: 'grunt', pal: 'glitch', mov: 5, wpn: 'rail',
-    base: { hp: 18, str: 9, mag: 0, skl: 10, def: 5, res: 4, spd: 9, lck: 5 },
-    grow: { hp: 55, str: 50, mag: 0, skl: 50, def: 25, res: 25, spd: 55, lck: 40 },
-    bio: 'Rail rifle, range 2-3. Never takes a counter if you place her right.' },
-  { key: 'sable', name: 'SABLE', cls: 'HEXWRIGHT', promo: 'NULLMANCER', spr: 'techno', pal: 'sable', mov: 5, wpn: 'virus',
-    base: { hp: 16, str: 2, mag: 13, skl: 8, def: 4, res: 9, spd: 6, lck: 2 },
-    grow: { hp: 50, str: 5, mag: 65, skl: 45, def: 20, res: 50, spd: 45, lck: 20 },
-    bio: 'Virus lance. Highest raw MAG in the echelon.' },
-  { key: 'onyx', name: 'ONYX', cls: 'SENTINEL', promo: 'JUGGERNAUT', spr: 'heavy', pal: 'onyx', mov: 4, wpn: 'claw',
-    base: { hp: 22, str: 12, mag: 0, skl: 7, def: 10, res: 3, spd: 4, lck: 2 },
-    grow: { hp: 75, str: 55, mag: 0, skl: 40, def: 50, res: 15, spd: 40, lck: 25 },
-    bio: 'Rend claws. Walks into brutes and walks back out.' },
-  { key: 'wisp', name: 'WISP', cls: 'FIELD MEDIC', promo: 'SERAPH', spr: 'medic', pal: 'wisp', mov: 6, wpn: 'staff',
-    base: { hp: 15, str: 3, mag: 10, skl: 8, def: 4, res: 8, spd: 10, lck: 2 },
-    grow: { hp: 50, str: 10, mag: 50, skl: 40, def: 20, res: 45, spd: 55, lck: 30 },
-    bio: 'Fast healer, MOV 6. Reaches the casualty before the casualty happens.' }
+  { key: 'glitch', name: 'GLITCH', cls: 'RAIL OPERATIVE', promo: 'LONGSHOT', spr: 'grunt', pal: 'glitch', mov: 5, wpn: 'rail',
+    base: { hp: 16, str: 11, mag: 0, skl: 14, def: 3, res: 4, spd: 8, lck: 4 },
+    grow: { hp: 45, str: 65, mag: 0, skl: 80, def: 15, res: 25, spd: 45, lck: 25 },
+    bio: 'Long-range precision shooter who disrupts enemy actions.' },
+  { key: 'sable', name: 'SABLE', cls: 'VOID ASSASSIN', promo: 'NULLMANCER', spr: 'techno', pal: 'sable', mov: 5, wpn: 'virus',
+    base: { hp: 15, str: 0, mag: 12, skl: 10, def: 3, res: 6, spd: 11, lck: 3 },
+    grow: { hp: 40, str: 0, mag: 65, skl: 55, def: 15, res: 35, spd: 70, lck: 20 },
+    bio: 'Mobile magic assassin with strong critical strikes.' },
+  { key: 'onyx', name: 'ONYX', cls: 'SIEGE BERSERKER', promo: 'JUGGERNAUT', spr: 'heavy', pal: 'onyx', mov: 4, wpn: 'claw',
+    base: { hp: 22, str: 13, mag: 0, skl: 6, def: 10, res: 3, spd: 4, lck: 2 },
+    grow: { hp: 75, str: 80, mag: 0, skl: 35, def: 50, res: 15, spd: 30, lck: 15 },
+    bio: 'Heavy bruiser who becomes more dangerous when wounded.' },
+  { key: 'wisp', name: 'WISP', cls: 'WARD WEAVER', promo: 'SERAPH', spr: 'medic', pal: 'wisp', mov: 6, wpn: 'staff',
+    base: { hp: 16, str: 0, mag: 10, skl: 7, def: 5, res: 10, spd: 10, lck: 2 },
+    grow: { hp: 50, str: 0, mag: 55, skl: 30, def: 30, res: 55, spd: 65, lck: 15 },
+    bio: 'Mobile support who shields allies and counters attackers.' }
 ];
 
 /* ---------------- enemy templates ---------------- */
@@ -713,6 +754,22 @@ var FOES = {
               base: { hp: 20, str: 4, mag: 10, skl: 9, def: 5, res: 7, spd: 10, lck: 3 },
               grow: { hp: 50, str: 10, mag: 52, skl: 46, def: 24, res: 40, spd: 52, lck: 16 } }
 };
+/* Additional enemy archetypes unlock by chapter, not player level. */
+Object.assign(FOES, {
+  gunner: {name:'BURST GUNNER',spr:'skirmisher',pal:'enemy_gunner',mov:5,wpn:'smg',from:4,ai:'hunt',weight:1.1,
+    base:{hp:17,str:7,mag:0,skl:10,def:4,res:3,spd:9,lck:2},grow:{hp:45,str:42,mag:0,skl:52,def:22,res:18,spd:48,lck:15}},
+  engineer: {name:'REPAIR ENGINEER',spr:'medic',pal:'enemy_engineer',mov:4,wpn:'tech',from:6,ai:'hunt',weight:.65,role:'support',innate:['repair'],
+    base:{hp:19,str:0,mag:6,skl:6,def:4,res:7,spd:5,lck:2},grow:{hp:50,str:0,mag:38,skl:30,def:24,res:38,spd:28,lck:12}},
+  sentinel: {name:'AEGIS SENTINEL',spr:'heavy',pal:'enemy_sentinel',mov:3,wpn:'lance',from:9,ai:'hunt',weight:.85,innate:['shield'],
+    base:{hp:25,str:8,mag:0,skl:6,def:11,res:4,spd:3,lck:1},grow:{hp:70,str:45,mag:0,skl:30,def:48,res:22,spd:18,lck:10}},
+  breaker: {name:'PHASE BREAKER',spr:'techno',pal:'enemy_breaker',mov:5,wpn:'virus',from:12,ai:'hunt',weight:.8,role:'elite',innate:['pierce'],
+    base:{hp:19,str:0,mag:10,skl:9,def:5,res:8,spd:8,lck:3},grow:{hp:52,str:0,mag:54,skl:44,def:25,res:44,spd:42,lck:16}},
+  hunter: {name:'RAVAGER HUNTER',spr:'vanguard',pal:'enemy_hunter',mov:6,wpn:'claw',from:16,ai:'hunt',weight:.75,role:'elite',innate:['frenzy'],
+    base:{hp:24,str:11,mag:0,skl:9,def:6,res:5,spd:11,lck:3},grow:{hp:62,str:58,mag:0,skl:45,def:32,res:25,spd:54,lck:14}},
+  titan: {name:'OMEGA TITAN',spr:'brute',pal:'enemy_titan',mov:3,wpn:'cannon',from:21,ai:'hunt',weight:.55,role:'elite',innate:['shield','pierce'],
+    base:{hp:35,str:12,mag:0,skl:7,def:12,res:6,spd:4,lck:2},grow:{hp:84,str:60,mag:0,skl:38,def:52,res:30,spd:24,lck:12}}
+});
+[['enemy_gunner','foe','#ab5142','#ffba7b'],['enemy_engineer','foe3','#4d877b','#b0ffe3'],['enemy_sentinel','foe3','#596b9b','#b5bfff'],['enemy_breaker','foe2','#713db4','#e2a0ff'],['enemy_hunter','foe','#8e374b','#ff94b1'],['enemy_titan','foe3','#8e7650','#ffe5a1']].forEach(function(p){PALS[p[0]]=Object.assign({},PALS[p[1]],{A:p[2],V:p[3],G:p[3]});});
 var BOSSES = [
   { name: 'WARDEN MK-I', spr: 'brute', pal: 'boss', mov: 4, wpn: 'cannon', ai: 'guard',
     base: { hp: 34, str: 10, mag: 0, skl: 6, def: 10, res: 4, spd: 4, lck: 2 },
@@ -733,7 +790,10 @@ var TRAITS = {
   overclock: { name: 'OVERCLOCK',  desc: '+3 SPD, +10 avoid' },
   regen:     { name: 'REGEN',      desc: 'heals 15% each phase' },
   volatile:  { name: 'VOLATILE',   desc: 'explodes on death' },
-  marksman:  { name: 'MARKSMAN',   desc: '+15 hit, +1 range' }
+  marksman:  { name: 'MARKSMAN',   desc: '+15 hit, +1 range' },
+  repair: {name:'FIELD REPAIR',desc:'Repairs injured allies instead of attacking; heals up to 25% max HP'},
+  pierce: {name:'PHASE PIERCE',desc:'Ignores 25% of the target’s defence or resistance'},
+  frenzy: {name:'FRENZY',desc:'+25% damage when at or below half HP'}
 };
 
 
@@ -741,28 +801,28 @@ var TRAITS = {
 /* special tiles keep their colours everywhere so the marks stay readable;
    only the deck, bulkheads and grating change with the terrain */
 var THEMES = [
-  { id: 'foundry', name: 'ASH FOUNDRY',
-    sites: ['SLAG LINE', 'CRUCIBLE ROW', 'CINDER DECK', 'TAP FLOOR', 'EMBER WALK'],
+  { id: 'foundry', name: 'PLASMA FOUNDRY',
+    sites: ['PLASMA CONDUIT', 'FUSION ARRAY', 'REACTOR DECK', 'ALLOY PROCESSOR', 'THERMAL GANTRY'],
     base: '#1b1711', hi: '#241f16', edge: '#110e09', deco: '#3b3324', deco2: '#4a3c23',
     wbody: '#231c14', wtop: '#6a4a24', wedge: '#b07a2e', wdark: '#0d0a06',
     grate: '#151109', grateHi: '#2e2616' },
-  { id: 'vault', name: 'DEEP ARCHIVE',
-    sites: ['STACK SEVEN', 'COLD INDEX', 'READING CELL', 'LEDGER HALL', 'SEALED WING'],
+  { id: 'vault', name: 'QUANTUM ARCHIVE',
+    sites: ['DATA STACK 07', 'CRYO DATABASE', 'NEURAL TERMINAL', 'MEMORY ARRAY', 'ENCRYPTED SECTOR'],
     base: '#14182b', hi: '#1b2038', edge: '#0b0e1a', deco: '#32407a', deco2: '#44539c',
     wbody: '#191e38', wtop: '#4356a8', wedge: '#6f82d8', wdark: '#080a14',
     grate: '#101429', grateHi: '#262e55' },
-  { id: 'spine', name: 'COOLANT SPINE',
-    sites: ['HEAT SINK', 'FROST GALLERY', 'CONDENSER', 'RIME CHANNEL', 'CHILL VAULT'],
+  { id: 'spine', name: 'CRYO NETWORK',
+    sites: ['THERMAL EXCHANGER', 'CRYO TRANSIT', 'COOLANT CORE', 'ZERO-K CHANNEL', 'STASIS VAULT'],
     base: '#0e1e24', hi: '#132830', edge: '#071216', deco: '#2c5f69', deco2: '#3d8290',
     wbody: '#112730', wtop: '#2d7f90', wedge: '#55b8c8', wdark: '#050e12',
     grate: '#0b1a20', grateHi: '#1d3d47' },
-  { id: 'garden', name: 'SIGNAL GARDEN',
-    sites: ['MOSS TERRACE', 'FERN RELAY', 'BLOOM YARD', 'ROOT LATTICE', 'SPORE WALK'],
+  { id: 'garden', name: 'BIOTECH DOME',
+    sites: ['BIOSYNTH PLATFORM', 'GENOME RELAY', 'HYDROPONIC GRID', 'NEURAL ROOT ARRAY', 'BIOHAZARD CORRIDOR'],
     base: '#121d16', hi: '#17261c', edge: '#0a110c', deco: '#2f5e3a', deco2: '#428352',
     wbody: '#152417', wtop: '#3a7a46', wedge: '#5fb36f', wdark: '#060d08',
     grate: '#0e1a12', grateHi: '#203a27' },
-  { id: 'hulk', name: 'CARRIER HULK',
-    sites: ['BROKEN KEEL', 'RIB SECTION', 'DEAD HANGAR', 'TORN SPINE', 'DRIFT WARD'],
+  { id: 'hulk', name: 'DERELICT STARCRUISER',
+    sites: ['BREACHED HULL', 'GRAVITY FRAME', 'DRONE HANGAR', 'SHATTERED DRIVE', 'ORBITAL DEBRIS'],
     base: '#1a1819', hi: '#232022', edge: '#0f0e0f', deco: '#4a3b38', deco2: '#6b4a42',
     wbody: '#221d1d', wtop: '#6e4038', wedge: '#a85f4e', wdark: '#0b0909',
     grate: '#161314', grateHi: '#302829' }
@@ -798,6 +858,47 @@ function statSum(o) { var t = 0; for (var k in o) t += o[k]; return t; }
 var STATK = ['hp', 'str', 'mag', 'skl', 'def', 'res', 'spd', 'lck'];
 var STATN = { hp: 'HP', str: 'STR', mag: 'MAG', skl: 'SKL', def: 'DEF', res: 'RES', spd: 'SPD', lck: 'LCK' };
 
+/* ================= CLASS PROGRESSION ================= */
+var MAXTIER=2;
+var CLASS_PATHS={
+ vex:[['WARLORD','DUELIST','OVERLORD','BLADEMASTER'],['str','def'],['spd','skl']],
+ kestrel:[['PHANTOM','RAIDER','NIGHTSTALKER','STORMRUNNER'],['spd','skl'],['str','lck']],
+ nova:[['ARCHIVIST','PYROMANCER','ORACLE','STARBREAKER'],['mag','res'],['mag','skl']],
+ rampart:[['CITADEL','IRONCLAD','BASTION','DREADNOUGHT'],['def','res'],['str','def']],
+ echo:[['LIFEWARDEN','COMBAT MEDIC','LIFEBINDER','TRIAGE COMMANDER'],['mag','res'],['mag','spd']],
+ glitch:[['LONGSHOT','DISRUPTOR','DEADEYE','SIGNAL REAPER'],['skl','str'],['spd','lck']],
+ sable:[['NULLMANCER','HEX ASSASSIN','VOID SOVEREIGN','NIGHT HEX'],['mag','res'],['mag','skl']],
+ onyx:[['JUGGERNAUT','SIEGEBREAKER','COLOSSUS','WAR ENGINE'],['def','str'],['str','skl']],
+ wisp:[['SERAPH','WARDEN','ARCHANGEL','AEGIS PRIME'],['mag','spd'],['res','def']]
+};
+var CLASS_SKILLS={"vex": ["FINISHER", "Deal 40% more damage to enemies at or below half HP; recover 10% max HP on a kill."], "kestrel": ["RUN AND GUN", "+10 avoid; once per turn, an initiated kill grants another action."], "nova": ["PLASMA BURST", "Opening hit splashes 40% of dealt damage to adjacent hostiles."], "rampart": ["ARMOUR ENGINE", "Add 40% of DEF to all attack damage; take 2 less damage before critical multipliers."], "echo": ["TRAUMA RESPONSE", "+4 repair power; once per battle heal a nearby ally below 30% HP for 40% of max HP after a nonlethal hit."], "glitch": ["TARGET LOCK", "+12 hit; first successful hit each turn jams a non-boss enemy."], "sable": ["VOID CUT", "+10 critical chance, plus 15 more when flanking; ignore 2 RES."], "onyx": ["FURY ENGINE", "+1 range; +2 attack, plus 35% of STR below half HP."], "wisp": ["WARD LINK", "Healing grants a 5-point shield; can counterattack with a repair weapon."]};
+var PROMO_SKILLS={"WARLORD": ["Battle Hunger", "+3 damage; recover an extra 5% max HP per kill.", {"attack": 3, "killHeal": 0.05}], "DUELIST": ["Precision Guard", "+15 hit and +10 avoid.", {"hit": 15, "avoid": 10}], "OVERLORD": ["Death Sentence", "+25 percentage points finisher damage; +3 damage.", {"execute": 0.25, "attack": 3}], "BLADEMASTER": ["Perfect Edge", "+15 crit; doubles with a 2 SPD lead instead of 4.", {"crit": 15, "double": 2}], "PHANTOM": ["Ghost Step", "+15 avoid; +2 effective SPD.", {"avoid": 15, "speed": 2}], "RAIDER": ["Rapid Fire", "+3 damage; +10 hit.", {"attack": 3, "hit": 10}], "NIGHTSTALKER": ["Silent Finish", "+15 crit and 10% max HP recovered per kill.", {"crit": 15, "killHeal": 0.1}], "STORMRUNNER": ["Velocity", "+3 effective SPD; +1 attack range.", {"speed": 3, "range": 1}], "ARCHIVIST": ["Piercing Code", "Ignore 4 more RES; +10 hit.", {"pierce": 4, "hit": 10}], "PYROMANCER": ["Wildfire", "Splash increases by 25 percentage points.", {"splash": 0.25}], "ORACLE": ["Predictive Field", "+15 avoid; +4 damage reduction before critical multipliers.", {"avoid": 15, "guard": 4}], "STARBREAKER": ["Supernova", "+4 damage; splash increases by 20 percentage points.", {"attack": 4, "splash": 0.2}], "CITADEL": ["Fortress", "Reduce incoming base damage by 3; +10 avoid.", {"guard": 3, "avoid": 10}], "IRONCLAD": ["Spiked Armour", "Add another 20% of DEF to damage.", {"defScale": 0.2}], "BASTION": ["Living Fortress", "Reduce incoming base damage by another 4; recover 8% max HP each player phase.", {"guard": 4, "regen": 0.08}], "DREADNOUGHT": ["Siege Fist", "Add another 20% of DEF to damage; +10 hit.", {"defScale": 0.2, "hit": 10}], "LIFEWARDEN": ["Intensive Care", "+7 healing; +2 healing range.", {"heal": 7, "range": 2}], "COMBAT MEDIC": ["Combat Triage", "+3 damage; +3 healing; can counterattack.", {"attack": 3, "heal": 3, "counter": 1}], "LIFEBINDER": ["Life Infusion", "Repairs grant an 8-point shield; +6 healing.", {"shield": 8, "heal": 6}], "TRIAGE COMMANDER": ["Critical Care", "Emergency heal can reach 4 tiles; +20 percentage points max HP restored.", {"emergencyRange": 2, "emergency": 0.2}], "LONGSHOT": ["Extended Barrel", "+1 attack range and +10 crit.", {"range": 1, "crit": 10}], "DISRUPTOR": ["Signal Pierce", "Ignore 3 DEF; +10 hit.", {"pierce": 3, "hit": 10}], "DEADEYE": ["Perfect Aim", "+20 hit; +15 crit.", {"hit": 20, "crit": 15}], "SIGNAL REAPER": ["Circuit Breaker", "+4 damage against jammed targets; ignore 3 more DEF.", {"jamDamage": 4, "pierce": 3}], "NULLMANCER": ["Resistance Shred", "Ignore 4 additional RES.", {"pierce": 4}], "HEX ASSASSIN": ["Blood Hex", "+10 crit; recover 10% max HP per kill.", {"crit": 10, "killHeal": 0.1}], "VOID SOVEREIGN": ["Null Field", "Reduce incoming base damage by 3; +4 damage.", {"guard": 3, "attack": 4}], "NIGHT HEX": ["Phase Strike", "+15 avoid; +3 effective SPD.", {"avoid": 15, "speed": 3}], "JUGGERNAUT": ["Unbreakable", "Reduce incoming base damage by 3; recover 5% max HP each player phase.", {"guard": 3, "regen": 0.05}], "SIEGEBREAKER": ["Battering Ram", "Ignore 4 DEF; +2 damage.", {"pierce": 4, "attack": 2}], "COLOSSUS": ["Last Stand", "+25 percentage points STR scaling while wounded; +3 damage reduction before critical multipliers.", {"fury": 0.25, "guard": 3}], "WAR ENGINE": ["Heavy Barrage", "+1 attack range; +4 damage.", {"range": 1, "attack": 4}], "SERAPH": ["Radiant Repair", "+6 healing; +1 range.", {"heal": 6, "range": 1}], "WARDEN": ["Shield Craft", "+5 shield strength; reduce own incoming base damage by 2.", {"shield": 5, "guard": 2}], "ARCHANGEL": ["Renewal", "+7 healing; recover 8% max HP each player phase.", {"heal": 7, "regen": 0.08}], "AEGIS PRIME": ["Barrier Matrix", "+7 shield strength; +2 healing.", {"shield": 7, "heal": 2}]};
+function promotionSkills(u){if(u.side!=="ply")return [];var names=(u.path||[]).slice();if(u.promoted&&names.indexOf(u.cls)<0)names.push(u.cls);return names.filter(function(n,i){return names.indexOf(n)===i&&PROMO_SKILLS[n];}).map(function(n){return PROMO_SKILLS[n];});}
+function perk(u,k){return promotionSkills(u).reduce(function(t,p){return t+(p[2][k]||0);},0);}
+function hasSkill(u,k){return u.side==='ply'&&u.key===k;}
+function careerLevel(u){return (u.careerBase||0)+u.lvl;}
+/* Every promotion adds exactly 100 percentage points to growth. */
+var PROMO_GROWTH={"WARLORD":[25,30,0,10,20,5,5,5],"DUELIST":[10,20,0,30,5,5,25,5],"OVERLORD":[25,35,0,15,15,5,5,0],"BLADEMASTER":[10,20,0,30,0,0,30,10],"PHANTOM":[10,10,0,20,5,5,40,10],"RAIDER":[15,35,0,25,5,5,10,5],"NIGHTSTALKER":[10,20,0,25,0,5,25,15],"STORMRUNNER":[10,15,0,25,0,5,40,5],"ARCHIVIST":[10,0,30,20,5,30,5,0],"PYROMANCER":[15,0,40,25,0,5,10,5],"ORACLE":[15,0,15,15,10,25,15,5],"STARBREAKER":[10,0,45,25,0,10,10,0],"CITADEL":[30,5,0,5,30,25,0,5],"IRONCLAD":[20,15,0,10,45,5,5,0],"BASTION":[35,0,0,0,40,25,0,0],"DREADNOUGHT":[20,15,0,15,45,5,0,0],"LIFEWARDEN":[20,0,35,5,5,30,5,0],"COMBAT MEDIC":[20,0,30,20,10,10,10,0],"LIFEBINDER":[20,0,40,5,10,25,0,0],"TRIAGE COMMANDER":[20,0,25,10,5,15,25,0],"LONGSHOT":[10,25,0,40,0,5,10,10],"DISRUPTOR":[15,25,0,30,5,10,10,5],"DEADEYE":[5,25,0,45,0,0,10,15],"SIGNAL REAPER":[15,35,0,35,0,5,10,0],"NULLMANCER":[10,0,40,20,0,20,10,0],"HEX ASSASSIN":[10,0,30,25,0,5,20,10],"VOID SOVEREIGN":[20,0,35,10,10,20,5,0],"NIGHT HEX":[10,0,25,20,0,5,35,5],"JUGGERNAUT":[30,20,0,5,35,10,0,0],"SIEGEBREAKER":[20,40,0,25,10,0,5,0],"COLOSSUS":[35,35,0,0,25,5,0,0],"WAR ENGINE":[15,45,0,25,10,0,5,0],"SERAPH":[15,0,35,5,5,20,20,0],"WARDEN":[25,0,15,0,25,30,5,0],"ARCHANGEL":[25,0,40,0,5,20,10,0],"AEGIS PRIME":[20,0,20,0,30,30,0,0]};
+function promoGrowth(name){var out={},row=PROMO_GROWTH[name]||[];STATK.forEach(function(k,i){out[k]=row[i]||0;});return out;}
+function growthBonusLabel(g){return STATK.filter(function(k){return g[k]>0;}).map(function(k){return STATN[k]+" +"+g[k]+"%";}).join(" · ");}
+function promotionOptions(u){var d=CLASS_PATHS[u.key],tier=u.tier||0;if(!d||tier>=MAXTIER)return [];return [0,1].map(function(i){return {name:d[0][tier*2+i],stats:d[i+1],skill:PROMO_SKILLS[d[0][tier*2+i]],growth:promoGrowth(d[0][tier*2+i])};});}
+function canPromote(u){return u&&u.side==='ply'&&u.chp>0&&u.lvl>=PROMOLVL&&(u.tier||0)<MAXTIER&&promotionOptions(u).length>0;}
+function promoteUnit(u,i){
+ if(!canPromote(u)||!(i===0||i===1))return false;
+ var opt=promotionOptions(u)[i];u.careerBase=(u.careerBase||0)+u.lvl-1;u.tier=(u.tier||0)+1;u.path=(u.path||[]).concat(opt.name);
+ u.cls=opt.name;u.promoted=true;u.lvl=1;u.exp=0;u.over=0;u.mov++;
+ u.stats.hp+=4;u.chp+=4;opt.stats.forEach(function(k){u.stats[k]+=2;});
+ STATK.forEach(function(k){u.grow[k]+=opt.growth[k];});
+ say(u.name+' promoted to '+u.cls+' — level 1, all stats retained, +100% total growth.');return true;
+}
+function restoreCareer(u,p){
+ u.tier=p.tier===undefined?(p.promoted?1:0):p.tier;u.careerBase=p.careerBase||0;u.path=p.path||[];
+ if(p.tier===undefined&&p.promoted){u.careerBase=14;u.lvl=Math.max(1,u.lvl-14);u.path=[u.cls];}
+ /* Preserve saved movement and all previous gains. */
+}
+function actionComplete(u){u.acted=!u.extraAction;u.extraAction=false;}
+function flanking(a,d){return allies(a.side).some(function(u){return u!==a&&u.x===2*d.x-a.x&&u.y===2*d.y-a.y&&dist(u,d)===1;});}
+function emergencyHeal(t){if(t.side!=='ply'||t.chp<=0||t.chp>t.stats.hp*0.3)return;var e=allies('ply').filter(function(u){return hasSkill(u,'echo')&&!u.emergencyUsed&&dist(u,t)<=2+perk(u,"emergencyRange");})[0];if(!e)return;e.emergencyUsed=true;var amt=Math.min(t.stats.hp-t.chp,Math.ceil(t.stats.hp*(.4+perk(e,"emergency"))));t.chp+=amt;fxText(t,'+'+amt,'#54f0c8');say(e.name+' activated Emergency Protocol.');}
 /* ================= UNIT BUILD ================= */
 function mkUnit(def, side, lvl, opt) {
   opt = opt || {};
@@ -808,9 +909,9 @@ function mkUnit(def, side, lvl, opt) {
   var u = {
     id: S.uid++, key: def.key || def.name, name: look.name, cls: def.cls || def.name,
     promo: def.promo || null, spr: look.spr, pal: look.pal, side: side, mark: opt.mark || 0,
-    mov: def.mov, lvl: 1, exp: 0, x: 0, y: 0, px: 0, py: 0,
+    mov: def.mov, lvl: 1, exp: 0, tier:0, careerBase:0, path:[], x: 0, y: 0, px: 0, py: 0,
     stats: {}, grow: {}, bio: def.bio || '', acted: false, promoted: false,
-    wpn: mkWpn(def.wpn, opt.plus || 0), traits: [], boss: !!opt.boss,
+    wpn: mkWpn(def.wpn, opt.plus || 0), traits: side==='foe'?(def.innate||[]).slice():[], boss: !!opt.boss,
     ai: def.ai || 'hunt', flash: 0
   };
   for (var i = 0; i < STATK.length; i++) { u.stats[STATK[i]] = def.base[STATK[i]]; u.grow[STATK[i]] = def.grow[STATK[i]]; }
@@ -828,7 +929,7 @@ function mkUnit(def, side, lvl, opt) {
   if (u.mark > 0) {
     /* marks make hostiles deadlier faster than they make them unkillable,
        so player damage stays meaningful however deep the run goes */
-    var MKG = { hp: 6, str: 2, mag: 2, skl: 2, spd: 2, def: 1, res: 1, lck: 1 };
+    var MKG = { hp: 5, str: 2, mag: 2, skl: 2, spd: 1, def: 2, res: 2, lck: 1 };
     for (var m = 0; m < STATK.length; m++) {
       var mk = STATK[m];
       u.stats[mk] += u.mark * MKG[mk];
@@ -983,8 +1084,8 @@ function attackTiles(u, reach) {
   var w = u.wpn, out = {};
   for (var k in reach) {
     var p = k.split(','), ox = +p[0], oy = +p[1];
-    for (var dx = -w.rmax; dx <= w.rmax; dx++) {
-      for (var dy = -w.rmax; dy <= w.rmax; dy++) {
+    for (var dx = -wRange(u); dx <= wRange(u); dx++) {
+      for (var dy = -wRange(u); dy <= wRange(u); dy++) {
         var d = Math.abs(dx) + Math.abs(dy);
         if (d < w.rmin || d > wRange(u)) continue;
         var tx = ox + dx, ty = oy + dy;
@@ -994,98 +1095,173 @@ function attackTiles(u, reach) {
   }
   return out;
 }
-function wRange(u) { return u.wpn.rmax + (u.traits.indexOf('marksman') >= 0 && u.wpn.rmax > 1 ? 1 : 0); }
+function wRange(u) { return u.wpn.rmax + (hasSkill(u,'onyx')?1:0) + perk(u,'range') + (u.traits.indexOf('marksman') >= 0 && u.wpn.rmax > 1 ? 1 : 0); }
 function canReachTarget(u, t) {
   var d = dist(u, t);
   return d >= u.wpn.rmin && d <= wRange(u);
 }
 
 /* ================= COMBAT MATH ================= */
-function spdOf(u) { return u.stats.spd + (u.traits.indexOf('overclock') >= 0 ? 3 : 0); }
+function spdOf(u) { return u.stats.spd + perk(u,'speed') + (u.traits.indexOf('overclock') >= 0 ? 3 : 0); }
 function avoidOf(u) {
   var t = ter(u.x, u.y);
-  return spdOf(u) * 2 + u.stats.lck + t.avo + (shrineBonus(u,'focus')?10:0) + (u.traits.indexOf('overclock') >= 0 ? 10 : 0);
+  return spdOf(u) * 2 + u.stats.lck + perk(u,"avoid") + (hasSkill(u,"kestrel")?10:0) + t.avo + (shrineBonus(u,'focus')?10:0) + (u.traits.indexOf('overclock') >= 0 ? 10 : 0);
 }
 function forecast(a, d) {
   var w = a.wpn, mag = w.mag;
-  var atk = (mag ? a.stats.mag : a.stats.str) + w.mt + (shrineBonus(a,'power')?2:0);
+  var atk = (mag ? a.stats.mag : a.stats.str) + w.mt + (hasSkill(a,'onyx')?2+(a.chp<=a.stats.hp/2?Math.floor(a.stats.str*(.35+perk(a,'fury'))):0):0) + perk(a,'attack') + (d.jammed?perk(a,'jamDamage'):0) + (shrineBonus(a,'power')?2:0);
   var tt = ter(d.x, d.y);
   var dv = (mag ? d.stats.res : d.stats.def + tt.def)+(shrineBonus(d,'guard')?2:0);
+  dv=Math.max(0,dv-perk(a,'pierce')-(hasSkill(a,'sable')&&mag?2:0));
+  if(a.traits.indexOf('pierce')>=0)dv=Math.floor(dv*.75);
   var tri = triangle(w.type, d.wpn.type);
   var dmg = Math.max(0, atk + tri.dmg - dv - (d.traits.indexOf('shield') >= 0 ? 3 : 0));
+  if(a.traits.indexOf('frenzy')>=0&&a.chp<=a.stats.hp/2)dmg=Math.floor(dmg*1.25);
+  if(hasSkill(a,'vex')&&d.chp<=d.stats.hp/2)dmg=Math.floor(dmg*(1.4+perk(a,'execute')));
+  if(hasSkill(a,'rampart'))dmg+=Math.floor(a.stats.def*(.4+perk(a,'defScale')));
+  dmg=Math.max(0,dmg-perk(d,'guard')-(hasSkill(d,'rampart')?2:0));
   /* accuracy from a compressed skill-vs-evasion gap, so the curve stays sane
      forever instead of saturating at 100 / decaying to nothing */
   var off = a.stats.skl * 2 + Math.floor(a.stats.lck / 2);
   var gap = off - avoidOf(d);
   var comp = Math.round(42 * gap / (Math.abs(gap) + 26));
-  var hit = clamp(w.hit + comp + tri.hit + (shrineBonus(a,'focus')?15:0) + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 5, 100);
-  var crit = clamp(w.crit + Math.floor(a.stats.skl / 2) - d.stats.lck, 0, 60);
-  var dbl = spdOf(a) >= spdOf(d) + 4;
+  var hit = clamp(w.hit + comp + tri.hit + perk(a,"hit") + (hasSkill(a,"glitch")?12:0) + (shrineBonus(a,'focus')?15:0) + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 5, 100);
+  var crit = clamp(w.crit + Math.floor(a.stats.skl / 2) - d.stats.lck + (hasSkill(a,'sable')?10+(flanking(a,d)?15:0):0) + perk(a,'crit'), 0, a.side==='foe'?(a.boss?35:25):60);
+  var dbl = spdOf(a) >= spdOf(d) + Math.max(1,4-perk(a,"double"));
   return { dmg: dmg, hit: Math.round(hit), crit: Math.round(crit), dbl: dbl, tri: tri };
 }
 function canCounter(d, a) {
   if (d.chp <= 0) return false;
-  if (d.wpn.heal) return false;
+  if (d.wpn.heal && !hasSkill(d,"wisp") && !perk(d,"counter")) return false;
   var dd = dist(a, d);
   return dd >= d.wpn.rmin && dd <= wRange(d);
 }
 
 function strike(a, d) {
+  var before=d.chp;
   var f = forecast(a, d);
-  if (rnd() * 100 >= f.hit) { fxText(d, 'MISS', '#9fb0c4'); return { hit: false }; }
+  if (rnd() * 100 >= f.hit) { fxText(d, 'MISS', '#9fb0c4'); replayStrike(a,d,before,{hit:false});return { hit: false }; }
   var crit = rnd() * 100 < f.crit;
   var dmg = crit ? f.dmg * 3 : f.dmg;
+  if(d.shieldHP&&dmg>0){dmg=Math.max(0,dmg-d.shieldHP);d.shieldHP=0;}
   d.chp = Math.max(0, d.chp - dmg);
   d.flash = 1;
   S.shake = Math.max(S.shake, crit ? 7 : 3);
   fxText(d, (crit ? '!' : '') + dmg, crit ? '#ffe066' : (d.side === 'ply' ? '#ff6a6a' : '#ffffff'));
   fxHit(d);
-  return { hit: true, crit: crit, dmg: dmg, dead: d.chp <= 0 };
+  emergencyHeal(d);
+  if(hasSkill(a,'glitch')&&(S.phase==='player'||S.phase==='ally')&&!d.boss&&d.chp>0&&a.sabotageTurn!==S.turn){a.sabotageTurn=S.turn;d.jammed=true;say(d.name+' sabotaged.');}
+  var result={ hit: true, crit: crit, dmg: dmg, dead: d.chp <= 0 };replayStrike(a,d,before,result);return result;
 }
 
-function doCombat(a, d) {
-  var expA = 0, kills = 0;
+var replayCapture=null,replaySerial=0,replaySeen='',replayTimer=null;
+function replayUnit(u){return {id:u.id,name:u.name,cls:u.cls,pal:u.pal,spr:u.spr,hp:u.chp,max:u.stats.hp,side:u.side,color:unitHpColor(u,u.chp/u.stats.hp,true)};}
+function replayStrike(a,d,before,r){if(!replayCapture)return;replayCapture.events.push({from:a.id,to:d.id,before:before,after:d.chp,hit:r.hit,crit:!!r.crit,dmg:r.dmg||0});}
+function replayOpen(){return !HEADLESS&&typeof document!=='undefined'&&!!document.getElementById('combat-replay');}
+function closeReplay(){if(replayTimer){clearTimeout(replayTimer);replayTimer=null;}var el=document.getElementById('combat-replay');if(el)el.remove();}
+function showReplay(r){
+ if(HEADLESS||!r||!r.events.length||replaySeen===r.id)return;replaySeen=r.id;closeReplay();
+ var el=document.createElement('div');el.id='combat-replay';el.setAttribute('role','dialog');el.setAttribute('aria-label','Combat replay');
+ el.innerHTML='<section class="duelbox"><header><b>TACTICAL ENGAGEMENT</b><button class="mini" id="duel-skip">SKIP</button></header><div class="duel-arena"><div class="duel-unit" id="duel-a"><b></b><small></small><canvas></canvas><div class="duel-hp"><i></i></div><span></span></div><div class="duel-center"><b>VS</b><strong id="duel-hit">ENGAGE</strong></div><div class="duel-unit" id="duel-d"><b></b><small></small><canvas></canvas><div class="duel-hp"><i></i></div><span></span></div></div><p id="duel-log" aria-live="polite">Combat initiated</p></section>';document.body.appendChild(el);
+ var a=el.querySelector('#duel-a'),d=el.querySelector('#duel-d');function paint(box,u){box.querySelector('b').textContent=u.name;box.querySelector('small').textContent=u.cls;var c=box.querySelector('canvas');c.width=c.height=48;var ctx=c.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(getSpr(u.spr,u.pal),0,0,48,48);hp(box,u,u.hp);}
+ function hp(box,u,v){box.querySelector('.duel-hp i').style.cssText='background:'+u.color+';width:'+Math.max(0,Math.min(100,v/u.max*100))+'%';box.querySelector('span').textContent=v+' / '+u.max+' HP';box.classList.toggle('down',v<=0);}
+ paint(a,r.a);paint(d,r.d);el.querySelector('#duel-skip').onclick=closeReplay;var i=0;
+ function step(){if(!replayOpen())return;if(i>=r.events.length){hp(a,r.a,r.endA);hp(d,r.d,r.endD);el.querySelector('#duel-hit').textContent='COMPLETE';replayTimer=setTimeout(closeReplay,600);return;}var ev=r.events[i++],left=ev.from===r.a.id,from=left?a:d,to=left?d:a,unit=left?r.d:r.a;from.classList.remove('lunge');to.classList.remove('impact');void from.offsetWidth;from.classList.add('lunge');if(ev.hit)to.classList.add('impact');hp(to,unit,ev.after);el.querySelector('#duel-hit').textContent=ev.hit?(ev.crit?'CRITICAL '+ev.dmg:'−'+ev.dmg):'MISS';el.querySelector('#duel-log').textContent=(left?r.a.name:r.d.name)+(i===1?' attacks':' strikes')+' → '+unit.name;replayTimer=setTimeout(step,520);}
+ replayTimer=setTimeout(step,280);
+}
+function doCombat(a,d){
+ var capture=a.side==='ply'&&!a.autonomous&&d.side==='foe';if(capture)replayCapture={id:String(Date.now())+'-'+(++replaySerial),a:replayUnit(a),d:replayUnit(d),events:[]};
+ try{return resolveCombat(a,d);}finally{if(capture){var r=replayCapture;replayCapture=null;r.endA=a.chp;r.endD=d.chp;S.combatReplay=r;showReplay(r);}}
+}
+function resolveCombat(a, d) {
+  var expA = 0, expD = 0, killsA = 0, killsD = 0;
   var fa = forecast(a, d);
   var r = strike(a, d);
   expA += r.hit ? 10 : 2;
-  if (d.chp <= 0) { kills++; }
+  if(hasSkill(a,'nova')&&r.hit&&r.dmg>0){allies(d.side).slice().forEach(function(t){if(t!==d&&t.chp>0&&dist(t,d)===1){var splash=Math.max(1,Math.floor(r.dmg*(.4+perk(a,"splash"))));t.chp=Math.max(0,t.chp-splash);fxText(t,splash,'#b38aff');if(!t.chp){onDeath(t,a);combatExp(a,t,0,1);}}});}
+  if (d.chp <= 0) { killsA++; }
   else {
     if (canCounter(d, a)) {
       var r2 = strike(d, a);
-      if (a.chp <= 0) { onDeath(a, d); return finishCombat(a, d, expA, kills); }
-      if (!r2.hit) { } // nothing
+      expD += r2.hit ? 10 : 2;
+      if (a.chp <= 0) { killsD++; onDeath(a, d); return finishCombat(a, d, expA, killsA, expD, killsD); }
       var fd = forecast(d, a);
-      if (fd.dbl && a.chp > 0) { strike(d, a); if (a.chp <= 0) { onDeath(a, d); return finishCombat(a, d, expA, kills); } }
+      if (fd.dbl && a.chp > 0) {
+        var r4 = strike(d, a); expD += r4.hit ? 8 : 2;
+        if (a.chp <= 0) { killsD++; onDeath(a, d); return finishCombat(a, d, expA, killsA, expD, killsD); }
+      }
     }
     if (fa.dbl && d.chp > 0 && a.chp > 0) {
       var r3 = strike(a, d);
       expA += r3.hit ? 8 : 2;
-      if (d.chp <= 0) kills++;
+      if (d.chp <= 0) killsA++;
     }
   }
   if (d.chp <= 0) onDeath(d, a);
-  return finishCombat(a, d, expA, kills);
+  return finishCombat(a, d, expA, killsA, expD, killsD);
 }
-function finishCombat(a, d, expA, kills) {
-  if (a.side !== 'ply') return true;
-  var lvlDiff = Math.max(0, d.lvl - a.lvl);
-  var gain = 0;
-  if (a.chp > 0) {
-    gain = expA + lvlDiff * 3 + (kills ? 48 + lvlDiff * 8 : 0);
-    if (kills && d.boss) gain += 70;
-    grantExp(a, Math.round(gain));
+function finishCombat(a, d, expA, killsA, expD, killsD) {
+  /* Award the same combat and kill EXP on either phase. No EXP for a unit
+     that could not counter; resolve all strikes before applying level-ups. */
+  if (a.side === 'ply' && d.side === 'foe') {
+    combatExp(a,d,expA,killsA);
+    if(hasSkill(a,'kestrel')&&killsA&&a.chp>0&&(S.phase==='player'||S.phase==='ally')&&a.quickTurn!==S.turn){a.quickTurn=S.turn;a.extraAction=true;say(a.name+' QUICKDRAW: extra action!');}
   }
-  /* the rest of the squad learns from the engagement too, so the roster
-     levels together instead of one carry outpacing everyone */
-  if (kills) {
-    var share = Math.round((48 + lvlDiff * 8 + (d.boss ? 70 : 0)) * 0.4);
-    var mates = allies('ply');
-    for (var i = 0; i < mates.length; i++) if (mates[i].id !== a.id) grantExp(mates[i], share);
-  }
+  else if (d.side === 'ply' && a.side === 'foe') combatExp(d, a, expD, killsD);
   return true;
+}
+function combatExp(u, enemy, exp, kills) {
+  if (!exp && !kills) return;
+  var lvlDiff = Math.max(0, enemy.lvl - careerLevel(u));
+  var killExp = kills ? 48 + lvlDiff * 8 + (enemy.boss ? 70 : 0) : 0;
+  if (u.chp > 0) { grantExp(u, Math.round(exp + lvlDiff * 3 + killExp)); if(kills){var rate=perk(u,"killHeal")+(hasSkill(u,"vex")?.1:0);if(rate){var h=Math.min(u.stats.hp-u.chp,Math.ceil(u.stats.hp*rate));u.chp+=h;if(h)fxText(u,"+"+h,"#54f0c8");}} }
+  if (kills) {
+    var share = Math.round(killExp * 0.4), mates = allies('ply');
+    for (var i = 0; i < mates.length; i++) if (mates[i].id !== u.id) grantExp(mates[i], share);
+  }
+}
+
+/* Store a detached copy: no rerolls or lost purchases on resurrection. */
+function fallenSnapshot(u) {
+  return { name: u.name, cls: u.cls, lvl: u.lvl, def: u.key,
+    chapter: S.chapter, owner: u.owner || '', autonomous:!!u.autonomous,
+    progress: JSON.parse(JSON.stringify({ exp: u.exp || 0, over: u.over || 0,
+      stats: u.stats, grow: u.grow, wpn: u.wpn, items: u.items || [],
+      forgeLv: u.forgeLv || 0, promoted: !!u.promoted, tier:u.tier||0,careerBase:u.careerBase||0,path:u.path||[], mov: u.mov,
+      pal: u.pal, spr: u.spr, traits: u.traits || [] })) };
+}
+function canRevive(f){if(!f||!charByKey(f.def))return false;if(f.autonomous)return recruitEligible(f.owner||'');return allies('ply').filter(function(u){return !u.autonomous;}).length<SQUAD_CAP&&!allies('ply').some(function(u){return !u.autonomous&&u.key===f.def;});}
+function reviveFallen(fullHealth, fallbackOwner) {
+  if (!S.dead.length) return null;
+  var index=S.dead.length-1;while(index>=0&&!canRevive(S.dead[index]))index--;if(index<0)return null;
+  var f=S.dead[index],def=charByKey(f.def);
+  var p = f.progress, nu = mkUnit(def, 'ply', 1, {look: {name:f.name, pal:p && p.pal, spr:p && p.spr}});
+  if (p && p.stats && p.grow && p.wpn) {
+    p = JSON.parse(JSON.stringify(p));
+    nu.lvl = f.lvl; nu.exp = p.exp; nu.over = p.over;
+    nu.stats = p.stats; nu.grow = p.grow; nu.wpn = p.wpn;
+    nu.items = p.items; nu.forgeLv = p.forgeLv; nu.promoted = p.promoted;
+    nu.cls = f.cls; nu.mov = p.mov; nu.traits = p.traits;restoreCareer(nu,p);
+  } else {
+    /* Legacy saves only kept level/name/class; missing gains cannot be recovered. */
+    var oldLevelups = S.levelups; S.levelups = [];
+    while (nu.lvl < f.lvl && !atMax(nu)) levelUp(nu);
+    S.levelups = oldLevelups;
+    nu.cls = f.cls || nu.cls;
+    if(f.cls===def.promo){nu.promoted=true;restoreCareer(nu,{promoted:true});}
+  }
+  nu.owner = f.autonomous?String(f.owner||''):(f.owner || fallbackOwner || '');nu.autonomous=!!f.autonomous;
+  nu.chp = fullHealth ? nu.stats.hp : Math.max(1, Math.floor(nu.stats.hp / 2));
+  S.dead.splice(index,1); S.units.push(nu); return nu;
+}
+function recruitPool() {
+  var live = allies('ply');
+  return ALLCHARS.filter(function(d){return !live.some(function(u){return !u.autonomous&&u.key===d.key;}) && !S.dead.some(function(f){return !f.autonomous&&f.def===d.key;});});
 }
 
 function onDeath(u, killer) {
+  if (u.deathRecorded) return;
+  u.deathRecorded = true;
   say(u.name + (u.side === 'ply' ? ' is DOWN.' : ' destroyed.'));
   fxBoom(u);
   S.shake = 9;
@@ -1100,8 +1276,7 @@ function onDeath(u, killer) {
       }
     }
   }
-  if (u.side === 'ply') S.dead.push({ name: u.name, cls: u.cls, lvl: u.lvl, def: u.key,
-    chapter: S.chapter, owner: u.owner || '' });
+  if (u.side === 'ply') S.dead.push(fallenSnapshot(u));
 }
 
 /* ================= EXP / LEVELS ================= */
@@ -1124,12 +1299,12 @@ function overdrive(u, amt) {
   }
 }
 function grantExp(u, amt) {
-  if (atMax(u)) { u.exp = 0; overdrive(u, amt); return; }
+  if (atMax(u)) { u.exp = 0; if((u.tier||0)>=MAXTIER)overdrive(u, amt); return; }
   u.exp += amt;
   while (u.exp >= 100) {
     u.exp -= 100;
     levelUp(u);
-    if (atMax(u)) { u.exp = 0; break; }
+    if (atMax(u)) { var remainder=u.exp;u.exp=0;if((u.tier||0)>=MAXTIER)overdrive(u,remainder);break; }
   }
 }
 function levelUp(u) {
@@ -1145,13 +1320,6 @@ function levelUp(u) {
   }
   if (gains.hp) u.chp += gains.hp;
   if (!Object.keys(gains).length) gains.none = 1;
-  if (u.lvl >= PROMOLVL && !u.promoted && u.promo) {
-    u.promoted = true; u.cls = u.promo; u.mov += 1;
-    u.stats.hp += 4; u.chp += 4;
-    var bst = STATK.slice(1).sort(function (a, b) { return u.grow[b] - u.grow[a]; });
-    u.stats[bst[0]] += 2; u.stats[bst[1]] += 2;
-    gains.promo = u.promo;
-  }
   S.levelups.push({ name: u.name, lvl: u.lvl, gains: gains, pal: u.pal, spr: u.spr });
   fxText(u, 'LV UP', '#b6ff6a');
   say(u.name + ' reached level ' + u.lvl + '.');
@@ -1165,14 +1333,15 @@ function fxBoom(u) { fxPush({ k: 'boom', x: u.x, y: u.y, t: 0, dur: 0.5, pal: u.
 function fxHeal(u) { fxPush({ k: 'heal', x: u.x, y: u.y, t: 0, dur: 0.6 }); }
 
 /* ================= ACTIONS ================= */
-function healPower(u) { return u.stats.mag + 8 + u.wpn.plus * 2; }
+function healPower(u) { return u.stats.mag + 8 + u.wpn.plus * 2 + (hasSkill(u,"echo")?4:0) + perk(u,"heal"); }
 
 function doHeal(a, t) {
-  var amt = Math.min(healPower(a), t.stats.hp - t.chp);
+  var amt = Math.min(healPower(a), t.stats.hp - t.chp, a.side==='foe'?Math.max(1,Math.ceil(t.stats.hp*.25)):Infinity);
   t.chp += amt;
+  var shield=(hasSkill(a,'wisp')?5:0)+perk(a,'shield');if(shield)t.shieldHP=Math.max(t.shieldHP||0,shield);
   fxText(t, '+' + amt, '#54f0c8'); fxHeal(t);
   say(a.name + ' repaired ' + t.name + ' for ' + amt + '.');
-  grantExp(a, Math.max(20, 26 + Math.floor(amt / 2)));
+  if(a.side==='ply')grantExp(a, Math.max(20, 26 + Math.floor(amt / 2)));
 }
 function useKit(u) {
   if (S.kits <= 0) return;
@@ -1215,16 +1384,17 @@ function aiScore(u, tile, t) {
 
 function aiAct(u, done) {
   if (u.chp <= 0) { done(); return; }
+  if(u.jammed){u.jammed=false;u.acted=true;say(u.name+' lost its action to sabotage.');done();return;}
   var reach = reachable(u);
   var enemies = foesOf(u.side);
-  var isHealer = !!u.wpn.heal;
+  var isHealer = !!u.wpn.heal || u.traits.indexOf('repair')>=0;
 
   /* healer logic first */
   if (isHealer) {
     var hurt = allies(u.side).filter(function (a) { return a.id !== u.id && a.chp < a.stats.hp * 0.75; })
       .sort(function (a, b) { return (a.chp / a.stats.hp) - (b.chp / b.stats.hp); });
-    if (hurt.length) {
-      var tgt = hurt[0], bestT = null, bestD = 1e9;
+    for(var hi=0;hi<hurt.length;hi++) {
+      var tgt = hurt[hi], bestT = null, bestD = 1e9;
       for (var k in reach) {
         var p = k.split(','), ox = +p[0], oy = +p[1];
         var d = Math.abs(ox - tgt.x) + Math.abs(oy - tgt.y);
@@ -1239,6 +1409,7 @@ function aiAct(u, done) {
     }
   }
 
+  if(u.autonomous&&u.wpn.heal){var mates=allies('ply').filter(function(a){return a!==u&&!a.autonomous;});if(mates.length){var target=mates.sort(function(a,b){return dist(u,a)-dist(u,b);})[0],bestPos=null,bs=Infinity;Object.keys(reach).forEach(function(k){var xy=k.split(',').map(Number),tile={x:xy[0],y:xy[1]},d=Math.max(0,dist(tile,target)-wRange(u)),danger=enemies.reduce(function(t,e){return t+(dist(tile,e)<=wRange(e)+e.mov?1:0);},0),score=d*5+danger*2+(ter(tile.x,tile.y).burn?20:0);if(score<bs){bs=score;bestPos=tile;}});if(bestPos){moveUnit(u,pathTo(u,bestPos.x,bestPos.y),function(){u.acted=true;done();});return;}}}
   /* best attack */
   var best = null;
   for (var kk in reach) {
@@ -1255,7 +1426,7 @@ function aiAct(u, done) {
   function engage() {
     moveUnit(u, pathTo(u, best.x, best.y), function () {
       if (best.e.chp > 0 && u.chp > 0) doCombat(u, best.e);
-      u.acted = true; done();
+      actionComplete(u); done();
     });
   }
   /* machines trade willingly, and grow less patient as the fight drags on.
@@ -1295,32 +1466,38 @@ var OBJS = {
   boss:   { name: 'DECAPITATE', desc: 'Destroy the commander.' },
   hold:   { name: 'HOLD', desc: 'Survive the assault.' }
 };
-var SITES = ['ORBITAL DOCK', 'COOLANT SPINE', 'RELAY VAULT', 'ASH FOUNDRY', 'SIGNAL GARDEN', 'CARRIER HULK',
-  'MAG-RAIL YARD', 'DEEP ARCHIVE', 'SLAG TERRACE', 'BLACK CHAPEL', 'DRIFT NURSERY', 'VOID SPILLWAY'];
+var SITES = ['ORBITAL DOCK', 'CRYO NETWORK', 'RELAY VAULT', 'PLASMA FOUNDRY', 'BIOTECH DOME', 'DERELICT STARCRUISER',
+  'MAG-RAIL YARD', 'QUANTUM ARCHIVE', 'SLAG TERRACE', 'BLACK CHAPEL', 'DRIFT NURSERY', 'VOID SPILLWAY'];
 
-function foeLevel(ch) { return Math.min(MAXLVL, 1 + Math.floor((ch - 1) * 1.3)); }
-/* once hostiles hit the level cap they escalate in marks instead */
-function foeMark(ch) { var over = ch - 15; return over <= 0 ? 0 : Math.ceil(over / 4); }
-/* Threat budget uses the original deployed unit count, not the current survivors.
-   Every extra starting operative adds at least one hostile in every chapter. */
-function startingSquadSize() {
-  return Math.max(1, Math.min(8, Math.floor(Number(S.squadSize) || 1)));
+function foeLevel(ch) { var sq=startingSquadSize();return Math.min(MAXLVL,1+Math.floor((ch-1)*(sq<=2?.85:1.12))); }
+/* After the level cap, marks accelerate gradually to keep up with promotions. */
+function foeMark(ch) { var sq=startingSquadSize(), start=sq<=2?23:18;var base=Math.max(0,Math.floor((ch-start)/(sq<=2?4:3))+(ch>=start?1:0));var late=sq===1?Math.floor(Math.max(0,ch-45)/8):Math.floor(Math.max(0,ch-24)/(sq===2?3:2));return base+late; }
+function startingSquadSize() {return Math.max(1,Math.min(16,Math.floor(Number(S.squadSize)||1)));}
+function foeCount(ch,squadSize) {
+  var sq=squadSize===undefined?startingSquadSize():Math.max(1,Math.min(16,Math.floor(Number(squadSize)||1)));
+  var early=Math.min(9,Math.max(0,Math.floor((ch-1)*.5))),late=Math.floor(Math.max(0,ch-22)/8);
+  return Math.min(30,(sq<=2?sq:sq+1)+(sq>=6?Math.floor(sq/4):0)+Math.round(early*(sq<=2?.22+.10*sq:.42+.14*sq))+Math.min(sq+2,late));
 }
-function foeCount(ch, squadSize) {
-  var sq = squadSize === undefined ? startingSquadSize() : Math.max(1, Math.min(8, Math.floor(Number(squadSize) || 1)));
-  var escalation = Math.min(9, Math.max(0, Math.floor((ch - 1) * 0.55)));
-  return sq + 1 + Math.round(escalation * (0.45 + 0.11 * sq));
+function reinforcementCount(ch) {var sq=startingSquadSize();return Math.min(10,1+Math.floor((sq-1)/2)+Math.floor(ch/(sq<=2?15:10)));}
+function wpnPlus(ch) {return Math.min(14,Math.floor((ch-1)/3));}
+function traitChance(ch) {return ch<9?0:Math.min(.55,(ch-8)*.045);}
+function foePool(ch) {return Object.keys(FOES).filter(function(k){return FOES[k].from<=ch;});}
+/* Weighted random encounter composition; keep support and elite counts bounded.
+   Theme preferences are soft weights: no eligible enemy is locked to a map. */
+var ENEMY_THEME_PREFS=[['gunner','brute','titan'],['sniper','hexer','breaker'],['pike','engineer','sentinel'],['skitter','hunter','reaper'],['grunt','brute','sentinel']];
+function pickFoe(ch,existing,magicOnly){
+ var pool=foePool(ch),sq=startingSquadSize(),count=foeCount(ch),supportMax=Math.max(1,Math.floor(count/6)),eliteMax=Math.max(1,Math.floor(count/4));
+ function total(role){return existing.filter(function(k){return FOES[k]&&FOES[k].role===role;}).length;}
+ var support=total('support'),elite=total('elite');
+ var eligible=pool.filter(function(k){var f=FOES[k];return (!magicOnly||WPN[f.wpn].mag)&&!(f.role==='support'&&support>=supportMax)&&!(f.role==='elite'&&elite>=eliteMax);});
+ if(!eligible.length)eligible=pool.filter(function(k){return !FOES[k].role;});
+ var preferred=ENEMY_THEME_PREFS[S.terrain]||[];
+ var weights=eligible.map(function(k){var f=FOES[k],w=f.weight||1;if(sq<=2&&f.role)w*=.6;if(preferred.indexOf(k)>=0)w*=1.5;w/=1+.55*existing.filter(function(e){return e===k;}).length;return w;});
+ var r=RNG.next()*weights.reduce(function(a,b){return a+b;},0);for(var i=0;i<eligible.length;i++){r-=weights[i];if(r<0)return eligible[i];}return eligible[eligible.length-1];
 }
-function reinforcementCount(ch) {
-  return Math.min(12, 1 + Math.floor((startingSquadSize() - 1) / 2) + Math.floor(ch / 7));
-}
-function wpnPlus(ch) { return Math.min(14, Math.floor((ch - 1) / 2.5)); }
-function traitChance(ch) { return ch < 9 ? 0 : Math.min(0.65, (ch - 8) * 0.07); }
-
-function foePool(ch) {
-  var pool = [];
-  for (var k in FOES) if (FOES[k].from <= ch) pool.push(k);
-  return pool;
+function randomFoeTraits(f,ch,isBoss){
+ var tc=traitChance(ch),keys=['shield','overclock','regen','volatile','marksman'].filter(function(t){return f.traits.indexOf(t)<0&&(t!=='marksman'||f.wpn.rmax>1);});
+ if(keys.length&&RNG.chance(isBoss?Math.min(.8,tc+.18):tc)){f.traits.push(keys.splice(RNG.int(keys.length),1)[0]);if(isBoss&&ch>=20&&keys.length&&RNG.chance(.35))f.traits.push(keys[RNG.int(keys.length)]);}
 }
 
 function placeNear(x, y, used) {
@@ -1343,13 +1520,14 @@ function startChapter() {
   S.turn = 1; S.phase = 'player'; S.sel = null; S.mode = 'idle';
   S.fx = []; S.movers = []; S.busy = 0; S.levelups = []; S.rewards = null; S.inspect = null;
   S.obj = ch % 5 === 0 ? 'boss' : (ch > 3 && RNG.chance(0.22) ? 'hold' : 'wipe');
-  S.objTurns = 4 + Math.floor(ch / 4);
+  S.objTurns = Math.min(12, 4 + Math.floor(ch / 4));
   var th = themeOf(ch);
   S.site = th.name + ' / ' + th.sites[S.layout % th.sites.length];
   S.reinforce = [];
 
   /* keep survivors, clear foes */
   S.units = S.units.filter(function (u) { return u.side === 'ply' && u.chp > 0; });
+  S.squadSize=Math.max(S.squadSize||1,S.units.length);
   var used = {};
   /* player spawn: left edge, reachable column */
   var slots = [];
@@ -1358,7 +1536,8 @@ function startChapter() {
     var sp = slots[(i * 3 + 1) % slots.length];
     var pos = placeNear(sp.x, sp.y, used);
     var u = S.units[i];
-    u.x = pos.x; u.y = pos.y; u.px = pos.x; u.py = pos.y; u.acted = false; u.flash = 0;
+    u.x = pos.x; u.y = pos.y; u.px = pos.x; u.py = pos.y; u.acted = false; u.flash = 0; u.quickTurn=0;u.sabotageTurn=0;u.extraAction=false;u.emergencyUsed=false;u.shieldHP=0;u.jammed=false;
+    if(u.autonomous&&u.lvl>=MAXLVL&&canPromote(u))promoteUnit(u,RNG.int(2));
     if (ch > 1) u.chp = Math.min(u.stats.hp, u.chp + Math.ceil(u.stats.hp * 0.6));
   }
   var anchor = { x: 1, y: Math.floor(MAPH / 2) };
@@ -1367,16 +1546,12 @@ function startChapter() {
   /* foes */
   var pool = foePool(ch), lvl = foeLevel(ch), n = foeCount(ch), plus = wpnPlus(ch), tc = traitChance(ch);
   var mark = foeMark(ch);
-  if (S.obj === 'boss') n = Math.max(1, n - 2); /* one commander joins the escorts */
-  var tkeys = Object.keys(TRAITS);
+  if (S.obj === 'boss') n = Math.max(0, n - 1); /* commander occupies one slot in the threat budget */
+  var pickedFoes=[];
   function spawnFoe(def, isBoss, lv) {
     var f = mkUnit(def, 'foe', lv, { plus: plus, boss: isBoss, mark: mark > 0 ? mark + (isBoss ? 1 : 0) : 0,
-      bossHp: isBoss ? (1.1 + Math.min(0.5, ch * 0.012)) : 1 });
-    if (tc > 0 && RNG.chance(isBoss ? Math.min(0.9, tc + 0.3) : tc)) {
-      f.traits.push(tkeys[RNG.int(tkeys.length)]);
-      if (isBoss && RNG.chance(0.4)) { var t2 = tkeys[RNG.int(tkeys.length)]; if (f.traits.indexOf(t2) < 0) f.traits.push(t2); }
-    }
-    if (f.traits.indexOf('marksman') >= 0 && f.wpn.rmax < 2) f.traits.splice(f.traits.indexOf('marksman'), 1);
+      bossHp: isBoss ? (startingSquadSize()<=2?1.0+Math.min(.25,ch*.008):1.1+Math.min(.5,ch*.012)) : 1 });
+    randomFoeTraits(f,ch,isBoss);
     /* early on the machines hold their ground, so there is room to learn to bait
        and pick fights. from chapter four they come for you. */
     if (!isBoss && ch <= 3) f.ai = 'guard';
@@ -1398,21 +1573,18 @@ function startChapter() {
     f.x = p.x; f.y = p.y; f.px = p.x; f.py = p.y; S.units.push(f); return f;
   }
   if (S.obj === 'boss') {
-    var bd = BOSSES[(Math.floor(ch / 5) - 1) % BOSSES.length];
+    var bd = BOSSES[RNG.int(Math.min(BOSSES.length,1+Math.floor((ch-5)/5)))];
     var b = spawnFoe(bd, true, Math.min(MAXLVL, lvl + 1 + Math.floor(ch / 10)));
     if (b) { b.boss = true; S.bossId = b.id; say('Commander detected: ' + b.name + '.'); }
-    else { S.obj = 'wipe'; S.bossId = null; }
+    else { S.obj = 'wipe'; S.bossId = null; n++; }
   } else S.bossId = null;
-  var magPool = pool.filter(function (p) { return WPN[FOES[p].wpn].mag; });
-  var magWant = magPool.length ? Math.max(1, Math.round(n * 0.28)) : 0;
-  for (var j = 0; j < n; j++) {
-    var pick;
-    if (j < magWant) pick = magPool[RNG.int(magPool.length)];
-    else pick = pool[RNG.int(pool.length)];
-    spawnFoe(FOES[pick], false, lvl);
+  /* A varied random mix, with a chance of magic pressure rather than a forced counter to small teams. */
+  for(var j=0;j<n;j++){
+    var pick=pickFoe(ch,pickedFoes,j===0&&ch>=7&&n>=4&&RNG.chance(.65));
+    if(spawnFoe(FOES[pick],false,lvl))pickedFoes.push(pick);
   }
   if (S.obj === 'hold') {
-    var waves = 1 + Math.floor(ch / 8);
+    var waves = Math.min(4,1 + Math.floor(ch / (startingSquadSize()<=2?14:9)));
     for (var w = 1; w <= waves; w++) S.reinforce.push({ turn: 1 + w * 2, n: reinforcementCount(ch) });
   }
 
@@ -1432,9 +1604,11 @@ function spawnReinforcements(n) {
   for (var y = 0; y < MAPH; y++) for (var x = MAPW - 3; x < MAPW; x++) {
     if (!ter(x, y).block && !unitAt(x, y) && open[x + ',' + y]) free.push({ x:x, y:y });
   }
-  while (spawned < n && free.length) {
+  var existing=allies("foe").map(function(u){return Object.keys(FOES).find(function(k){return FOES[k].name===u.key;});});
+  while (spawned < n && free.length && allies("foe").length<foeCount(S.chapter)+reinforcementCount(S.chapter)) {
     var pos = free.splice(RNG.int(free.length), 1)[0];
-    var f = mkUnit(FOES[pool[RNG.int(pool.length)]], 'foe', lvl, { plus: plus, mark: foeMark(S.chapter) });
+    var pick=pickFoe(S.chapter,existing,false);existing.push(pick);
+    var f = mkUnit(FOES[pick], 'foe', lvl, { plus: plus, mark: foeMark(S.chapter) });randomFoeTraits(f,S.chapter,false);
     f.x = pos.x; f.y = pos.y; f.px = pos.x; f.py = pos.y; S.units.push(f); spawned++;
   }
   if (spawned) {
@@ -1458,6 +1632,7 @@ function phaseStart(side) {
       u.chp = Math.max(0, u.chp - d); fxText(u, d, '#ff8a3a');
       if (u.chp <= 0) onDeath(u, null);
     }
+    if(u.chp>0&&side==='ply'&&perk(u,'regen')){var ph=Math.min(u.stats.hp-u.chp,Math.ceil(u.stats.hp*perk(u,'regen')));u.chp+=ph;if(ph)fxText(u,'+'+ph,'#54f0c8');}
     if (u.chp > 0 && u.traits.indexOf('regen') >= 0) {
       var r = Math.max(1, Math.round(u.stats.hp * 0.15));
       u.chp = Math.min(u.stats.hp, u.chp + r); fxText(u, '+' + r, '#8affd8');
@@ -1467,7 +1642,7 @@ function phaseStart(side) {
 
 function checkEnd() {
   if (S.screen !== 'map') return true;
-  if (!allies('ply').length) { gameOver(); return true; }
+  if (!allies('ply').some(function(u){return !u.autonomous;})) { gameOver(); return true; }
   var foesLeft = allies('foe').length;
   if (S.obj === 'wipe' && foesLeft === 0) { chapterClear(); return true; }
   if (S.obj === 'boss') {
@@ -1479,6 +1654,15 @@ function checkEnd() {
 }
 
 function endPlayerPhase() {
+  if(S.busy||S.screen!=='map'||S.phase!=='player')return;
+  if(replayOpen()){schedule(endPlayerPhase,150);return;}
+  S.phase='ally';S.sel=null;S.mode='idle';S.reach=null;S.atkTiles=null;
+  var queue=allies('ply').filter(function(u){return u.autonomous;}),i=0;
+  if(queue.length){S.banner='AI ALLY PHASE';S.bannerT=.9;netSync();refreshUI();}
+  function next(){if(checkEnd())return;while(i<queue.length&&queue[i].chp<=0)i++;if(i>=queue.length){startEnemyPhase();return;}var u=queue[i++];function done(){netSync();if(checkEnd())return;if(!u.acted&&u.chp>0){aiAct(u,function(){u.acted=true;schedule(next,110);});}else schedule(next,110);}aiAct(u,done);}
+  next();
+}
+function startEnemyPhase() {
   if (S.busy) return;
   S.phase = 'foe'; S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null;
   if (checkEnd()) return;
@@ -1511,22 +1695,79 @@ function endFoePhase() {
   if (checkEnd()) return;
   S.banner = 'PLAYER PHASE'; S.bannerT = 0.9;
   if (NET.local) { NET.localActive = 0; if (localOwners().length > 1) S.handoff = true; }
+  saveGame();
   netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
-function schedule(fn, ms) { if (HEADLESS) { fn(); } else { setTimeout(fn, ms); } }
+var runEpoch=0;
+function schedule(fn, ms) { var epoch=runEpoch;if (HEADLESS) { fn(); } else { setTimeout(function(){if(epoch===runEpoch)fn();}, ms); } }
 
 /* ================= BETWEEN-BATTLE ROUTES ================= */
 var ROUTES = {
-  wheel: {name:'FORTUNE WHEEL', icon:'◈', desc:'Spin once: win or lose gold, gain a permanent stat, find or lose an item.'},
-  shop: {name:'GROWTH MARKET', icon:'▣', desc:'Spend shared gold on growth modules for your operatives.'},
-  chest: {name:'SALVAGE CHEST', icon:'▤', desc:'Open a sealed crate. Gold, a growth item, or nothing.'},
-  forge: {name:'WEAPON FORGE', icon:'⚒', desc:'Upgrade a weapon: +1 might and +3 percentage points to every growth, max 3 levels.'},
-  shrine: {name:'SIGNAL SHRINE', icon:'✧', desc:'Bless the whole squad for the next battle only.'},
-  camp: {name:'RECOVERY CAMP', icon:'✚', desc:'Heal, recruit a new operative, or recover a fallen ally.'}
+  wheel: {name:'PROBABILITY TERMINAL', icon:'◈', desc:'Spin once: win or lose gold, gain a permanent stat, find or lose an item.'},
+  shop: {name:'QUANTUM EXCHANGE', icon:'▣', desc:'Spend shared gold on growth modules for your operatives.'},
+  chest: {name:'SALVAGE POD', icon:'▤', desc:'Open a sealed crate. Gold, a growth item, or nothing.'},
+  forge: {name:'NANOFORGE', icon:'⚒', desc:'Upgrade a weapon: +1 might and +3 percentage points to every growth, max 3 levels.'},
+  shrine: {name:'BOOST RELAY', icon:'✧', desc:'Bless the whole squad for the next battle only.'},
+  camp: {name:'MEDICAL STATION', icon:'✚', desc:'Heal the squad or recover a fallen ally.'},
+  recruit: {name:'MERCENARY RELAY', icon:'⬡', desc:'Hire an autonomous operative. One active AI ally per real player.'}
 };
+/* Route story scenes use vector silhouettes and ambient animation, independent of rewards. */
+var ROUTE_SCENES={
+ wheel:{color:'#cf9bff',zone:'SECTOR 07 / SIGNAL ARCADE',speaker:'ORACLE-7 · PROBABILITY AI',dialog:'Welcome, operative. One spin, one future. The terminal cannot promise fortune — only a result. Shall we disturb the odds?',after:'Probability resolved. Your outcome has been recorded.',preview:'CHANCE / HOLOGRAMS'},
+ shop:{color:'#5be4ff',zone:'SECTOR 12 / TRADE CONCOURSE',speaker:'KIRA · MODULE BROKER',dialog:'Fresh modules, straight from the orbital freight lanes. I have four in stock. Spend wisely — the next fight will not wait for your credits.',after:'Transaction logged. Your equipment manifest is updated.',preview:'TRADE / NEON MARKET'},
+ chest:{color:'#ffc66c',zone:'SECTOR 03 / WRECK FIELD',speaker:'SCANNER · SALVAGE PROTOCOL',dialog:'Unregistered cargo detected. The pod is still sealed. Its beacon is weak, but the internal sensors suggest something may have survived the crash.',after:'Salvage scan complete. No further cargo signatures detected.',preview:'SALVAGE / DEBRIS FIELD'},
+ forge:{color:'#ff9a59',zone:'SECTOR 18 / INDUSTRIAL CORE',speaker:'DAX · NANOTECH ENGINEER',dialog:'Place your weapon in the assembler. My nanites can reinforce its frame and tune your growth circuits. Three upgrades per weapon — no more, or the core will burn out.',after:'Reassembly complete. Weapon diagnostics are green.',preview:'UPGRADE / ASSEMBLY BAY'},
+ shrine:{color:'#b5a2ff',zone:'SECTOR 29 / ANCIENT NETWORK',speaker:'RELAY ZERO · SIGNAL INTELLIGENCE',dialog:'The network recognizes your squad. Choose an augmentation: power, protection or focus. I can sustain the signal for one battle only.',after:'Augmentation transmitted. Signal will expire after the next engagement.',preview:'AUGMENT / ENERGY CORE'},
+ camp:{color:'#69f2bd',zone:'SECTOR 05 / SAFE ZONE',speaker:'DR. VELA · FIELD MEDIC',dialog:'You made it. The trauma pods are operational. I can restore the squad and replenish your kits, or recover one lost operative from our emergency records.',after:'Medical protocol complete. Your squad is cleared for deployment.',preview:'RECOVERY / MEDICAL BAY'},
+ recruit:{color:'#ffb975',zone:'SECTOR 44 / CONTRACT HUB',speaker:'ROOK · MERCENARY DISPATCH',dialog:'Three independent operatives are on the roster today. Their contracts match your career rank. One active mercenary per commander — choose someone who covers your weaknesses.',after:'Contract verified. Your new operative is ready to deploy.',preview:'RECRUIT / HANGAR'}
+};
+function routeSceneArt(k){
+ var d=ROUTE_SCENES[k],c=d.color,art='',i;
+ var rect=function(x,y,w,h,f,more){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+f+'" '+(more||'')+'/>';};
+ var line=function(x,y,x2,y2,f,w,more){return '<path d="M'+x+' '+y+'L'+x2+' '+y2+'" stroke="'+f+'" stroke-width="'+(w||1)+'" '+(more||'')+'/>';};
+ var circle=function(x,y,r,f,more){return '<circle cx="'+x+'" cy="'+y+'" r="'+r+'" fill="'+f+'" '+(more||'')+'/>';};
+ var ring=function(x,y,r,cl,dash){return '<g class="'+cl+'">'+circle(x,y,r,'none','stroke="'+c+'" stroke-width="2" stroke-dasharray="'+dash+'"')+'</g>';};
+ var floor='<path d="M0 175H640V250H0Z" fill="#101e2a"/><path d="M0 175H640M0 199H640M0 233H640" stroke="#405369" opacity=".55"/>';
+ for(i=-3;i<5;i++)floor+=line(320+i*45,175,320+i*165,250,'#405369',1,'opacity=".45"');
+ var wall='';for(i=0;i<8;i++){wall+=rect(i*88-12,0,73,174,'#172334','opacity=".55"')+line(i*88+62,0,i*88+62,175,'#34465a',2,'opacity=".65"');}
+ if(k==='wheel'){
+  art=wall+floor+rect(240,145,160,65,'#1c3044','rx="8" stroke="#617390"')+rect(270,190,100,8,c,'class="scene-glow"');
+  art+='<g class="scene-float">'+circle(320,120,65,'#15152d','stroke="'+c+'" stroke-width="3"')+ring(320,120,57,'scene-ring','14 7')+ring(320,120,42,'scene-ring reverse','3 11')+circle(320,120,28,'#261d50','stroke="'+c+'"')+'<path d="M320 94L343 120 320 146 297 120Z" fill="'+c+'" class="scene-glow"/></g>';
+  for(i=0;i<5;i++){art+=rect(38+i*13,105+i*6,8,45-i*5,c,'opacity=".45" class="scene-blink"')+rect(536+i*13,105+i*6,8,45-i*5,c,'opacity=".45" class="scene-blink"');}
+ }else if(k==='shop'){
+  art=wall+floor+rect(58,65,524,19,'#1a3748','stroke="'+c+'"')+rect(58,151,524,53,'#203747','stroke="#4b6575"');
+  for(i=0;i<4;i++){var x=96+i*126;art+=rect(x-20,88,94,64,'#091e2a','rx="5" stroke="'+c+'" opacity=".7"')+'<g class="scene-float" style="animation-delay:-'+i+'s">'+rect(x+9,104,35,33,['#3ac4e7','#9b73df','#50d5a1','#ebc367'][i],'rx="4"')+rect(x+16,111,21,19,'#102334')+rect(x+21,116,11,9,c,'class="scene-glow"')+'</g>'+rect(x,164,55,5,c,'class="scene-blink"');}
+  art+=rect(70,74,500,3,c,'class="scene-glow"')+rect(60,95,520,2,c,'opacity=".3" class="scene-scan"');
+ }else if(k==='chest'){
+  art=rect(0,0,640,250,'#131d31')+'<path d="M0 176L85 117 142 154 208 105 306 166 391 116 450 147 550 92 640 147V250H0Z" fill="#252d3b"/><path d="M0 211L114 185 227 218 315 174 423 209 548 180 640 205V250H0Z" fill="#3d3739"/>';
+  for(i=0;i<30;i++)art+=circle((i*83+17)%640,(i*37+15)%150,i%3===0?1.5:0.7,'#f3e7d2','class="scene-blink" opacity=".6"');
+  art+='<g class="scene-float"><path d="M201 150L225 115H405L439 150V201H201Z" fill="#60523d" stroke="#d5a95d" stroke-width="3"/><path d="M201 150H439M225 115L248 150M405 115L382 150" stroke="#a98c58" stroke-width="4"/>'+rect(293,151,54,36,'#181d24','rx="5" stroke="'+c+'"')+rect(305,162,30,8,c,'class="scene-glow"')+'</g>';
+  art+=line(170,94,470,94,c,2,'class="scene-scan" opacity=".7"');for(i=0;i<9;i++)art+=circle(90+i*55,215+(i%2)*12,2,c,'class="scene-spark"');
+ }else if(k==='forge'){
+  art=wall+floor+rect(150,60,340,14,'#3c424a')+rect(165,74,30,119,'#3a414a')+rect(445,74,30,119,'#3a414a')+rect(212,173,216,33,'#34404b','stroke="#aa7958"');
+  art+='<g class="scene-float"><path d="M165 82L230 105 251 143 235 151 209 120 165 111Z" fill="#e59b55" stroke="#69533b" stroke-width="3"/><path d="M475 82L410 105 389 143 405 151 431 120 475 111Z" fill="#e59b55" stroke="#69533b" stroke-width="3"/></g>';
+  art+='<path d="M260 163L276 147H360L389 133 402 145 363 174H260Z" fill="#7d9eaf" stroke="#dcebf5" stroke-width="2"/>'+line(320,74,320,150,c,4,'class="scene-glow"');
+  for(i=0;i<13;i++)art+=circle(263+i*9,153+(i%3)*4,2+(i%2),c,'class="scene-spark"');
+  art+='<g class="scene-conveyor">';for(i=-1;i<12;i++)art+=rect(i*48,218,22,6,'#d19a5d','opacity=".65"');art+='</g>';
+ }else if(k==='shrine'){
+  art=wall+floor+rect(245,187,150,25,'#25304b','stroke="'+c+'"')+rect(285,175,70,13,'#586185');
+  art+='<g class="scene-float">'+ring(320,122,72,'scene-ring','24 8')+ring(320,122,55,'scene-ring reverse','4 7')+'<path d="M320 62L357 122 320 167 283 122Z" fill="#6355ae" stroke="'+c+'" stroke-width="2"/><path d="M320 62V167M283 122H357" stroke="#dfd5ff" class="scene-glow"/></g>';
+  for(i=0;i<6;i++)art+=line(135+i*74,187,135+i*74,80,c,2,'class="scene-glow" opacity=".4"');
+ }else if(k==='camp'){
+  art=wall+floor+rect(48,72,544,11,'#356c66');for(i=0;i<3;i++){var x=87+i*168;art+=rect(x,91,132,104,'#203d47','rx="15" stroke="'+c+'" stroke-width="2"')+rect(x+10,101,112,66,'#09282e','rx="10"')+'<path d="M'+(x+34)+' 158V132Q'+(x+34)+' 118 '+(x+48)+' 118Q'+(x+62)+' 118 '+(x+62)+' 132V143H'+(x+101)+'V158Z" fill="#3b7374"/>'+rect(x+13,113,106,3,c,'class="scene-scan"')+rect(x+47,175,38,7,c,'class="scene-glow"');}
+  art+='<path d="M312 60H328V69H337V82H328V91H312V82H303V69H312Z" fill="'+c+'" class="scene-glow"/>';
+ }else if(k==='recruit'){
+  art=wall+floor+rect(60,73,520,121,'#111c29','stroke="#4f5965"');
+  for(i=0;i<3;i++){var x=150+i*170,cl=['#bda16b','#6891ad','#a07795'][i];art+=rect(x-47,78,94,112,'#192b3b','stroke="#526374"')+rect(x-37,85,74,5,c,'class="scene-blink"')+'<g transform="translate('+x+' 104)"><path d="M-16 2H16V29H-16Z" fill="'+cl+'"/><path d="M-11 12H11V19H-11Z" fill="'+c+'"/><path d="M-29 34H29V64H17V85H3V65H-3V85H-17V64H-29Z" fill="'+cl+'"/><path d="M-11 36H11V57H-11Z" fill="#142331"/><path d="M-31 37H-19V60H-31ZM19 37H31V60H19Z" fill="#526479"/></g>'+rect(x-30,199,60,3,c,'class="scene-glow"');}
+  art+=rect(283,63,74,10,c,'class="scene-glow"');
+ }
+ return '<svg viewBox="0 0 640 250" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><defs><linearGradient id="routeFade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#03060d" stop-opacity=".92"/><stop offset=".38" stop-color="#03060d" stop-opacity="0"/></linearGradient></defs><rect width="640" height="250" fill="#0c1422"/>'+art+'<rect width="640" height="250" fill="url(#routeFade)" pointer-events="none"/></svg>';
+}
+function routeScene(k,r){var d=ROUTE_SCENES[k],loc=ROUTES[k];if(!d||!loc)return '';var done=r.stage==='result'||!!r.message;return '<section class="route-scene" style="--scene:'+d.color+'" aria-label="'+esc(loc.name)+' scene"><div class="route-scene-art">'+routeSceneArt(k)+'</div><div class="scene-header"><small>'+esc(d.zone)+'</small><h3>'+esc(loc.name)+'</h3></div><div class="scene-dialog"><div class="scene-avatar" aria-hidden="true">'+loc.icon+'</div><div><b>'+esc(d.speaker)+'</b><p>'+esc(done?d.after:d.dialog)+'</p><span class="scene-status">'+(done?'TRANSMISSION COMPLETE':'INCOMING TRANSMISSION · CHAPTER '+r.ch)+'</span></div></div></section>';}
+
 var ROUTE_ITEMS = ['Vital Core','Power Coil','Hex Prism','Targeting Lens','Armor Matrix','Ward Circuit','Reflex Chip','Fortune Relic'];
-function resetRoute(){ S.gold=60; S.route=null; S.shrine=null; }
+function resetRoute(){ S.gold=60; S.route=null; S.shrine=null; S.recruitOwners=null; S.combatReplay=null; }
 function routeRandom(a){return a[Math.floor(rnd()*a.length)];}
 /* Growth module rarity is rolled only after an item has been awarded. */
 var ITEM_RARITIES = [
@@ -1542,7 +1783,47 @@ function routeItem(){var k=Math.floor(rnd()*STATK.length),roll=rnd()*100,t=ITEM_
 function itemLabel(it){var t=itemRarity(it);return '<span class="item-rarity" style="color:'+t.color+'">'+t.name.toUpperCase()+'</span> '+esc(it.name)+' · +'+it.bonus+'% '+STATN[it.s]+' growth';}
 function itemOdds(){return '<div class="item-odds"><b>GROWTH ITEM RARITIES</b>'+ITEM_RARITIES.map(function(t){return '<span style="color:'+t.color+'">'+t.name+' '+t.chance+'% · +'+t.bonus+'%</span>';}).join('')+'</div>';}
 /* Camp has a 10% chance of appearing anywhere on a two-choice map. */
-function routeChoices(){var keys=Object.keys(ROUTES).filter(function(k){return k!=='camp';}),camp=rnd()<0.10,a=keys.splice(Math.floor(rnd()*keys.length),1)[0],b=camp?'camp':routeRandom(keys);return rnd()<0.5?[a,b]:[b,a];}
+function recruitParticipants(){
+ if(!netOnline())return [{id:'',name:'YOU'}];
+ if(Array.isArray(S.recruitOwners)&&S.recruitOwners.length)return S.recruitOwners;
+ var ids=Array.from(new Set(S.units.filter(function(u){return u.side==='ply'&&u.owner;}).map(function(u){return String(u.owner);}).concat(S.dead.map(function(f){return String(f.owner||'');}).filter(Boolean))));
+ return ids.map(function(id){return {id:id,name:ownerName(id)};});
+}
+function activeRecruit(owner){return allies('ply').find(function(u){return u.autonomous&&String(u.owner||'')===String(owner||'');});}
+function recruitEligible(owner){return recruitParticipants().some(function(p){return String(p.id)===String(owner||'');})&&!activeRecruit(owner);}
+/* Hire at the owner's rounded average career level, not their reset display level.
+   Use their closest-level human unit as the reference for promotion rank. */
+function recruitProfile(owner){
+ var id=String(owner||''),humans=allies('ply').filter(function(u){return !u.autonomous;}),
+     refs=humans.filter(function(u){return String(u.owner||'')===id;});
+ if(!refs.length)refs=S.dead.filter(function(f){return !f.autonomous&&String(f.owner||'')===id;}).map(function(f){var p=f.progress||{};return {lvl:f.lvl||1,tier:p.tier||0,careerBase:p.careerBase||0};});
+ if(!refs.length)refs=humans;
+ var career=refs.length?Math.round(refs.reduce(function(t,u){return t+careerLevel(u);},0)/refs.length):1;
+ career=Math.max(1,Math.min(MAXLVL+MAXTIER*(MAXLVL-1),career));
+ var ref=refs.slice().sort(function(a,b){return Math.abs(careerLevel(a)-career)-Math.abs(careerLevel(b)-career);})[0]||{};
+ var minTier=Math.max(0,Math.ceil((career-MAXLVL)/(MAXLVL-1))),maxTier=Math.min(MAXTIER,Math.floor((career-1)/(PROMOLVL-1)));
+ var tier=Math.max(minTier,Math.min(maxTier,ref.tier||0));
+ var base=Math.max(tier*(PROMOLVL-1),career-MAXLVL,Math.min(tier*(MAXLVL-1),career-1,ref.careerBase||0));
+ var steps=[];for(var i=0;i<tier;i++){var n=Math.min(MAXLVL-1,base-(tier-i-1)*(PROMOLVL-1));steps.push(n);base-=n;}
+ var spent=steps.reduce(function(t,n){return t+n;},0);
+ return {career:career,tier:tier,level:career-spent,steps:steps,cost:60+8*(career-1)};
+}
+function recruitCost(owner){return recruitProfile(owner).cost;}
+/* Grant expected growth for each stage using the growth rates active in that stage. */
+function recruitTrain(u,level){var steps=level-u.lvl;STATK.forEach(function(k){u.stats[k]+=Math.round(u.grow[k]*steps/100);});u.lvl=level;u.chp=u.stats.hp;}
+var RECRUIT_NAMES=['AXIOM','VECTOR','ION','CIPHER','ORBIT','PULSE','NEXUS','CHROME','QUILL','GHOST','EPOCH','DELTA'];
+var RECRUIT_PALS=['sk_mono','sk_sea','sk_ember','sk_ice','sk_void','sk_toxic','sk_rose','sk_solar'];
+function makeRecruit(key,owner){
+ var def=ROSTER.find(function(c){return c.key===key;});if(!def||!recruitEligible(owner))return null;
+ var profile=recruitProfile(owner),name=RECRUIT_NAMES[(S.uid-1)%RECRUIT_NAMES.length]+'-'+S.uid;
+ var pal=RECRUIT_PALS[(S.uid-1)%RECRUIT_PALS.length];
+ var u=mkUnit(def,'ply',1,{fair:true,look:{name:name,pal:pal,spr:def.spr}});
+ profile.steps.forEach(function(n){recruitTrain(u,n+1);promoteUnit(u,RNG.int(2));});
+ recruitTrain(u,profile.level);
+ u.autonomous=true;u.owner=String(owner||'');u.acted=true;S.units.push(u);return u;
+}
+function recruitStock(){var keys=ROSTER.map(function(c){return c.key;}),out=[];while(out.length<3&&keys.length)out.push(keys.splice(Math.floor(rnd()*keys.length),1)[0]);return out;}
+function routeChoices(){var keys=Object.keys(ROUTES).filter(function(k){return k!=='camp'&&(k!=='recruit'||recruitParticipants().some(function(p){return recruitEligible(p.id);}));}),camp=rnd()<0.10,a=keys.splice(Math.floor(rnd()*keys.length),1)[0],b=camp?'camp':routeRandom(keys);return rnd()<0.5?[a,b]:[b,a];}
 function routeGold(n){var prev=S.gold;S.gold=Math.max(0,S.gold+n);return S.gold-prev;}
 function routeUnit(id){return allies('ply').filter(function(u){return u.id===id;})[0];}
 function routeGrant(u,item){if(!u.items)u.items=[];u.items.push({s:item.s,name:item.name,bonus:item.bonus,rarity:itemRarity(item).id});u.grow[item.s]+=item.bonus;return u.name+' received '+item.name+' ['+itemRarity(item).name+'] (+'+item.bonus+'% '+STATN[item.s]+' growth).';}
@@ -1553,8 +1834,14 @@ function routeAction(cmd,arg,id,rev,ch,who){
   var r=S.route;if(S.screen!=='clear'||!r||r.rev!==rev||r.ch!==ch)return false;
   var live=allies('ply'),u=routeUnit(id),cost,it,msg;
   if(!live.length)return false;
-  if(cmd==='choose'&&r.stage==='choose'&&r.choices.indexOf(arg)>=0){r.node=arg;r.stage='visit';if(arg==='shop'){for(var j=0;j<4;j++){it=routeItem();it.price=it.bonus*3+10;it.sold=false;r.stock.push(it);}}}
-  else if(cmd==='spin'&&r.stage==='visit'&&r.node==='wheel'){
+  if(cmd==='promote'&&u&&!u.autonomous&&(!netOnline()||NET.local||String(u.owner)===String(who))){if(!promoteUnit(u,Number(arg)))return false;}
+  else if(cmd==='choose'&&r.stage==='choose'&&r.choices.indexOf(arg)>=0){r.node=arg;r.stage='visit';if(arg==='recruit')r.recruits=recruitStock();if(arg==='shop'){for(var j=0;j<4;j++){it=routeItem();it.price=it.bonus*3+10;it.sold=false;r.stock.push(it);}}}
+  else if(cmd==='hire'&&r.stage==='visit'&&r.node==='recruit'){
+    var parts=String(arg).split('|'),owner=NET.local?parts[0]:String(who||''),key=parts[1];
+    cost=recruitCost(owner);
+    if(parts.length!==2||(!NET.local&&parts[0]!==owner)||!r.recruits||r.recruits.indexOf(key)<0||S.gold<cost||!recruitEligible(owner))return false;
+    var recruit=makeRecruit(key,owner);if(!recruit)return false;routeGold(-cost);r.message=recruit.name+' joined as '+recruit.cls+' · TIER '+(recruit.tier+1)+' LV '+recruit.lvl+' (career '+careerLevel(recruit)+') for '+cost+' gold.';say(r.message);
+  }else if(cmd==='spin'&&r.stage==='visit'&&r.node==='wheel'){
     var chance=rnd()*100,roll=chance<15?0:chance<20?1:chance<70?2:chance<85?3:chance<90?4:5,v=routeRandom(live),k=routeRandom(STATK);r.roll=roll;
     if(roll===0)msg='Lost '+(-routeGold(-(25+Math.floor(rnd()*31))))+' gold.';
     if(roll===1){v.stats[k]++;if(k==='hp')v.chp++;msg=v.name+' gained +1 '+STATN[k]+' permanently.';}
@@ -1573,20 +1860,21 @@ function routeAction(cmd,arg,id,rev,ch,who){
     S.shrine={kind:arg,ch:S.chapter+1};routeFinish(({power:'Power: +2 attack',guard:'Guard: +2 defense and resistance',focus:'Focus: +15 hit and +10 avoid'})[arg]+' for the next fight.');
   }else if(cmd==='camp'&&r.stage==='visit'&&r.node==='camp'){
     if(arg==='heal'){live.forEach(function(v){v.chp=v.stats.hp;});S.kits+=2;routeFinish('Squad fully healed. Received 2 repair kits.');}
-    else if(arg==='revive'&&S.dead.length&&live.length<SQUAD_CAP){var f=S.dead.pop(),def=charByKey(f.def);if(!def)return false;var nu=mkUnit(def,'ply',1,{});while(nu.lvl<f.lvl&&!atMax(nu))levelUp(nu);nu.owner=f.owner||who||'';nu.chp=nu.stats.hp;S.units.push(nu);routeFinish(nu.name+' returned to the squad.');}
-    else if(arg==='recruit'&&live.length<SQUAD_CAP){var pool=ALLCHARS.filter(function(d){return !live.some(function(v){return v.key===d.key;});});if(!pool.length)return false;var nu=mkUnit(routeRandom(pool),'ply',1,{});while(nu.lvl<Math.max(1,Math.floor(avgLevel()*0.85))&&!atMax(nu))levelUp(nu);nu.owner=who||'';nu.chp=nu.stats.hp;S.units.push(nu);routeFinish(nu.name+' joined the squad.');}else return false;
-  }else if(cmd==='next'&&(r.stage==='result'||(r.stage==='visit'&&['shop','forge'].indexOf(r.node)>=0))){S.route=null;S.rewards=null;S.chapter++;startChapter();refreshUI();return true;}
+    else if(arg==='revive'&&S.dead.length){var nu=reviveFallen(true,who);if(!nu)return false;routeFinish(nu.name+' returned to the squad with all recorded progression.');}
+    else return false;
+  }else if(cmd==='next'&&(r.stage==='result'||(r.stage==='visit'&&['shop','forge','recruit'].indexOf(r.node)>=0&&(!netOnline()||NET.local||r.node!=='recruit'||String(who)===String(NET.id))))){S.route=null;S.rewards=null;S.chapter++;startChapter();refreshUI();return true;}
   else return false;
   r.rev++;saveGame();netSync();refreshUI();return true;
 }
 function shrineBonus(u,kind){return u.side==='ply'&&S.shrine&&S.shrine.ch===S.chapter&&S.shrine.kind===kind;}
 function routeBtn(cmd,arg,id,label,disabled){return '<button class="rew" data-act="route" data-cmd="'+cmd+'" data-v="'+arg+'" data-id="'+(id||0)+'"'+(disabled?' disabled':'')+'>'+label+'</button>';}
-function routeRender(){var r=S.route;if(!r)return '';var h='<div class="route-wallet"><b>◈ '+S.gold+' GOLD</b><span>VICTORY +'+r.earn+' GOLD</span></div>';
+function promotionPanel(){var live=allies('ply').filter(function(u){return !u.autonomous&&canPromote(u);});if(!live.length)return '';var h='<div class="lvs"><b style="color:var(--am)">PROMOTIONS AVAILABLE</b><span class="hint">Optional at Lv 15–20. Keep every stat, reset to Lv 1. Each promotion adds 100 percentage points to growth. Promote before choosing a route or later in this rest stop.</span>';live.forEach(function(u){var own=!netOnline()||NET.local||isMine(u);h+='<div class="lv"><b>'+esc(u.name)+'</b><span>LV '+u.lvl+' · TIER '+((u.tier||0)+1)+' / 3</span></div>';promotionOptions(u).forEach(function(o,i){h+=routeBtn('promote',i,u.id,'<b>'+esc(o.name)+'</b><span>+4 HP · +2 '+STATN[o.stats[0]]+' · +2 '+STATN[o.stats[1]]+' · +1 MOV</span><span class="promo-growth">+100% TOTAL GROWTH · '+growthBonusLabel(o.growth)+'</span>'+(o.skill?'<span style="color:var(--gr)">'+esc(o.skill[0])+' — '+esc(o.skill[1])+'</span>':''),!own);});});return h+'</div>';}
+function routeRender(){var r=S.route;if(!r)return '';var h=promotionPanel()+'<div class="route-wallet"><b>◈ '+S.gold+' GOLD</b><span>VICTORY +'+r.earn+' GOLD</span></div>';
   if(r.stage==='choose'){
-    h+='<p class="osub">Choose one of two routes. The other path closes. Recovery Camps are rare (10% of maps).</p><div class="route-map"><div class="route-start">✓ CHAPTER '+S.chapter+' CLEARED</div><div class="route-branch"></div><div class="route-choices">';
-    r.choices.forEach(function(k){var d=ROUTES[k];h+=routeBtn('choose',k,0,'<i>'+d.icon+'</i><b>'+d.name+'</b><span>'+d.desc+'</span>');});
+    h+='<p class="osub">Choose one of two routes. The other path closes. Medical Stations are rare (10% of maps). Mercenary Relay appears only when a player has a free recruit slot.</p><div class="route-map"><div class="route-start">✓ CHAPTER '+S.chapter+' CLEARED</div><div class="route-branch"></div><div class="route-choices">';
+    r.choices.forEach(function(k){var d=ROUTES[k],sc=ROUTE_SCENES[k];h+=routeBtn('choose',k,0,'<i>'+d.icon+'</i><b>'+d.name+'</b><span class="scene-preview">'+sc.preview+'</span><span>'+d.desc+'</span>').replace('class="rew"','class="rew" style="--route-accent:'+sc.color+'"');});
     h+='</div><div class="route-merge"></div><div class="route-start next">CHAPTER '+(S.chapter+1)+' →</div></div><div class="route-all">POSSIBLE DESTINATIONS: '+Object.keys(ROUTES).map(function(k){return ROUTES[k].icon+' '+ROUTES[k].name;}).join(' · ')+'</div>';
-  }else{var d=ROUTES[r.node];h+='<h3 class="route-title">'+d.icon+' '+d.name+'</h3><p class="osub">'+d.desc+'</p>';
+  }else{var d=ROUTES[r.node];h+=routeScene(r.node,r)+'<p class="osub">'+d.desc+'</p>';
     if(r.node==='wheel'){h+='<div class="fortune-wheel-wrap"><div class="fortune-wheel'+(r.stage==='result'?' landed':'')+'" style="--spin:'+(360*4-([27,63,162,279,315,342][r.roll]||27))+'deg"><span>◆</span></div></div><div class="wheel-key"><span style="color:#e77a86">15% Lose gold</span> · <span style="color:#b29af5">5% Permanent stat</span><br><span style="color:#ffd166">50% Win gold</span> · <span style="color:#54f0c8">15% Win item</span><br><span style="color:#8fbcf3">5% Lose item</span> · <span style="color:#a9bfd4">10% Nothing</span></div>';}
     if(r.message)h+='<p class="route-result">'+esc(r.message)+'</p>';
     if(r.stage==='result')h+=routeBtn('next','',0,'<b>CONTINUE TO CHAPTER '+(S.chapter+1)+'</b>');
@@ -1595,7 +1883,12 @@ function routeRender(){var r=S.route;if(!r)return '';var h='<div class="route-wa
     else if(r.node==='shop'){r.stock.forEach(function(it,i){h+='<div class="route-item rarity-card" style="--rarity:'+itemRarity(it).color+'"><div class="item-top"><i class="item-icon">'+(ITEM_ICONS[it.s]||'◆')+'</i><b>'+itemLabel(it)+'</b></div><span>'+it.price+' gold'+(it.sold?' · SOLD':'')+'</span><div class="route-buy">';if(!it.sold)allies('ply').forEach(function(u){h+=routeBtn('buy',i,u.id,esc(u.name),S.gold<it.price);});h+='</div></div>';});h+=routeBtn('next','',0,'<b>LEAVE SHOP</b>');}
     else if(r.node==='forge'){allies('ply').forEach(function(u){var lv=u.forgeLv||0,c=35+lv*20;h+=routeBtn('forge','',u.id,'<b>'+esc(u.name)+' · '+lv+'/3</b><span>'+(lv>=3?'MAX LEVEL':c+' gold · +1 might / +3% all growth')+'</span>',lv>=3||S.gold<c);});h+=routeBtn('next','',0,'<b>LEAVE FORGE</b>');}
     else if(r.node==='shrine'){h+=routeBtn('bless','power',0,'<b>POWER</b><span>+2 attack</span>')+routeBtn('bless','guard',0,'<b>GUARD</b><span>+2 DEF and RES</span>')+routeBtn('bless','focus',0,'<b>FOCUS</b><span>+15 hit / +10 avoid</span>');}
-    else if(r.node==='camp'){h+=routeBtn('camp','heal',0,'<b>REST</b><span>Full heal +2 repair kits</span>')+routeBtn('camp','revive',0,'<b>RESCUE FALLEN ALLY</b>',!S.dead.length||allies('ply').length>=SQUAD_CAP)+routeBtn('camp','recruit',0,'<b>RECRUIT RANDOM OPERATIVE</b>',allies('ply').length>=SQUAD_CAP||!ALLCHARS.some(function(d){return !allies('ply').some(function(u){return u.key===d.key;});}));}
+    else if(r.node==='camp'){h+=routeBtn('camp','heal',0,'<b>REST</b><span>Full heal +2 repair kits</span>')+routeBtn('camp','revive',0,'<b>RESCUE FALLEN ALLY</b><span>Full HP · keep all recorded stats, growth items and upgrades</span>',!S.dead.some(canRevive));}
+    else if(r.node==='recruit'){
+      h+='<p class="hint">One AI operative per human player. Hire at your average career level (including promotions). Cost: 60 gold + 8 per career level above 1. Promoted recruits receive random promotion paths. Recruits move, attack and heal automatically.</p>';
+      recruitParticipants().forEach(function(p){var existing=activeRecruit(p.id),own=NET.local||!netOnline()||String(p.id)===String(activeOwner()),profile=recruitProfile(p.id);h+='<div class="lv"><b>'+esc(p.name)+'</b><span>'+(existing?esc(existing.name)+' · AI SLOT FILLED':'AI SLOT OPEN')+'</span></div>';if(!existing&&own)(r.recruits||[]).forEach(function(key){var d=charByKey(key);if(d)h+=routeBtn('hire',p.id+'|'+key,0,'<b>'+esc(d.cls)+'</b><span>TIER '+(profile.tier+1)+' · LV '+profile.level+' · CAREER '+profile.career+'</span><span>'+profile.cost+' gold · '+esc(CLASS_SKILLS[key][0])+'</span>',S.gold<profile.cost);});});
+      h+=routeBtn('next','',0,'<b>LEAVE MERCENARY RELAY</b><span>Host continues after everyone has chosen or skipped.</span>',netOnline()&&!NET.local&&!NET.host);
+    }
   }
   var inventory=[];allies('ply').forEach(function(u){(u.items||[]).forEach(function(it){inventory.push(esc(u.name)+' · '+itemLabel(it));});});
   if(r.node==='wheel'||r.node==='chest'||r.node==='shop')h+=itemOdds();
@@ -1618,7 +1911,7 @@ function rollRewards() {
   function pickUnit() { return live[RNG.int(live.length)]; }
   if (live.length) {
     var a = pickUnit();
-    pool.push({ k: 'wpn', t: 'WEAPON FORGE', d: a.name + "'s " + wpnLabel(a.wpn) + ' -> +2 might', id: a.id });
+    pool.push({ k: 'wpn', t: 'NANOFORGE', d: a.name + "'s " + wpnLabel(a.wpn) + ' -> +2 might', id: a.id });
     var b = pickUnit(), sk = STATK[1 + RNG.int(7)];
     pool.push({ k: 'stat', t: 'IMPLANT', d: b.name + ': +3 ' + STATN[sk] + ' permanently', id: b.id, s: sk });
     var cPool = live.filter(function (x) { return x.lvl < MAXLVL; });
@@ -1639,13 +1932,12 @@ function rollRewards() {
     }
   }
   pool.push({ k: 'kits', t: 'SUPPLY DROP', d: '+3 repair kits (heal 20 each)' });
-  if (S.dead.length) {
+  if (S.dead.length && live.length < SQUAD_CAP) {
     var f = S.dead[S.dead.length - 1];
     pool.push({ k: 'revive', t: 'RESURRECTION', d: 'Reactivate ' + f.name + ' at half HP' });
   }
-  if (ch >= 2 && live.length < 9) {
-    var have = {}; S.units.forEach(function (u) { if (u.side === 'ply') have[u.key] = 1; });
-    var avail = ALLCHARS.filter(function (r) { return !have[r.key]; });
+  if (ch >= 2 && live.length < SQUAD_CAP) {
+    var avail = recruitPool();
     if (avail.length) {
       var r = avail[RNG.int(avail.length)];
       pool.push({ k: 'recruit', t: 'NEW SIGNAL', d: 'Recruit ' + r.name + ', ' + r.cls, key: r.key });
@@ -1669,18 +1961,9 @@ function takeReward(i) {
   else if (r.k === 'kits') { S.kits += 3; }
   else if (r.k === 'heal') { allies('ply').forEach(function (x) { x.chp = x.stats.hp; }); }
   else if (r.k === 'revive') {
-    var f = S.dead.pop();
-    var def = charByKey(f.def);
-    if (def) {
-      var nu = mkUnit(def, 'ply', 1, { plus: wpnPlus(S.chapter) });
-      /* restore their level by re-levelling with growths */
-      while (nu.lvl < f.lvl) levelUp(nu);
-      S.levelups = [];
-      nu.chp = Math.max(1, Math.floor(nu.stats.hp / 2));
-      nu.owner = f.owner || r.owner || '';
-      S.units.push(nu);
-      say(nu.name + ' is back online.');
-    }
+    var nu = reviveFallen(false, r.owner);
+    if (!nu) return;
+    say(nu.name + ' is back online.');
   } else if (r.k === 'recruit') {
     var rd = charByKey(r.key);
     if (rd) {
@@ -1707,10 +1990,10 @@ function avgLevel() {
 }
 
 function gameOver() {
-  S.screen = 'over'; S.gameover = true;
+  resetLooks(); S.screen = 'over'; S.gameover = true;
   S.best = Math.max(S.best, S.chapter);
   say('Echelon lost on chapter ' + S.chapter + '.');
-  try { localStorage.removeItem('echelon_run'); } catch (e) { }
+  if(!netOnline()||NET.local)try { localStorage.removeItem('echelon_run'); } catch (e) { }
   saveBest();
   netSync();
   if (typeof refreshUI === 'function') refreshUI();
@@ -1718,11 +2001,13 @@ function gameOver() {
 
 /* ================= RUN START ================= */
 var ALLCHARS = ROSTER.concat(RECRUITS);
+ALLCHARS.forEach(function(c){if(CLASS_SKILLS[c.key])c.bio+=' · '+CLASS_SKILLS[c.key].join(': ');});
 function charByKey(k) {
   for (var i = 0; i < ALLCHARS.length; i++) if (ALLCHARS[i].key === k) return ALLCHARS[i];
   return null;
 }
 function newRun(keys) {
+  runEpoch++; S.saveError=""; S.invOpen=false;
   if (!keys || !keys.length) keys = ROSTER.map(function (r) { return r.key; });
   S.units = []; S.dead = []; S.uid = 1; S.chapter = 1; S.kits = 3; S.log = []; S.levelups = [];
   S.bags = []; S.resumeLayout = null;
@@ -1733,24 +2018,29 @@ function newRun(keys) {
   }
   if (!S.units.length) S.units.push(mkUnit(ROSTER[0], 'ply', 1, {}));
   S.squadSize = S.units.length;
+  resetLooks();
   startChapter();
 }
 
 /* ================= SAVE ================= */
-function saveGame() {
-  if (HEADLESS || netOnline()) return;
-  try {
-    var data = {
-      v: 3, chapter: S.chapter, kits: S.kits, best: S.best, dead: S.dead, uid: S.uid, squadSize: S.squadSize,
-      bags: S.bags, layout: S.layout, gold:S.gold, route:S.route, shrine:S.shrine, screen:S.screen, levelups:S.levelups, terrain:S.terrain, site:S.site, obj:S.obj, turn:S.turn, objTurns:S.objTurns,
-      units: allies('ply').map(function (u) {
-        return { id:u.id, x:u.x, y:u.y, items:u.items||[], forgeLv:u.forgeLv||0, key: u.key, lvl: u.lvl, exp: u.exp, over: u.over || 0, stats: u.stats, grow: u.grow, chp: u.chp,
-          wpn: u.wpn.id, plus: u.wpn.plus, promoted: u.promoted, cls: u.cls, mov: u.mov };
-      })
-    };
-    localStorage.setItem('echelon_run', JSON.stringify(data));
-    saveBest();
-  } catch (e) { }
+function safeSavePoint(){return (S.screen==='clear'||(S.screen==='map'&&S.phase==='player'&&!S.busy&&(S.mode==='idle'||S.mode==='move')))&&(!netOnline()||NET.local);}
+function saveGame(){
+  if(!safeSavePoint())return false;
+  try{
+    var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','best','dead','uid','squadSize','bags','layout','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners'];
+    var data={v:4,rng:RNG.s,units:S.units.filter(function(u){return u.chp>0;}),local:NET.local&&netOnline()?{players:NET.localPlayers,active:NET.localActive}:null};
+    fields.forEach(function(k){data[k]=S[k];});
+    localStorage.setItem('echelon_run',JSON.stringify(data));saveBest();return true;
+  }catch(e){return false;}
+}
+function resumeExact(d){
+  if(!Array.isArray(d.units)||!d.units.some(function(u){return u.side==='ply'&&u.chp>0;})||['map','clear'].indexOf(d.screen)<0||!LAYOUTS[d.terrain]||!LAYOUTS[d.terrain][d.layout]||(d.screen==='map'&&d.phase!=='player'))return false;
+  resetLooks();runEpoch++; var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners'];
+  fields.forEach(function(k){S[k]=d[k];});S.best=Math.max(S.best||1,d.best||1);S.reinforce=S.reinforce||[];S.log=S.log||[];S.levelups=S.levelups||[];
+  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.grid=buildGrid(S.terrain,S.layout);RNG.s=d.rng||1;
+  S.sel=null;S.inspect=null;S.tileInfo=null;S.target=null;S.mode='idle';S.reach=null;S.atkTiles=null;S.origin=null;S.fx=[];S.movers=[];S.busy=0;S.gameover=false;S.resumeLayout=null;S.bannerT=0;S.shake=0;S.saveError='';S.invOpen=false;bgCanvas=null;
+  NET.local=!!d.local;NET.phase=d.local?'match':'idle';NET.host=!!d.local;NET.started=!!d.local;NET.pending=false;NET.localPlayers=d.local?d.local.players:[];NET.localActive=d.local?d.local.active:0;NET.ownerColors=null;
+  if(S.danger)computeDanger();return true;
 }
 function saveBest() { try { localStorage.setItem('echelon_best', String(S.best)); } catch (e) { } }
 function loadBest() { try { var b = localStorage.getItem('echelon_best'); if (b) S.best = parseInt(b, 10) || 1; } catch (e) { } }
@@ -1760,20 +2050,23 @@ function loadGame() {
     var raw = localStorage.getItem('echelon_run');
     if (!raw) return false;
     var d = JSON.parse(raw);
+    if(d&&d.v===4)return resumeExact(d);
     if (!d || !d.units || !d.units.length || d.v !== 3) return false;
+    resetLooks();runEpoch++;S.saveError='';S.invOpen=false;NET.local=false;NET.phase='idle';
     var all = ALLCHARS;
     S.units = []; S.uid = d.uid || 1; S.chapter = d.chapter || 1; S.kits = d.kits || 0;
     S.dead = d.dead || []; S.best = Math.max(S.best, d.best || 1); S.squadSize = d.squadSize || d.units.length;
-    S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null;
+    S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null; S.recruitOwners=d.recruitOwners||null;
     S.bags = d.bags || []; S.resumeLayout = (typeof d.layout === 'number') ? d.layout : null;
     for (var i = 0; i < d.units.length; i++) {
       var s = d.units[i];
       var def = all.filter(function (x) { return x.key === s.key; })[0];
       if (!def) continue;
-      var u = mkUnit(def, 'ply', 1, { plus: s.plus || 0 });
+      var u = mkUnit(def, 'ply', 1, { plus: s.plus || 0, look:s.name?{name:s.name,pal:s.pal,spr:s.spr}:null });
+      u.traits=s.traits||[];u.owner=s.owner||'';
       if(s.id)u.id=s.id; u.items=s.items||[];u.forgeLv=s.forgeLv||0;u.x=u.px=s.x||0;u.y=u.py=s.y||0;
       u.lvl = s.lvl; u.exp = s.exp; u.over = s.over || 0; u.promoted = !!s.promoted;
-      u.cls = s.cls || u.cls; u.mov = s.mov || u.mov;
+      u.cls = s.cls || u.cls; u.mov = s.mov || u.mov;restoreCareer(u,s);
       for (var j = 0; j < STATK.length; j++) { u.stats[STATK[j]] = s.stats[STATK[j]]; u.grow[STATK[j]] = s.grow[STATK[j]]; }
       u.chp = Math.max(1, Math.min(s.chp, u.stats.hp));
       S.units.push(u);
@@ -2246,11 +2539,12 @@ function ownerName(id) {
   return 'PLAYER';
 }
 function isMine(u) {
+  if(u.autonomous)return false;
   if (!netOnline()) return u.side === 'ply';
   return u.side === 'ply' && String(u.owner || '') === String(activeOwner());
 }
 function canAct() {
-  if (S.gameover || S.busy) return false;
+  if (S.gameover || S.busy || replayOpen()) return false;
   if (!netOnline()) return S.phase === 'player';
   if (S.screen !== 'map') return false;
   if (S.phase !== 'player') return false;
@@ -2484,6 +2778,7 @@ function netAttach(sub) {
 }
 
 function netLeave() {
+  resetLooks();
   try { if (NET.sub && NET.sub.leave) NET.sub.leave(); } catch (e) { }
   NET.sub = null; NET.phase = 'idle'; NET.peers = []; NET.lobby = {}; NET.ownerColors = null;
   NET.side = null; NET.host = false; NET.pending = false; NET.started = false;
@@ -2625,6 +2920,7 @@ function buildSquad(players) {
 }
 
 function netStartRun() {
+  runEpoch++; S.saveError=""; S.invOpen=false;
   if (!NET.host && !NET.local) return;
   var players = allPlayers().filter(function (p) { return (p.keys || []).length; });
   if (!players.length) { NET.err = 'Nobody has picked an operative yet.'; refreshUI(); return; }
@@ -2632,6 +2928,8 @@ function netStartRun() {
   resetRoute(); S.chapter = 1; S.gameover = false; S.rewards = null;
   if (!NET.local) NET.ownerColors = assignOwnerColors(NET.ownerColors);
   buildSquad(players);
+  S.recruitOwners=players.map(function(p){return {id:String(p.id),name:p.name||'PLAYER'};});
+  resetLooks();
   NET.phase = 'match';
   NET.started = true;
   S.handoff = false;
@@ -2644,18 +2942,18 @@ function netStartRun() {
 
 /* ---------------- wire format ---------------- */
 function wireUnit(u) {
-  return { i: u.id, k: u.key, s: u.side, o: u.owner || '', x: u.x, y: u.y,
-    it:u.items||[], fl:u.forgeLv||0, hp: u.chp, mx: u.stats.hp, st: u.stats, gr: u.grow, lv: u.lvl, ex: u.exp || 0,
+  return { i: u.id, k: u.key, s: u.side, o: u.owner || '', ar:!!u.autonomous, x: u.x, y: u.y,
+    it:u.items||[], fl:u.forgeLv||0, hp: u.chp, mx: u.stats.hp, st: u.stats, gr: u.grow, lv: u.lvl, ex: u.exp || 0, ov: u.over || 0,
     cl: u.cls, w: u.wpn.id, wp: u.wpn.plus || 0, a: u.acted ? 1 : 0,
     n: u.name, p: u.pal, sp: u.spr, mv: u.mov, tr: u.traits || [],
-    bs: u.boss ? 1 : 0, mk: u.mark || 0, pm: u.promoted ? 1 : 0 };
+    ai:u.ai, bs: u.boss ? 1 : 0, mk: u.mark || 0, pm: u.promoted ? 1 : 0, tier:u.tier||0,cb:u.careerBase||0,path:u.path||[],qt:u.quickTurn||0,stn:u.sabotageTurn||0,eu:!!u.emergencyUsed,sh:u.shieldHP||0,jm:!!u.jammed };
 }
 function unitFromWire(r) {
-  var u = { id: r.i, key: r.k, side: r.s, owner: r.o || '', x: r.x, y: r.y, px: r.x, py: r.y,
-    items:r.it||[], forgeLv:r.fl||0, chp: r.hp, stats: {}, grow: {}, lvl: r.lv, exp: r.ex || 0, cls: r.cl,
+  var u = { id: r.i, key: r.k, side: r.s, owner: r.o || '', autonomous:!!r.ar, x: r.x, y: r.y, px: r.x, py: r.y,
+    items:r.it||[], forgeLv:r.fl||0, chp: r.hp, stats: {}, grow: {}, lvl: r.lv, exp: r.ex || 0, over: r.ov || 0, cls: r.cl,
     acted: !!r.a, name: cleanName(r.n)||'OPERATIVE', pal: validPal(r.p)?r.p:(r.s==='ply'?'vex':'foe'), spr: Object.prototype.hasOwnProperty.call(SPR,r.sp)?r.sp:'grunt', mov: r.mv,
-    traits: r.tr || [], boss: !!r.bs, mark: r.mk || 0, promoted: !!r.pm,
-    flash: 0, wpn: mkWpn(r.w, r.wp || 0), ai: 'hunt', promo: null };
+    traits: r.tr || [], boss: !!r.bs, mark: r.mk || 0, promoted: !!r.pm, tier:r.tier||0,careerBase:r.cb||0,path:r.path||[],quickTurn:r.qt||0,sabotageTurn:r.stn||0,emergencyUsed:!!r.eu,shieldHP:r.sh||0,jammed:!!r.jm,
+    flash: 0, wpn: mkWpn(r.w, r.wp || 0), ai: r.ai==='guard'?'guard':'hunt', promo: null };
   for (var k in r.st) u.stats[k] = r.st[k];
   for (var g in (r.gr || {})) u.grow[g] = r.gr[g];
   u.stats.hp = r.mx;
@@ -2663,7 +2961,7 @@ function unitFromWire(r) {
 }
 function netState() {
   return {
-    host: NET.id, ownerColors: NET.ownerColors, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
+    host: NET.id, ownerColors: NET.ownerColors, recruitOwners:S.recruitOwners, replay:S.combatReplay, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
     tn: S.turn, ph: S.phase, t: S.terrain, l: S.layout, kt: S.kits,
     gold:S.gold, route:S.route, shrine:S.shrine, sc: S.screen, rw: S.rewards, lu: S.levelups, dd: S.dead,
     sq: S.squadSize, lg: S.log.slice(0, 6),
@@ -2686,6 +2984,7 @@ function onNetState(msg) {
   applyNetState(d);
 }
 function applyNetState(d) {
+  var wasMatch=NET.phase==='match';
   if (d.ownerColors) NET.ownerColors = readOwnerColors(d.ownerColors);
   if (NET.phase === 'lobby' || NET.phase === 'joining') {
     S.skinKey=null;
@@ -2715,7 +3014,7 @@ function applyNetState(d) {
   S.inspect = inspectedId === null ? null : list.filter(function(u) { return u.id === inspectedId; })[0] || null;
   S.chapter = d.ch; S.site = d.site; S.obj = d.ob; S.objTurns = d.ot;
   S.turn = d.tn; S.phase = d.ph; S.kits = d.kt; S.squadSize = d.sq;
-  S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null;
+  S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null; S.recruitOwners=d.recruitOwners||null;
   S.rewards = d.rw || null; S.levelups = d.lu || []; S.dead = d.dd || [];
   if (d.lg) S.log = d.lg;
   S.screen = d.sc || 'map';
@@ -2723,6 +3022,7 @@ function applyNetState(d) {
   NET.pending = false;
   S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null;
   if (typeof refreshUI === 'function') refreshUI();
+  if(d.replay){if(wasMatch)showReplay(d.replay);else replaySeen=d.replay.id;}
 }
 
 /* ---------------- intents ---------------- */
@@ -2761,7 +3061,7 @@ function netApply(intent, who) {
     if (typeof refreshUI === 'function') refreshUI();
     return;
   }
-  if (S.screen !== 'map' || S.phase !== 'player') { netSync(); return; }
+  if (S.screen !== 'map' || S.phase !== 'player'||S.busy||replayOpen()) { netSync(); return; }
 
   if (intent.t === 'end') {
     S.sel = null; S.mode = 'idle';
@@ -2774,7 +3074,7 @@ function netApply(intent, who) {
 
   var u = null, i;
   for (i = 0; i < S.units.length; i++) if (S.units[i].id === intent.uid) u = S.units[i];
-  if (!u || u.chp <= 0 || u.side !== 'ply' || u.acted) { netSync(); return; }
+  if (!u || u.chp <= 0 || u.side !== 'ply' || u.autonomous || u.acted) { netSync(); return; }
   if (String(u.owner || '') !== String(who)) { netSync(); return; }
 
   var tx = u.x, ty = u.y;
@@ -2796,9 +3096,9 @@ function netApply(intent, who) {
   } else if (intent.a === 'kit' && S.kits > 0 && u.chp < u.stats.hp) {
     useKit(u);
   }
-  u.acted = true;
+  actionComplete(u);
   if (!checkEnd()) {
-    var left = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply' && !x.acted; });
+    var left = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply' && !x.autonomous && !x.acted; });
     if (!left.length && !NET.local) {
       endPlayerPhase();
     } else if (NET.local && !localHasMoves(who)) {
@@ -2806,6 +3106,7 @@ function netApply(intent, who) {
       if (!localAdvance()) localEndRound();
     }
   }
+  if(NET.local)saveGame();
   netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
@@ -2822,7 +3123,7 @@ function localOwners() {
 function localHasMoves(ownerId) {
   for (var i = 0; i < S.units.length; i++) {
     var u = S.units[i];
-    if (u.chp > 0 && u.side === 'ply' && String(u.owner) === String(ownerId) && !u.acted) return true;
+    if (u.chp > 0 && u.side === 'ply' && !u.autonomous && String(u.owner) === String(ownerId) && !u.acted) return true;
   }
   return false;
 }
@@ -2851,7 +3152,7 @@ function localEndRound() {
   endPlayerPhase();
   NET.localActive = 0;
   var owners = localOwners();
-  if (owners.length > 1 && S.screen === 'map') S.handoff = true;
+  if (owners.length > 1 && S.screen === 'map'&&S.phase==='player'&&!replayOpen()) S.handoff = true;
   if (typeof refreshUI === 'function') refreshUI();
 }
 function netStartLocal() {
@@ -2891,7 +3192,7 @@ function statGrid(u) {
 
 function unitCard(u, extra) {
   var f = u.chp / u.stats.hp;
-  var tr = u.traits.map(function (t) { return '<span class="tag">' + TRAITS[t].name + '</span>'; }).join('');
+  var tr = u.traits.map(function (t) { return TRAITS[t]?'<span class="tag" title="'+esc(TRAITS[t].desc)+'">' + TRAITS[t].name + '</span>':''; }).join('');
   return '<div class="ucard">' +
     '<div class="uhead"><span class="unm">' + (onlineOwnerHP(u) ? '<span style="color:' + ownerHpInfo(u.owner).color + '">[' + esc(ownerHpInfo(u.owner).name) + (isMine(u) ? ' / YOU' : '') + '] </span>' : '') + esc(u.name) + '</span>' +
     '<span class="ucls">' + (u.side === 'ply' ? esc(u.cls) : (u.boss ? 'COMMANDER' : 'HOSTILE')) +
@@ -2900,8 +3201,8 @@ function unitCard(u, extra) {
     '<div class="urow">' + bar(f, unitHpColor(u, f, false)) + '<span class="hpn">' + u.chp + '/' + u.stats.hp + '</span></div>' +
     '<div class="urow small">' + esc(wpnLabel(u.wpn)) + ' &middot; MT ' + u.wpn.mt + ' &middot; RNG ' + u.wpn.rmin + '-' + wRange(u) +
     ' &middot; ' + (u.wpn.mag ? 'MAG' : 'PHYS') + ' &middot; MOV ' + u.mov + '</div>' +
-    (tr ? '<div class="urow">' + tr + '</div>' : '') +
-    (u.side==='ply'?'<div class="urow small">FORGE LV '+(u.forgeLv||0)+'/3 · GROWTH ITEMS '+(u.items||[]).length+'</div>':'') + statGrid(u) + (extra || '') + '</div>';
+    (tr ? '<div class="urow">' + tr + '</div>' : '') + (u.side==='foe'&&u.traits.length?'<div class="urow small">'+u.traits.filter(function(t){return TRAITS[t];}).map(function(t){return esc(TRAITS[t].desc);}).join(' · ')+'</div>':'') +
+    (u.side==='ply'&&CLASS_SKILLS[u.key]?'<div class="urow small" style="color:var(--gr)">'+esc(CLASS_SKILLS[u.key][0])+' — '+esc(CLASS_SKILLS[u.key][1])+'</div>'+promotionSkills(u).map(function(p){return '<div class="urow small" style="color:var(--am)">'+esc(p[0])+' — '+esc(p[1])+'</div>';}).join('')+'<div class="urow small">TIER '+((u.tier||0)+1)+'/3 · CAREER LV '+careerLevel(u)+(canPromote(u)?' · PROMOTION READY':'')+(u.shieldHP?' · SHIELD '+u.shieldHP:'')+'</div>':'') + (u.side==='ply'?'<div class="urow small">FORGE LV '+(u.forgeLv||0)+'/3 · GROWTH ITEMS '+(u.items||[]).length+'</div>':'') + (u.autonomous?'<div class="urow small" style="color:var(--gr)">AI ALLY · ACTS AUTOMATICALLY</div>':'') + statGrid(u) + (extra || '') + '</div>';
 }
 
 /* ================= FORECAST CARD ================= */
@@ -2914,7 +3215,7 @@ function forecastCard(a, d) {
       '<div class="frow"><i>DMG</i><s>' + f.dmg + (f.dbl ? ' x2' : '') + '</s></div>' +
       '<div class="frow"><i>HIT</i><s>' + f.hit + '%</s></div>' +
       '<div class="frow"><i>CRIT</i><s>' + f.crit + '%</s></div>' +
-      '<div class="frow"><i>HP</i><s>' + u.chp + '</s></div></div>';
+      '<div class="frow"><i>HP</i><s>' + u.chp + '</s></div>' + (u.shieldHP?'<div class="frow"><i>SHIELD</i><s>'+u.shieldHP+' next hit</s></div>':'')+'</div>';
   }
   var tri = fa.tri.dmg > 0 ? '<span class="adv">ADVANTAGE</span>' : fa.tri.dmg < 0 ? '<span class="dis">DISADVANTAGE</span>' : '';
   var lethal = fa.dmg * (fa.dbl ? 2 : 1) >= d.chp ? '<span class="adv">LETHAL</span>' : '';
@@ -2922,6 +3223,18 @@ function forecastCard(a, d) {
 }
 
 /* ================= HUD + PANEL ================= */
+function saveQuitControls(){
+  if(S.screen!=='map'&&S.screen!=='clear')return '';
+  if(netOnline()&&!NET.local)return '<button class="mini save-btn" data-act="leave-match">LEAVE MATCH</button>';
+  return '<button class="mini save-btn" data-act="savequit"'+(safeSavePoint()?'':' disabled title="Finish or cancel your action; wait for your turn"')+'>SAVE &amp; QUIT</button>';
+}
+function inventorySheet(){
+  var live=allies('ply'), count=live.reduce(function(n,u){return n+(u.items||[]).length;},0);
+  var h='<div class="inv-head"><h3>Squad items ('+count+')</h3><button class="mini" data-act="inventory" aria-label="Close inventory">CLOSE</button></div><div class="inv-summary"><span><b>'+S.gold+'</b> gold</span><span><b>'+S.kits+'</b> repair kits</span></div>';
+  live.forEach(function(u){var items=u.items||[],color=onlineOwnerHP(u)?ownerHpInfo(u.owner).color:'#7df9ff';h+='<section class="inv-group"><h4 style="color:'+color+'">'+esc(u.name)+'</h4><p class="inv-meta">'+esc(wpnLabel(u.wpn))+' · Forge '+(u.forgeLv||0)+'/3</p>';
+  if(!items.length)h+='<p class="inv-empty">No growth items</p>';
+  items.forEach(function(it){var rarity=itemRarity(it);h+='<div class="inv-item" style="--rarity:'+rarity.color+'"><b>'+esc(rarity.name.toUpperCase())+'</b>'+esc(it.name)+'<br>+'+it.bonus+'% '+esc(STATN[it.s]||it.s)+' growth</div>';});h+='</section>';});return h;
+}
 function refreshUI() {
   if (HEADLESS) return;
   var hud = $('hud'), panel = $('panel'), roster = $('roster');
@@ -2948,7 +3261,7 @@ function refreshUI() {
     '<div class="hleft"><b>CH ' + S.chapter + '</b><span>' + esc(S.site) + '</span></div>' +
     '<div class="hmid"><b>' + objTxt + '</b><span>' + (OBJS[S.obj] ? OBJS[S.obj].desc : '') + '</span></div>' +
     '<div class="hright">' +
-    '<span class="pill ' + (S.phase === 'player' ? 'ply' : 'foe') + '">' + (S.phase === 'player' ? 'YOUR TURN' : 'ENEMY') + ' &middot; T' + S.turn + '</span>' +
+    '<span class="pill ' + (S.phase === 'player' ? 'ply' : 'foe') + '">' + (S.phase === 'player' ? 'YOUR TURN' : S.phase==='ally'?'AI ALLIES':'ENEMY') + ' &middot; T' + S.turn + '</span>' +
     '<span class="pill" style="color:#ffd166">GOLD ' + S.gold + '</span>' +
     (S.shrine && S.shrine.ch===S.chapter ? '<span class="pill" style="color:#54f0c8">SHRINE '+S.shrine.kind.toUpperCase()+'</span>' : '') +
     '<span class="pill">HOSTILES ' + foes + '</span>' +
@@ -2956,8 +3269,9 @@ function refreshUI() {
     (netOnline() ? '<span class="pill' + (canAct() ? ' ply' : '') + '">' +
       (NET.local ? esc(ownerName(activeOwner())) : squadOwners().length + ' PLAYERS') + '</span>' : '') +
     '<button class="mini" data-act="danger">' + (S.danger ? 'ZONE ON' : 'ZONE OFF') + '</button>' +
-    netEndButton() +
-    '</div>';
+    netEndButton() + '<button class="mini inv-toggle" data-act="inventory" aria-expanded="'+!!S.invOpen+'">ITEMS</button>' + saveQuitControls() +
+    '</div>' + (S.saveError?'<p class="save-error">'+esc(S.saveError)+'</p>':'');
+  var inventory=$('inventory-sheet'); inventory.classList.toggle('open',!!S.invOpen);var ih=inventorySheet();if(inventory._last!==ih){inventory.innerHTML=ih;inventory._last=ih;}
 
   $('owner-legend').innerHTML = ownerHpLegend();
   /* panel */
@@ -2969,7 +3283,7 @@ function refreshUI() {
     return;
   }
   if (S.phase !== 'player') {
-    h = '<div class="hint">Enemy phase &mdash; hold on.</div>';
+    h = '<div class="hint">'+(S.phase==='ally'?'AI allies are taking their actions.':'Enemy phase.')+'</div>';
   } else if (S.mode === 'act' && S.sel) {
     var u = S.sel;
     var tgts = attackableFrom(u);
@@ -3008,11 +3322,11 @@ function refreshUI() {
 
 function rosterStrip() {
   var ps = allies('ply'), rh = '';
-  if (netOnline()) ps = ps.filter(isMine);
+  if (netOnline()) ps = ps.filter(function(u){return isMine(u)||(u.autonomous&&String(u.owner)===String(activeOwner()));});
   for (var i = 0; i < ps.length; i++) {
     var p = ps[i], fr = p.chp / p.stats.hp;
     rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
-      '<span class="rnm"' + (onlineOwnerHP(p) ? ' style="color:' + ownerHpInfo(p.owner).color + '"' : '') + '>' + esc(p.name) + '</span>' +
+      '<span class="rnm"' + (onlineOwnerHP(p) ? ' style="color:' + ownerHpInfo(p.owner).color + '"' : '') + '>' + esc(p.name)+(p.autonomous?' · AI':'') + '</span>' +
       '<span class="rlv">L' + p.lvl + '</span>' + bar(fr, unitHpColor(p, fr, false)) + '</button>';
   }
   return rh;
@@ -3109,12 +3423,12 @@ function renderTitle() {
     'Every operative carries sixty stat points and three hundred percent of growth. ' +
     'Every chapter the machines bring bigger numbers than you do.</p>' +
     '<div class="tbtns">' +
-    (hasSave() ? '<button data-act="continue">CONTINUE RUN</button>' : '') +
+    (hasSave() ? '<button data-act="continue">CONTINUE SAVED RUN</button>' : '') +
     '<button data-act="tosquad">NEW RUN</button>' +
     '<button class="ghost" data-act="online">CO-OP RUN</button>' +
     '<button class="ghost" data-act="help">HOW TO PLAY</button>' +
     '</div>' +
-    '<p class="tbest">DEEPEST CHAPTER REACHED: ' + S.best + '</p>' +
+    (S.saveError?'<p class="save-error">'+esc(S.saveError)+'</p>':'') + '<p class="tbest">DEEPEST CHAPTER REACHED: ' + S.best + '</p>' +
     '<div class="tmini">' + ALLCHARS.map(function (r) {
       var lk = lookOf(r.key, r);
       return '<canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>';
@@ -3145,7 +3459,7 @@ function renderSquad() {
       '<canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
       '<div class="sqid"><b>' + esc(lk.name) + '</b><span>' + esc(r.cls) + '</span>' +
       '<i>' + esc(w.name) + ' &middot; ' + (w.heal ? 'REPAIR' : (w.mag ? 'MAG' : 'PHYS')) +
-      ' &middot; RNG ' + w.rmin + '-' + w.rmax + ' &middot; MOV ' + r.mov + '</i></div></div>' +
+      ' &middot; RNG ' + w.rmin + '-' + (w.rmax+(r.key==='onyx'?1:0)) + ' &middot; MOV ' + r.mov + '</i></div></div>' +
       '<div class="tsg">' + cells + '</div>' +
       '<p class="sqbio">' + esc(r.bio) + '</p>' +
       '<div class="sqbtns">' +
@@ -3157,7 +3471,7 @@ function renderSquad() {
     '<div class="sqbox">' +
     '<div class="sqhead"><h2>SELECT SQUAD</h2>' +
     '<p class="osub">Choose one to ' + MAXSQUAD + ' operatives. A smaller squad faces fewer hostiles ' +
-    'but has fewer bodies and levels faster. Chapter 1 starts with one more hostile than your squad size. Appearance is yours to set and sticks between runs.</p></div>' +
+    'but has fewer bodies and levels faster. One- and two-unit squads face reduced enemy counts and slower scaling. Customize your squad for this run. New runs reset names and appearances to defaults.</p></div>' +
     '<div class="sqgrid">' + cards + '</div>' +
     '<div class="sqbar"><span class="sqcount">SQUAD <b>' + chosen.length + '</b> / ' + MAXSQUAD + '</span>' +
     '<button class="ghost" data-act="totitle">BACK</button>' +
@@ -3331,7 +3645,7 @@ function renderSkin() {
     '<h2>OPERATIVE CUSTOMIZATION</h2>' +
     '<div class="skprev"><canvas class="tspr big" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
     '<div><b class="skname">' + esc(lk.name) + '</b><span class="dim">' + esc(def.cls) + '</span>' +
-    '<p class="dim small">Stats and weapon stay the same whatever they look like.</p></div></div>' +
+    '<p class="dim small">Stats and weapon stay the same. Custom names and colors last for this run only.</p></div></div>' +
     '<label class="sklab" for="skinname">CHARACTER NAME · UP TO 24 CHARACTERS</label>' +
     '<input id="skinname" maxlength="24" value="' + esc(lk.name).replace(/"/g, '&quot;') + '" autocomplete="off" spellcheck="false">' +
     '<label class="sklab">CUSTOM COLOURS · TAP EACH PART TO EDIT</label><div class="partgrid">'+channels+'</div>' +
@@ -3351,8 +3665,7 @@ function renderHelp() {
     '<li><b>Triangle.</b> Blade beats Rail, Rail beats Lance, Lance beats Blade: plus or minus 15 hit and 1 damage. Tech is neutral.</li>' +
     '<li><b>Terrain.</b> Barricades and data daises give DEF and avoid. Repair nodes heal. Plasma vents burn. Bulkheads block.</li>' +
     '<li><b>Growth.</b> Each level, every stat rolls its growth percentage. 300% total means about three stat points a level.</li>' +
-    '<li><b>Levels.</b> Promotion at ' + PROMOLVL + ' (new class, +MOV, bonus stats), hard cap at ' + MAXLVL + '. ' +
-    'At the cap, experience becomes OVERDRIVE instead: single stat points, still weighted by growth.</li>' +
+    '<li><b>Levels.</b> Promote between fights at level 15–20, twice per character. Choose a path, retain all stats, gain +100% total growth and reset to level 1. Wait until 20 for extra growth rolls. Final tier level 20 unlocks OVERDRIVE.</li>' +
     '<li><b>Marks.</b> Once hostiles hit the cap too they come back as MK-II, MK-III and worse. That part never stops.</li>' +
     '<li><b>Death is permanent</b> unless you rescue a fallen ally at a Recovery Camp. Lose everyone and the run ends.</li>' +
     '<li><b>ZONE</b> shades every tile the enemy can reach and hit this turn. Use it.</li>' +
@@ -3372,7 +3685,7 @@ function renderHelp() {
 
 function renderClear() {
   var h = '<div class="obox">' +
-    '<h2>CHAPTER ' + S.chapter + ' CLEAR</h2>';
+    '<h2>CHAPTER ' + S.chapter + ' CLEAR</h2><div class="route-save">'+saveQuitControls()+'<span class="save-note">'+(netOnline()&&!NET.local?'Live online rooms cannot be resumed from a local save.':'Your route and rewards are saved on this device.')+'</span></div>'+(S.saveError?'<p class="save-error">'+esc(S.saveError)+'</p>':'');
   if (S.levelups.length) {
     h += '<div class="lvs">' + S.levelups.map(function (l) {
       if (l.over) {
@@ -3418,12 +3731,13 @@ function selectUnit(u) {
 function deselect() { S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null; refreshUI(); }
 
 function finishAct(u) {
-  u.acted = true;
+  actionComplete(u);
   deselect();
   if (netOnline()) { refreshUI(); return; }
   if (S.danger) computeDanger();
   if (checkEnd()) return;
-  if (!allies('ply').filter(function (p) { return !p.acted; }).length) {
+  saveGame();
+  if (!allies('ply').filter(function (p) { return !p.autonomous&&!p.acted; }).length) {
     schedule(function () { if (S.screen === 'map' && S.phase === 'player') endPlayerPhase(); }, 450);
   }
   refreshUI();
@@ -3468,14 +3782,26 @@ function onTile(tx, ty) {
 }
 
 function doAction(act, el) {
-  if (act === 'online') { netInit(); S.screen = 'net'; NET.mode = null; NET.err = ''; refreshUI(); return; }
+  if(replayOpen())return;
+  if(act==='inventory'){S.invOpen=!S.invOpen;refreshUI();return;}
+  if(act==='savequit'){
+    if(!safeSavePoint())return;
+    if(!saveGame()){S.saveError='Could not save. Check browser storage permissions or available space.';refreshUI();return;}
+    runEpoch++;S.saveError='';S.invOpen=false;S.sel=null;S.mode='idle';S.movers=[];S.fx=[];S.busy=0;
+    resetLooks();if(NET.local)netLeave();else{S.screen='title';refreshUI();}return;
+  }
+  if(act==='leave-match'){if(netOnline()&&!NET.local&&window.confirm(NET.host?'Leave online match? Hosting ends for this device. Online progress cannot be resumed from a local save.':'Leave online match? Online progress cannot be resumed from a local save.')){runEpoch++;S.movers=[];S.busy=0;netLeave();}return;}
+
+  if (act === 'online') { resetLooks(); netInit(); S.screen = 'net'; NET.mode = null; NET.err = ''; refreshUI(); return; }
   if (act === 'netmenu') {
+    resetLooks();
     if (NET.sub) { try { NET.sub.leave(); } catch (e) { } NET.sub = null; }
     NET.mode = null; NET.phase = 'idle'; NET.err = ''; NET.copied = '';
     NET.local = false; NET.localStep = 0; NET.localPlayers = [];
     refreshUI(); return;
   }
   if (act === 'netmode') {
+    resetLooks();
     var m = el.getAttribute('data-v');
     NET.mode = m; NET.err = ''; NET.copied = '';
     if (m === 'create') NET.code = roomCode();
@@ -3520,6 +3846,7 @@ function doAction(act, el) {
   if (act === 'netready') { NET.ready = !NET.ready; netPresence(); refreshUI(); return; }
   if (act === 'netstart') { netStartRun(); return; }
   if (act === 'tosquad') {
+    resetLooks();
     S.pick = {};
     for (var pi = 0; pi < ROSTER.length; pi++) S.pick[ROSTER[pi].key] = true;
     S.screen = 'squad'; refreshUI(); return;
@@ -3545,10 +3872,10 @@ function doAction(act, el) {
     saveLooks(); renderSkin(); return;
   }
   if (act === 'new') { S.screen = 'squad'; doAction('tosquad', el); return; }
-  if (act === 'continue') { if (!loadGame()) { S.screen = 'squad'; doAction('tosquad', el); return; } refreshUI(); return; }
+  if (act === 'continue') { if (!loadGame()) { S.saveError='Unable to load the saved run.';refreshUI();return; } refreshUI(); return; }
   if (act === 'help') { S.prevScreen = S.screen; S.screen = 'help'; refreshUI(); return; }
   if (act === 'closehelp') { S.screen = S.prevScreen || 'title'; refreshUI(); return; }
-  if (act === 'totitle') { S.screen = 'title'; refreshUI(); return; }
+  if (act === 'totitle') { resetLooks(); S.screen = 'title'; refreshUI(); return; }
   if(act==='route'){if(!S.route)return;var it={t:'route',cmd:el.getAttribute('data-cmd'),arg:el.getAttribute('data-v'),id:Number(el.getAttribute('data-id')),rev:S.route.rev,ch:S.route.ch};if(netOnline())netSubmit(it);else routeAction(it.cmd,it.arg,it.id,it.rev,it.ch,'');return;}
   if (act === 'reward') {
     var rIdx = parseInt(el.getAttribute('data-i'), 10);
@@ -3611,7 +3938,7 @@ function doAction(act, el) {
 function applyLooks() {
   for (var i = 0; i < S.units.length; i++) {
     var u = S.units[i];
-    if (u.side !== 'ply') continue;
+    if (u.side !== 'ply'||u.autonomous) continue;
     var def = charByKey(u.key);
     if (!def) continue;
     var lk = lookOf(u.key, def);
@@ -3683,8 +4010,8 @@ if (typeof window !== 'undefined' && !HEADLESS) {
 }
 if (typeof window !== 'undefined') {
   window.__GAME = { S: S, newRun: newRun, aiAct: aiAct, endPlayerPhase: endPlayerPhase, allies: allies,
-    routeAction:routeAction, routeChoices:routeChoices, routeItem:routeItem, itemRarity:itemRarity, saveGame:saveGame, loadGame:loadGame, routeRender:routeRender, takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
-    foeLevel: foeLevel, foeCount: foeCount, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
+    routeAction:routeAction, routeChoices:routeChoices, recruitParticipants:recruitParticipants, recruitEligible:recruitEligible, makeRecruit:makeRecruit, recruitProfile:recruitProfile, recruitCost:recruitCost, replayUnit:replayUnit, routeItem:routeItem, itemRarity:itemRarity, saveGame:saveGame, loadGame:loadGame, routeRender:routeRender, takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
+    foeLevel: foeLevel, foeCount: foeCount, foePool:foePool, pickFoe:pickFoe, spawnReinforcements:spawnReinforcements, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
     doCombat: doCombat, doHeal: doHeal, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
     canReachTarget: canReachTarget, wRange: wRange, dist: dist, ter: ter, foesOf: foesOf,
     healableFrom: healableFrom, useKit: useKit, wpnPlus: wpnPlus, inBounds: inBounds,
@@ -3698,7 +4025,7 @@ if (typeof window !== 'undefined') {
     localOwners: localOwners, localAdvance: localAdvance, localEndRound: localEndRound,
     activeOwner: activeOwner, ownerName: ownerName, buildSquad: buildSquad, rosterStrip: rosterStrip,
     ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS, paletteOf:paletteOf, paletteId:paletteId, lookOf:lookOf, getSpr:getSpr, netLooks:netLooks, wireUnit:wireUnit, unitFromWire:unitFromWire,
-    MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
+    resetLooks:resetLooks, PROMO_GROWTH:PROMO_GROWTH, promoteUnit:promoteUnit, promotionOptions:promotionOptions, canPromote:canPromote, careerLevel:careerLevel, grantExp:grantExp, CLASS_SKILLS:CLASS_SKILLS, PROMO_SKILLS:PROMO_SKILLS, promotionSkills:promotionSkills, perk:perk, healPower:healPower, CLASS_PATHS:CLASS_PATHS, MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
     LAYOUTS: LAYOUTS, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
     cvRef: function () { return cv; },
     renderInto: function (target) {
