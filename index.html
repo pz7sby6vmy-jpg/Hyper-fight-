@@ -1,0 +1,3190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hyper Fights</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#05080d; --bg2:#0a111b; --panel:#0c1420; --line:#1d2b40;
+  --cy:#7df9ff; --gr:#54f0c8; --am:#ffd166; --rd:#ff5a5a; --tx:#d7e5f2; --dim:#7f93a8;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+}
+html,body{height:100%}
+body{
+  background:
+    radial-gradient(1200px 600px at 50% -10%,#10213a 0%,transparent 60%),
+    linear-gradient(180deg,#060a11,#04070c 60%);
+  color:var(--tx);font-family:var(--mono);-webkit-font-smoothing:antialiased;
+  letter-spacing:.02em;overflow-x:hidden;
+}
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:99;
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.028) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+#app{min-height:100%;display:flex;flex-direction:column;align-items:center;padding:8px 8px 20px;gap:8px}
+h1,h2,h3,b,button{letter-spacing:.06em}
+button{
+  font-family:var(--mono);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  color:#041018;background:linear-gradient(180deg,var(--cy),#49c9d8);
+  border:1px solid #9bfaff;border-radius:3px;padding:10px 12px;cursor:pointer;
+  box-shadow:0 0 0 1px #05121c,0 2px 0 #0b3a46,0 0 14px rgba(125,249,255,.22);
+}
+button:active{transform:translateY(1px)}
+button:disabled{opacity:.35;filter:grayscale(1);cursor:default}
+button.ghost{background:transparent;color:var(--cy);border:1px solid #2d4a63;box-shadow:none}
+button.mini{padding:6px 8px;font-size:10px;background:transparent;color:var(--cy);border:1px solid #2d4a63;box-shadow:none}
+
+/* ---------- title ---------- */
+#title-screen{display:none;flex-direction:column;align-items:center;width:100%;max-width:760px}
+.tbox{width:100%;text-align:center;padding:14px 4px 10px}
+h1{font-size:clamp(30px,10vw,58px);line-height:.95;color:#eaf6ff;
+  text-shadow:0 0 18px rgba(125,249,255,.55),0 3px 0 #0a2130}
+h1 span{display:block;font-size:.42em;color:var(--cy);letter-spacing:.44em;margin-top:6px;text-shadow:0 0 12px rgba(125,249,255,.8)}
+.tag2{margin-top:10px;font-size:10px;letter-spacing:.34em;color:var(--dim)}
+.tdesc{margin:14px auto 0;max-width:46ch;font-size:12px;line-height:1.7;color:#a9bfd4}
+.tbtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:18px 0 8px}
+.tbest{font-size:10px;color:var(--am);letter-spacing:.2em}
+.tros{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-top:16px;text-align:left}
+.tr{background:linear-gradient(180deg,#0d1725,#0a1118);border:1px solid var(--line);border-radius:4px;padding:10px;position:relative}
+.tr canvas{width:40px;height:40px;image-rendering:pixelated;display:block;margin-bottom:4px}
+.tr b{display:block;font-size:13px;color:var(--cy)}
+.tr span{display:block;font-size:9px;color:var(--dim);letter-spacing:.16em;margin-bottom:6px}
+.tsg{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:6px 0 4px}
+.tsc{background:#070e18;border:1px solid #16243a;border-radius:2px;padding:3px 1px;text-align:center}
+.tsc b{display:block;font-size:7px;color:#5f7d96;letter-spacing:.06em}
+.tsc span{display:block;font-size:12px;color:#eaf6ff;margin:0}
+.tsc em{display:block;font-size:7px;color:var(--gr);font-style:normal}
+.tr u{display:block;text-decoration:none;font-size:7px;letter-spacing:.14em;color:var(--am);margin-bottom:4px}
+.tr i{display:block;font-size:10px;color:#6f8699;line-height:1.5;font-style:normal;margin-top:6px}
+
+/* ---------- game ---------- */
+#game-screen{display:none;flex-direction:column;width:100%;max-width:760px;gap:6px}
+#hud{display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:6px 8px;font-size:10px}
+.hleft,.hmid{display:flex;flex-direction:column;gap:1px;min-width:0}
+.hleft b{color:var(--cy);font-size:12px}
+.hmid{flex:1;min-width:90px}
+.hmid b{color:var(--am);font-size:11px}
+.hleft span,.hmid span{color:var(--dim);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hright{display:flex;gap:4px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.pill{border:1px solid var(--line);border-radius:999px;padding:4px 8px;font-size:9px;color:var(--dim);white-space:nowrap}
+.pill.ply{color:#041018;background:var(--gr);border-color:var(--gr);font-weight:700}
+.pill.foe{color:#190608;background:var(--rd);border-color:var(--rd);font-weight:700}
+
+#cvwrap{position:relative;border:1px solid #22354b;border-radius:4px;overflow:hidden;
+  background:#070b11;box-shadow:inset 0 0 50px rgba(0,0,0,.7),0 0 24px rgba(0,0,0,.6)}
+#cv{display:block;width:100%;height:auto;image-rendering:pixelated;touch-action:manipulation}
+
+#panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:8px;min-height:92px}
+.hint{font-size:10px;color:var(--dim);line-height:1.55;padding:3px 2px}
+.acts{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.acts button{flex:1 1 auto;min-width:86px}
+
+.ucard{font-size:11px}
+.uhead{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.unm{color:var(--cy);font-weight:700;font-size:13px}
+.ucls{color:var(--dim);font-size:9px;letter-spacing:.14em}
+.urow{display:flex;align-items:center;gap:6px;margin-top:5px;flex-wrap:wrap}
+.urow.small{font-size:9px;color:#9ab0c6;letter-spacing:.08em}
+.urow.dim{color:var(--dim)}
+.bar{flex:1;min-width:60px;height:7px;background:#060b12;border:1px solid #1b2a3c;display:block;position:relative}
+.bar i{display:block;height:100%}
+.hpn{font-size:10px;color:#b9cde0}
+.tag{font-size:8px;border:1px solid #58381c;background:#241307;color:var(--am);padding:2px 5px;border-radius:2px;letter-spacing:.1em}
+.sgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:8px}
+.sc{background:#091120;border:1px solid #17263a;border-radius:2px;padding:3px 2px;text-align:center}
+.sc b{display:block;font-size:8px;color:var(--dim);letter-spacing:.1em}
+.sc span{display:block;font-size:12px;color:#eaf6ff}
+.sc em{display:block;font-size:8px;color:#5f7d96;font-style:normal}
+
+.fcast{display:flex;align-items:stretch;gap:6px;margin-bottom:8px}
+.fcol{flex:1;background:#091120;border:1px solid #17263a;border-radius:3px;padding:7px}
+.fcol b{display:block;font-size:11px;color:var(--cy);margin-bottom:5px}
+.frow{display:flex;justify-content:space-between;font-size:10px;padding:1px 0}
+.frow i{color:var(--dim);font-style:normal}
+.frow s{text-decoration:none;color:#eaf6ff}
+.fvs{display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:10px;color:var(--dim);gap:4px;padding:0 2px}
+.no{font-size:9px;color:var(--dim)}
+.adv{color:#041018;background:var(--gr);padding:2px 4px;border-radius:2px;font-size:8px;font-weight:700}
+.dis{color:#190608;background:var(--rd);padding:2px 4px;border-radius:2px;font-size:8px;font-weight:700}
+
+#roster{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:5px}
+.rchip{background:#0b1422;border:1px solid var(--line);box-shadow:none;color:var(--tx);
+  display:flex;flex-direction:column;gap:3px;align-items:stretch;padding:6px;text-align:left}
+.rchip.on{border-color:var(--cy);box-shadow:0 0 10px rgba(125,249,255,.3)}
+.rchip.done{opacity:.45}
+.rnm{font-size:10px;color:var(--cy)}
+.rlv{font-size:8px;color:var(--dim)}
+
+#log{width:100%;max-width:760px;font-size:9px;color:#5f7489;line-height:1.7;max-height:60px;overflow:hidden}
+
+/* ---------- overlay ---------- */
+#overlay{display:none;position:fixed;inset:0;z-index:50;background:rgba(3,6,11,.9);
+  align-items:center;justify-content:center;padding:14px;overflow:auto}
+.obox{width:100%;max-width:560px;background:linear-gradient(180deg,#0c1724,#080e16);
+  border:1px solid #27425c;border-radius:5px;padding:16px;box-shadow:0 0 40px rgba(125,249,255,.12)}
+.obox h2{font-size:20px;color:var(--cy);text-shadow:0 0 14px rgba(125,249,255,.5)}
+.obox h2.dead{color:var(--rd);text-shadow:0 0 14px rgba(255,90,90,.5)}
+.osub{font-size:11px;color:var(--dim);margin:8px 0 12px;line-height:1.6}
+.lvs{display:grid;gap:5px;margin:12px 0}
+.lv{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#091120;border:1px solid #17263a;padding:6px 8px;border-radius:3px;font-size:10px}
+.lv b{color:var(--cy);font-size:11px;min-width:70px}
+.lv span{color:var(--dim);font-size:9px}
+.gn{color:#041018!important;background:var(--gr);padding:2px 5px;border-radius:2px;font-weight:700}
+.promo{color:#190c02!important;background:var(--am);padding:2px 5px;border-radius:2px;font-weight:700}
+.dim{color:var(--dim)}
+.rews{display:grid;gap:7px}
+.rew{display:block;text-align:left;background:#0b1626;border:1px solid #27425c;color:var(--tx);box-shadow:none;padding:11px}
+.rew:hover{border-color:var(--cy)}
+.rew b{display:block;color:var(--am);font-size:12px;margin-bottom:3px}
+.rew span{display:block;font-size:10px;color:#9ab0c6;letter-spacing:.02em;text-transform:none;font-weight:400;line-height:1.5}
+ul.help{display:grid;gap:8px;margin:12px 0;padding-left:16px}
+ul.help li{font-size:11px;line-height:1.65;color:#a9bfd4}
+ul.help b{color:var(--cy)}
+@media(max-width:420px){
+  .sgrid{grid-template-columns:repeat(4,1fr)}
+  .acts button{min-width:70px;padding:9px 6px;font-size:11px}
+  .hmid{flex:1 1 100%;order:3}
+}
+
+/* ---------- title extras ---------- */
+.tmini{display:flex;gap:4px;justify-content:center;flex-wrap:wrap;margin-top:18px}
+.tmini canvas{width:34px;height:34px;image-rendering:pixelated;
+  background:#0b1422;border:1px solid var(--line);border-radius:3px}
+.tfoot{margin-top:10px;font-size:9px;letter-spacing:.18em;color:var(--dim)}
+
+/* ---------- squad select ---------- */
+#squad-screen{display:none;flex-direction:column;width:100%;max-width:860px}
+.sqbox{width:100%;padding-bottom:70px}
+.sqhead h2{font-size:20px;color:var(--cy);text-shadow:0 0 14px rgba(125,249,255,.45);text-align:center}
+.sqhead .osub{text-align:center;max-width:52ch;margin:8px auto 14px}
+.sqgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(248px,1fr));gap:8px}
+.sqc{background:linear-gradient(180deg,#0d1725,#0a1118);border:1px solid var(--line);border-radius:4px;padding:10px;
+  display:flex;flex-direction:column;gap:6px}
+.sqc.on{border-color:var(--cy);box-shadow:0 0 14px rgba(125,249,255,.18)}
+.sqtop{display:flex;gap:9px;align-items:flex-start}
+.sqtop canvas{width:42px;height:42px;image-rendering:pixelated;flex:none;
+  background:#070e18;border:1px solid #16243a;border-radius:3px}
+.sqid{min-width:0}
+.sqid b{display:block;font-size:14px;color:var(--cy)}
+.sqid span{display:block;font-size:9px;color:var(--dim);letter-spacing:.14em}
+.sqid i{display:block;font-size:8px;color:#8fa7bd;font-style:normal;margin-top:3px;line-height:1.5}
+.sqbio{font-size:9px;color:#6f8699;line-height:1.55}
+.sqbtns{display:flex;gap:5px;margin-top:auto}
+.sqbtns button{flex:1;padding:8px 4px;font-size:10px}
+.sqbar{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:7px;align-items:center;justify-content:center;
+  padding:9px 10px;background:rgba(5,9,15,.96);border-top:1px solid var(--line);backdrop-filter:blur(6px)}
+.sqcount{font-size:11px;color:var(--dim);letter-spacing:.14em;margin-right:auto}
+.sqcount b{color:var(--cy);font-size:15px}
+
+/* ---------- appearance ---------- */
+.skinbox{max-width:600px}
+.skprev{display:flex;gap:12px;align-items:center;margin:10px 0 4px}
+.skprev canvas.big{width:74px;height:74px;image-rendering:pixelated;flex:none;
+  background:#070e18;border:1px solid #1d2b40;border-radius:4px}
+.skname{display:block;font-size:17px;color:var(--cy)}
+.skprev span{font-size:9px;letter-spacing:.14em}
+.skprev p{font-size:9px;line-height:1.6;margin-top:6px}
+.sklab{display:block;font-size:9px;letter-spacing:.2em;color:var(--dim);margin:14px 0 6px}
+#skinname{width:100%;font-family:var(--mono);font-size:15px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--cy);background:#070e18;border:1px solid #27425c;border-radius:3px;padding:9px 10px}
+#skinname:focus{outline:none;border-color:var(--cy);box-shadow:0 0 10px rgba(125,249,255,.2)}
+.swgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:5px}
+.sw{background:#0b1422;border:1px solid var(--line);box-shadow:none;color:var(--tx);
+  padding:6px 4px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.sw.on{border-color:var(--cy);box-shadow:0 0 10px rgba(125,249,255,.25)}
+.sw i{display:inline-block;width:14px;height:8px;border:1px solid #05080d}
+.sw i+i{margin-left:-1px}
+.sw span{font-size:7px;letter-spacing:.1em;color:var(--dim)}
+.sw.on span{color:var(--cy)}
+.chgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(74px,1fr));gap:5px}
+.ch{background:#0b1422;border:1px solid var(--line);box-shadow:none;color:var(--tx);
+  padding:6px 3px;display:flex;flex-direction:column;align-items:center;gap:3px}
+.ch.on{border-color:var(--cy);box-shadow:0 0 10px rgba(125,249,255,.25)}
+.ch canvas{width:38px;height:38px;image-rendering:pixelated}
+.ch span{font-size:7px;letter-spacing:.06em;color:var(--dim)}
+.ch.on span{color:var(--cy)}
+
+/* ---------- legend ---------- */
+.lgh{font-size:11px;color:var(--am);letter-spacing:.18em;margin:14px 0 8px}
+.legend{display:grid;gap:5px}
+.lg{display:flex;gap:9px;align-items:center;background:#091120;border:1px solid #17263a;border-radius:3px;padding:6px 8px}
+.lg canvas{width:34px;height:34px;image-rendering:pixelated;flex:none;border:1px solid #16243a}
+.lg b{display:block;font-size:10px;color:var(--cy);letter-spacing:.1em}
+.lg span{display:block;font-size:9px;color:#8fa7bd;line-height:1.5}
+@media(max-width:420px){
+  .sqgrid{grid-template-columns:1fr}
+  .swgrid{grid-template-columns:repeat(4,1fr)}
+  .chgrid{grid-template-columns:repeat(4,1fr)}
+}
+
+/* ---------- online ---------- */
+.netform{max-width:420px;margin:0 auto}
+.netform input{width:100%;font-family:var(--mono);font-size:18px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--cy);background:#070e18;border:1px solid #27425c;border-radius:3px;padding:11px 12px;text-align:center}
+.netform input:focus{outline:none;border-color:var(--cy);box-shadow:0 0 10px rgba(125,249,255,.2)}
+.neterr{font-size:10px;color:var(--rd);margin-top:10px;text-align:center;letter-spacing:.08em}
+.plrs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:6px;margin-bottom:10px}
+.plr{background:#0b1626;border:1px solid var(--line);border-radius:4px;padding:8px 10px}
+.plr.you{border-color:var(--cy)}
+.plr b{display:block;font-size:13px;color:var(--cy)}
+.plr span{display:block;font-size:9px;color:var(--dim);letter-spacing:.14em}
+.plr .rdy{color:var(--gr)}
+.vsmenu{display:grid;gap:8px;max-width:460px;margin:0 auto}
+.vopt{display:block;text-align:left;background:#0b1626;border:1px solid #27425c;color:var(--tx);box-shadow:none;padding:13px}
+.vopt:hover{border-color:var(--cy)}
+.vopt b{display:block;color:var(--cy);font-size:14px;margin-bottom:4px}
+.vopt span{display:block;font-size:10px;color:#9ab0c6;letter-spacing:.02em;text-transform:none;font-weight:400;line-height:1.5}
+.codebig{font-size:34px;letter-spacing:.3em;color:var(--cy);text-align:center;padding:14px 8px 10px;
+  background:#070e18;border:1px solid #27425c;border-radius:4px;text-shadow:0 0 16px rgba(125,249,255,.45)}
+.netnote{font-size:9px;color:var(--dim);line-height:1.6;margin-top:12px;text-align:center}
+.handoff{text-align:center;padding:10px 6px}
+.handoff b{display:block;font-size:20px;color:var(--cy);letter-spacing:.14em;margin-bottom:6px}
+.handoff span{display:block;font-size:10px;color:var(--dim);margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="title-screen"></div>
+  <div id="squad-screen"></div>
+  <div id="game-screen">
+    <div id="hud"></div>
+    <div id="cvwrap"><canvas id="cv"></canvas></div>
+    <div id="panel"></div>
+    <div id="roster"></div>
+  </div>
+</div>
+<div id="overlay"></div>
+<script>(function(){
+/* 50 layouts: 10 per terrain, generated and connectivity-checked offline */
+var LAYOUTS = [
+  /* FOUNDRY */ [
+    ['.o............','..,#########..','.,ooo#...#....','...^^#.^...,..','...,,#...#....','.....#######..','.,o...^..#....','.,...#.#####..','..+.###.####..','..............'],
+    ['...^..,..o....','...#.######...','............o.','....#####.#...','.,...,=...#...','..........#.o.','...######.##..','...^,.o...#...','...####.####..','.....+o...,^..'],
+    ['.o............','...#.#####....','.....o...^#...','...####.##....','...o,o..^.#,..','....##.####...','..o...+.=.#...','..,....,.^#...','.,.####^###...','..............'],
+    ['....,.........','.....#.#####..','...####^###o,.','.,...,..#o#^..','.o...o.,......','.,......#.#...','.....o..#.#.,.','...####^####..','..+.#.######..','....^..^.,....'],
+    ['.,.,.^,.......','.....#.#####..','...^.#.o......','..+#.#######..','...o.#.,.#=...','.....#^..#....','......o...^...','.,oo.^,..#....','...#######.#..','...,.......,..'],
+    ['.........o....','.,...######...','.......#..^...','....##.###....','.oo.......^...','.....^.#.#....','.,.o,..#.#^.,.','..,#######,#..','...####.####..','....^,+....,..'],
+    ['..............','...#####.###..','..,+..#.......','...#.######...','......#,..o.,.','...o.,#.,.o...','.o.#^#######..','....^.#.......','....^##.##....','.....o^..o....'],
+    ['..o.^....#....','...,...#^#..o.','...##.######,.','.......#..,...','....+..#.#....','..o.,######,..','......o.......','....##.####...','...o#######...','.....^.^o...,.'],
+    ['.........#o...','.,....^,.#.o..','...#.#######..','..,.=....#..o.','.....+.#.#..,.','...##.######..','..,...,#......','....####^###..','....###.###...','....^......o..'],
+    ['.,...+.....o..','...####.##.^..','.....#...#....','.....#.,,#....','...^o#.^.#....','....o#..##....','....##.####...','.....#...#....','.oo.#^###.##..','..o,=...,...,.'],
+  ],
+  /* VAULT */ [
+    ['.....,.#.o.#..','...#.+.#...=..','...#.....o.#,.','..###.######..','...#...#....,.','...#...#...#,.','..#######.##..','.o.#....=.=#..','.......#...#o.','...#...#.,.#..'],
+    ['...#...#.oo...','...#..,....#..','.......#...#..','..########.#..','...#...#,,.#..','...#,..#.+.=..','..###=######..','...#,..#,..#..','.o........=#..','...#.+.#...#..'],
+    ['...#...#,..#,.','..,..o.,..=#..','..,#...#......','....########..','..........+#..','...#=..#o+.#..','..##o#######..','...#.oo#...#..','...#...#=.....','...#..,#...#..'],
+    ['.....o,....#..','...#...#......','.,.#.=.#..,#..','..#######.##..','...#.o.#+..#..','...#...#.,o#..','...###.#####..','...#,.....o#o.','.....,+#..=#..','...#...#...#..'],
+    ['...#.o.#...#o.','..+#+..#...#..','......o...,...','..##.#####.#..','...#o.=#...#..','.......#=..#,.','...##.######..','...#...#..,...','...#,......#..','...#...#...#..'],
+    ['...#.......#..','.......#..,#..','..o#...#o,.#..','..##.#######..','.....=.#...,..','...#...#...#..','..##.#####=#..','..,#..........','...#...#o..#..','...#+=.#..,#..'],
+    ['...#.....+....','...#.o.#...#..','...#.,o#...#..','..###..#####..','.....o....=#..','...#,.=#.,.#..','..##..######..','.o.#+,.#...=..','..o....#.,.#..','...#...#.,.#..'],
+    ['.......#....,.','...#....,.,#..','...#,..#......','..#..#####.#..','...#....,..#..','...#...#...#..','..########.#..','..+.=..#o..#o.','...#.=.#...#..','...#..o#o.o#,.'],
+    ['...#...#..,#..','...#...#.+.#o.','...#..=#...#..','..##..##.###..','.o.#...#...#..','..o#,.=#...#..','..##.###.###..','.....=.o,,.#..','...#...#......','...#.o.....#..'],
+    ['...#.......#..','...#=..#o..#o.','...#...#,.o#..','...###.#####..','...#.......#..','.o+....#......','..+######.##..','.....=.#...#..','...#...#...#..','.,.#,,.#=.....'],
+  ],
+  /* SPINE */ [
+    ['....,=.=.+....','....,#######..','...#.#...o....','...#.#.#,.....','..,#.#.#.,....','...o.,..oo.o..','...#.#o#+.oo..','...#.#.#,.....','...#.#######..','......,..o....'],
+    ['.,..=....,....','.....#######..','..,,..##+##...','......##.##...','..o,.ooo+.o,..','..o...##.##...','......##.##...','......##..#...','.....#######..','..o.....,.,...'],
+    ['..............','...o########..','...+##........','...,##.#.#=...','....##.#.#....','..o...+o,ooo..','....##.#.#....','....##.#.#....','....######.,..','......,...,...'],
+    ['...,o.....,...','....,####.....','....#...+.=...','....#=#.##....','....#.#.##....','...oo.o...o...','....#,#.##....','...,#.#.##....','..o.#######...','....o....+..o.'],
+    ['....=..o.o....','...o########..','....#.#o#o....','....#.#+#.,.,.','......o.,oo...','....#.#.#+....','.,..#.#.#.....','....#..=,.....','....######....','.......,..,...'],
+    ['..........=...','.....######...','..o..##.#.#...','.,...##,#.#,..','...+..oo.oo...','.....##,#.#...','.....##.#.#...','.o...##...#,,.','.o.,o=####+...','..............'],
+    ['....###...+...','...#.######,..','...#...##.#...','...#.=.##.#...','....oo....,o..','...#.=.##.#...','...#,..##.#o..','...#..+...#.,.','.....#####....','....#####..,..'],
+    ['..,..o........','....#####.#.,.','....o.#.#.#,..','.....+#o#,#.o.','....,.o.......','......#.#.#...','......#.#.#o..','...,..#=#.#...','....######....','......+.......'],
+    ['...o..........','.....#######..','....##.##..o..','..o.##.##.,...','........o.=o..','...,##.##.....','....##.##.+o..','..,.+,.##.....','.....######...','............,.'],
+    ['...o...=,..,..','....######....','...#.,..#=#,..','.,.#..+.#.#...','...#.+..#.#...','.....o........','.,.#o...#.#...','...#....#.#...','.o.########.,.','...,..........'],
+  ],
+  /* GARDEN */ [
+    ['.,..,.,...,...','.o#.#.#..o....','.,.#.##.,.#.,.','...,o.#..###..','......#..=#,..','...#=^........','.o###..#.o.#o.','.,+#..###.##..','.......#=.o#..','....,.o.......'],
+    ['.....,.o,...o.','...#..,#......','.o##.o###.....','...#o###.,....','....o.#..^#,..','....,....###..','......=#.##,,.','....,o###o....','.......=###+..','.....o...#o,..'],
+    ['....,..o.=#...','........,.##o.','.....#..+o,.,.','.,..##=o..,,..','..,,.###o.....','...,.o###.....','...#.,.#......','.o###o..#...o.','...###..,#o=o.','..,.....#...,.'],
+    ['..o..^.....+..','....o#.#,.,#..','......#,#o#,..','....,=#.=..#..','.....###......','......#...o...','.,..o,..,.#.,.','...,..##o###..','..o..###o.#...','..o...##,.....'],
+    ['..,o#....^..,.','..o.###..,o+..','....,###o.,...','.o,.#.##.#....','...#,o#####o..','.,..o,...#....','....o..+###...','..o###^.=#,,..','....#.=.......','....,,o.=..o..'],
+    ['..,,....o..o..','....^^=+,.#...','...o.,.oo###..','....,#..,+#...','....##....##..','.....#....##..','...oo###.###..','.,,#..#...#...','.o###.,..#.#..','......,.....,.'],
+    ['..o...,=,.,+..','...,#...,o.=..','...#.#o,....,.','......,..#....','...#,..,#.#...','..##.....o##,.','.,.#o###.o.#..','..,..o###.#...','.o.,.+,.o#....','.,........#...'],
+    ['.........,....','...#..#=o,=...','..##.#...,.#,.','...#.,#..o##..','...o=..##..#..','..,.######o...','..o+,#..#,,#,.','...+.....,##,o','.o...,,....#o.','.,..,...o.....'],
+    ['.,...#,...=...','..oo##....,...','...o^###o..,..','.o###.#.,.#.o.','.o.#,.o.####o.','....+....#o...','..,..=...#....','.,.#.,=..##...','.o#.#.,..,..,.','.,.,.......,..'],
+    ['.......o.#....','...o###o.,#...','..o..#...,o,..','....##,ooo.#..','.....#,..o##..','.,.#=.,...##..','.o,.#,o#.###o.','...#.,###o#...','...........+..','.....=........'],
+  ],
+  /* HULK */ [
+    ['...##..#......','...o#.#...+,..','....#^##^..#..','....#.###.#...','....o,o.###...','..o.#.#.###...','....#o#,#.....','....#=#..#..,.','....#,#.o^#...','......,,..o...'],
+    ['..o.#..o..##..','..,,#+#..##...','...####.#o.,..','..o##.........','....#####.^...','.....=####....','.,..#.##..#...','....#.#...##..','.......o.^.#..','....o.o...,...'],
+    ['.....o........','..o.o+..##....','......^#...#..','......##.##^..','..,..#...#....','....#..#.#.,o.','....#.#..#....','.....#...##.o.','..o.##==.##...','..,#...o#,....'],
+    ['......,...#...','..,.....#+#...','....,.=#,.#...','.,#...##...^..','..##.##.o.#...','..##.#oo..##..','....#o.,,.##,.','....##...##...','..o...#.#.....','.o.o....#o#...'],
+    ['.....,.,+..,..','...#.#.,.^=...','..###.,o#.#...','...##..o#^#.o.','...#.o.o#.#...','.o##..........','..###...#.#,..','...^##=.#.#...','...o##..#.#o..','..........#...'],
+    ['...,o.....#o..','....#..###....','....#.o###....','..#.......#...','...##=.#o.o#..','...##.##,.^o..','...+##,.,.o...','....#####..,..','....#.#..#....','.,.,#....,=...'],
+    ['....o.......,.','..#.,#o..#....','..####=..#....','...###....#...','.....##+,#o#..','.,..^.#.o#.o..','.....#...#..o.','.,...=.#.##...','......#....#..','...o.##....#..'],
+    ['......,..,##..','....#.#.......','....#.o#,##...','....#...###...','...,=###..#.,.','....###.#.....','...####.#.#,..','...###o..,#...','...o#o..^.#...','....#...o+.o..'],
+    ['......o=..o#..','.....##...#...','.......#.#..o.','.....#^###=...','.....#........','.o.,.#..^#....','..o.##..##o...','.o.###..##^...','.....#....#,..','..#..#+o,..#,.'],
+    ['..,#.+....=...','.oo##..#^.#...','....,#.#.##...','.......##.#...','..#....#.o#^..','.,##..##....,.','...#####..#.,.','.....#........','...o,,#o.oo...','....^..o.#,...'],
+  ],
+];
+
+/* ECHELON ZERO - endless futuristic tactics  */
+'use strict';
+var HEADLESS = (typeof window !== 'undefined' && window.__HEADLESS) || false;
+
+/* ---------------- constants ---------------- */
+var MAPW = 14, MAPH = 10, TILE = 16, SC = 3, TP = TILE * SC;
+var MAXLVL = 20, PROMOLVL = 15;
+
+/* ---------------- rng ---------------- */
+var RNG = {
+  s: 1,
+  seed: function (n) { this.s = (n >>> 0) || 1; for (var i = 0; i < 6; i++) this.next(); },
+  next: function () {
+    var x = this.s;
+    x ^= x << 13; x >>>= 0;
+    x ^= x >>> 17;
+    x ^= x << 5; x >>>= 0;
+    this.s = x;
+    return x / 4294967296;
+  },
+  int: function (n) { return Math.floor(this.next() * n); },
+  range: function (a, b) { return a + this.int(b - a + 1); },
+  pick: function (a) { return a[this.int(a.length)]; },
+  chance: function (p) { return this.next() < p; }
+};
+function rnd() { return Math.random(); }
+function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+
+/* ---------------- sprites (16x16) ---------------- */
+var SPR = {
+  vanguard: [
+    '................',
+    '.....KKKKKK.....',
+    '....KAAAAAAK....',
+    '....KAVVVVAK.K..',
+    '....KAVVVVAK.H..',
+    '....KBBBBBBKKWK.',
+    '.....KSSSSK..W..',
+    '...KKCAAAACK.W..',
+    '..KCAAAAAAAACW..',
+    '..KCAAGGGGAAKWK.',
+    '...KBAAAAAABKXK.',
+    '...KBBAAAABBKK..',
+    '....KB.KK.BK....',
+    '....KB.KK.BK....',
+    '....KKK..KKK....',
+    '................'
+  ],
+  skirmisher: [
+    '................',
+    '.....KKKKK......',
+    '....KCCCCCK.....',
+    '....KCVVVCK.....',
+    '....KCCCCCK.....',
+    '.....KSSSK......',
+    '..KKKCAAACKKK...',
+    '.KWXKCAAACKXWK..',
+    '.KXWKAAAAAKWXK..',
+    '..KKKAAGAAKKK...',
+    '....KBAAABK.....',
+    '....KBAAABK.....',
+    '....KB.K.BK.....',
+    '....KB.K.BK.....',
+    '....KKK.KKK.....',
+    '................'
+  ],
+  techno: [
+    '................',
+    '....KKKKKK......',
+    '...KBBBBBBK.....',
+    '...KBVVVVBK..GG.',
+    '...KBBBBBBK.GHGG',
+    '....KSSSSK...GG.',
+    '..KKCAAAACKK....',
+    '.KCAAAAAAAACK...',
+    '.KCAAGGGGAACK.G.',
+    '..KCAAAAAACK....',
+    '...KCAAAACK.....',
+    '...KCAAAACK.....',
+    '...KCCAACCK.....',
+    '...KC.KK.CK.....',
+    '....KKKKKK......',
+    '................'
+  ],
+  heavy: [
+    '................',
+    '....KKKKKK..K...',
+    '...KCAAAACK.W...',
+    '...KAVVVVAK.W...',
+    '...KCAAAACK.W...',
+    '..KKKSSSSKKWK...',
+    '.KAAKAAAAAKWAK..',
+    '.KAAKAAGAAKWAK..',
+    '.KAAKAAAAAKWAK..',
+    '..KKKAAAAAKXK...',
+    '...KCAAAACK.X...',
+    '...KCAAAACK.X...',
+    '...KCC..CCK.....',
+    '...KC....CK.....',
+    '...KKK..KKK.....',
+    '................'
+  ],
+  medic: [
+    '................',
+    '.....KKKKK......',
+    '....KAAAAAK.KGK.',
+    '....KAVVVAK.GHG.',
+    '....KAAAAAK.KGK.',
+    '.....KSSSK...W..',
+    '...KKCAAACKK.W..',
+    '..KCAAAAAAACKW..',
+    '..KCAAGHGAACKW..',
+    '...KCAAAAACK.W..',
+    '....KAAAAAK.....',
+    '....KBAAABK.....',
+    '....KB.K.BK.....',
+    '....KB.K.BK.....',
+    '....KKK.KKK.....',
+    '................'
+  ],
+  grunt: [
+    '................',
+    '.....KKKKK......',
+    '....KCAAACK.....',
+    '....KAVVVAK.....',
+    '....KCAAACK.....',
+    '.....KSSSK......',
+    '...KKCAAACKK....',
+    '..KCAAAAAAACKK..',
+    '..KCAAGGGAAKXWK.',
+    '...KCAAAAACKXXK.',
+    '....KBAAABK.KK..',
+    '....KBAAABK.....',
+    '....KB.K.BK.....',
+    '....KB.K.BK.....',
+    '....KKK.KKK.....',
+    '................'
+  ],
+  drone: [
+    '................',
+    '................',
+    '................',
+    '.....KKKKK......',
+    '....KXWWWXK.....',
+    '...KXWVVVWXK....',
+    '...KXWWWWWXK....',
+    '....KXWWWXK.....',
+    '.....KKKKK......',
+    '....G.....G.....',
+    '...G.......G....',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................'
+  ],
+  brute: [
+    '................',
+    '..KKK....KKK....',
+    '.KAAAKKKKAAAK...',
+    '.KAAKAVVVAKAAK..',
+    '.KAAKAAAAAKAAK..',
+    '..KKKAAGAAKKK...',
+    '...KCAAAAACK....',
+    '..KCAAAAAAACK...',
+    '..KCAAGGGAACK...',
+    '..KCAAAAAAACK...',
+    '...KCAAAAACK....',
+    '...KCC...CCK....',
+    '..KCC.....CCK...',
+    '..KK.......KK...',
+    '................',
+    '................'
+  ],
+  crown: [
+    '................',
+    '....G.G.G.G.....',
+    '....GGGGGGG.....',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................',
+    '................'
+  ]
+};
+
+var PALS = {
+  vex:      { K: '#090d16', A: '#4f7fd4', B: '#2f4f8f', C: '#1b2d55', V: '#7df9ff', S: '#f0c79a', W: '#cfe6ff', X: '#7a93b8', G: '#7df9ff', H: '#ffffff' },
+  kestrel:  { K: '#06100e', A: '#3fbf9a', B: '#24806a', C: '#124a40', V: '#b6ff6a', S: '#e8b58a', W: '#d9e6ef', X: '#6b7d8c', G: '#b6ff6a', H: '#ffffff' },
+  nova:     { K: '#0d0918', A: '#8a6fd8', B: '#5a45a0', C: '#372a66', V: '#ff7bf0', S: '#f2d2b0', W: '#e0d6ff', X: '#7a6ba8', G: '#ff7bf0', H: '#ffffff' },
+  rampart:  { K: '#120f06', A: '#c9a24a', B: '#8f6f2a', C: '#5c4718', V: '#ffd166', S: '#d9a97e', W: '#e6e9ef', X: '#8b94a3', G: '#ffd166', H: '#ffffff' },
+  echo:     { K: '#0a0f12', A: '#e2e8f0', B: '#9fb0c4', C: '#5d6f85', V: '#54f0c8', S: '#f0c79a', W: '#cfe6ff', X: '#7a93b8', G: '#54f0c8', H: '#ffffff' },
+  glitch:   { K: '#0a1016', A: '#59c2e8', B: '#2f86ab', C: '#1a506b', V: '#eaff6a', S: '#c99a72', W: '#dce8f2', X: '#6f8496', G: '#eaff6a', H: '#ffffff' },
+  sable:    { K: '#0b0810', A: '#6e5ca8', B: '#4a3a78', C: '#2a2048', V: '#b06aff', S: '#d8b593', W: '#d2c8f0', X: '#6a5f8f', G: '#b06aff', H: '#ffffff' },
+  onyx:     { K: '#0c0c10', A: '#8d93a8', B: '#5f657a', C: '#3a3f50', V: '#ff9d4a', S: '#caa07a', W: '#e8eef6', X: '#79839a', G: '#ff9d4a', H: '#ffffff' },
+  wisp:     { K: '#0a1210', A: '#bff0e0', B: '#79c0ad', C: '#44796d', V: '#8affd8', S: '#f3d3b2', W: '#d9f6ef', X: '#6f9a92', G: '#8affd8', H: '#ffffff' },
+  foe:      { K: '#140a0d', A: '#c2434f', B: '#8c2a36', C: '#5a1a24', V: '#ff5a5a', S: '#c98f6a', W: '#d6d9e0', X: '#70757f', G: '#ff8a3a', H: '#ffffff' },
+  foe2:     { K: '#120a16', A: '#a45cc0', B: '#733a8c', C: '#4a2359', V: '#ff6ad5', S: '#c98f6a', W: '#d6d9e0', X: '#70757f', G: '#ff6ad5', H: '#ffffff' },
+  foe3:     { K: '#0a1014', A: '#8d9aa8', B: '#5d6a78', C: '#3a4450', V: '#ff5a5a', S: '#8d9aa8', W: '#aab7c4', X: '#5d6a78', G: '#ff8a3a', H: '#ffffff' },
+  boss:     { K: '#160a08', A: '#e06a3a', B: '#a8431f', C: '#6b2612', V: '#ffe066', S: '#c98f6a', W: '#ffd9a0', X: '#9a6a3a', G: '#ffe066', H: '#ffffff' }
+};
+
+
+/* ---------------- appearance ---------------- */
+var SCHEMES = [
+  { id: 'vex', name: 'COBALT' }, { id: 'kestrel', name: 'VIPER' },
+  { id: 'nova', name: 'ORCHID' }, { id: 'rampart', name: 'BRASS' },
+  { id: 'echo', name: 'BONE' }, { id: 'glitch', name: 'AZURE' },
+  { id: 'sable', name: 'VIOLET' }, { id: 'onyx', name: 'GUNMETAL' },
+  { id: 'wisp', name: 'MINT' },
+  { id: 'sk_ember',  name: 'EMBER',  pal: { K: '#160a06', A: '#f07a3a', B: '#b04c18', C: '#6e2c0c', V: '#ffd24a', S: '#e2a173', W: '#ffd9a0', X: '#9a6a3a', G: '#ffb24a', H: '#ffffff' } },
+  { id: 'sk_crimson',name: 'CRIMSON',pal: { K: '#16060a', A: '#e04a5e', B: '#a02538', C: '#5e1220', V: '#ff9fb0', S: '#e0a07a', W: '#ffd9e0', X: '#9a5a68', G: '#ff6a8a', H: '#ffffff' } },
+  { id: 'sk_ice',    name: 'GLACIER',pal: { K: '#071018', A: '#b8e8ff', B: '#6fb6d8', C: '#2f6b8a', V: '#ffffff', S: '#e8d2bc', W: '#eaf8ff', X: '#7fa4bb', G: '#b8f2ff', H: '#ffffff' } },
+  { id: 'sk_toxic',  name: 'TOXIC',  pal: { K: '#0a1206', A: '#b4f046', B: '#79ab20', C: '#44660c', V: '#eaff8a', S: '#d8c08a', W: '#e6ffbc', X: '#86a257', G: '#d4ff6a', H: '#ffffff' } },
+  { id: 'sk_void',   name: 'VOID',   pal: { K: '#05060c', A: '#4a4e78', B: '#2f3252', C: '#1a1c30', V: '#9a7bff', S: '#b89a86', W: '#c8c4e8', X: '#5e5f86', G: '#9a7bff', H: '#ffffff' } },
+  { id: 'sk_rose',   name: 'ROSE',   pal: { K: '#160812', A: '#f29ac4', B: '#c05a90', C: '#742d58', V: '#fff0f6', S: '#f0c0a0', W: '#ffe4f0', X: '#a8718e', G: '#ff9ad0', H: '#ffffff' } },
+  { id: 'sk_solar',  name: 'SOLAR',  pal: { K: '#161004', A: '#ffd44a', B: '#c99a16', C: '#7a5c0a', V: '#fff6c0', S: '#e6b485', W: '#fff2c4', X: '#a88a3a', G: '#ffe066', H: '#ffffff' } },
+  { id: 'sk_sea',    name: 'ABYSS',  pal: { K: '#04101a', A: '#2fa8a0', B: '#1a7070', C: '#0d4248', V: '#6affe0', S: '#d0a884', W: '#c8f0ec', X: '#56908e', G: '#6affe0', H: '#ffffff' } },
+  { id: 'sk_mono',   name: 'MONO',   pal: { K: '#0a0a0c', A: '#d8dce4', B: '#9096a2', C: '#575c68', V: '#ffffff', S: '#cfcfcf', W: '#f0f2f6', X: '#7e838e', G: '#ffffff', H: '#ffffff' } }
+];
+for (var si = 0; si < SCHEMES.length; si++) if (SCHEMES[si].pal) PALS[SCHEMES[si].id] = SCHEMES[si].pal;
+
+var CHASSIS = [
+  { id: 'vanguard',   name: 'ASSAULT FRAME' },
+  { id: 'skirmisher', name: 'SCOUT RIG' },
+  { id: 'techno',     name: 'CASTER SHELL' },
+  { id: 'heavy',      name: 'SIEGE PLATE' },
+  { id: 'medic',      name: 'FIELD RIG' },
+  { id: 'grunt',      name: 'TROOPER KIT' },
+  { id: 'brute',      name: 'TITAN HULL' },
+  { id: 'drone',      name: 'ORB CORE' }
+];
+
+/* per-character look overrides, kept across runs */
+var LOOKS = {};
+function loadLooks() {
+  try { var r = localStorage.getItem('hf_looks'); if (r) LOOKS = JSON.parse(r) || {}; } catch (e) { LOOKS = {}; }
+}
+function saveLooks() { try { localStorage.setItem('hf_looks', JSON.stringify(LOOKS)); } catch (e) { } }
+function lookOf(key, def) {
+  var l = LOOKS[key] || {};
+  return { pal: l.pal || def.pal, spr: l.spr || def.spr, name: l.name || def.name };
+}
+
+/* ---------------- weapons ---------------- */
+/* type triangle: blade > rail > lance > blade ; tech/staff neutral */
+var WPN = {
+  blade: { id: 'blade', name: 'ARC BLADE',   type: 'blade', mt: 5, hit: 90, crit: 5, rmin: 1, rmax: 1, mag: false },
+  lance: { id: 'lance', name: 'PULSE LANCE', type: 'lance', mt: 7, hit: 80, crit: 0, rmin: 1, rmax: 2, mag: false },
+  rail:  { id: 'rail',  name: 'RAIL RIFLE',  type: 'rail',  mt: 6, hit: 78, crit: 5, rmin: 2, rmax: 3, mag: false },
+  smg:   { id: 'smg',   name: 'TWIN SMG',    type: 'rail',  mt: 4, hit: 95, crit: 8, rmin: 1, rmax: 2, mag: false },
+  tech:  { id: 'tech',  name: 'HEX CODEC',   type: 'tech',  mt: 6, hit: 86, crit: 2, rmin: 1, rmax: 2, mag: true },
+  staff: { id: 'staff', name: 'MEND DRONE',  type: 'tech',  mt: 3, hit: 95, crit: 0, rmin: 1, rmax: 2, mag: true, heal: true },
+  claw:  { id: 'claw',  name: 'REND CLAWS',  type: 'blade', mt: 6, hit: 84, crit: 6, rmin: 1, rmax: 1, mag: false },
+  cannon:{ id: 'cannon',name: 'SIEGE CANNON',type: 'lance', mt: 9, hit: 70, crit: 0, rmin: 1, rmax: 2, mag: false },
+  virus: { id: 'virus', name: 'VIRUS LANCE', type: 'tech',  mt: 7, hit: 80, crit: 4, rmin: 1, rmax: 2, mag: true }
+};
+function mkWpn(id, plus) {
+  var b = WPN[id], w = {};
+  for (var k in b) w[k] = b[k];
+  w.plus = plus || 0;
+  w.mt = b.mt + w.plus;
+  return w;
+}
+function wpnLabel(w) { return w.name + (w.plus ? ' +' + w.plus : ''); }
+
+var TRI = { blade: 'rail', rail: 'lance', lance: 'blade' };
+function triangle(a, b) {
+  if (a === 'tech' || b === 'tech') return { hit: 0, dmg: 0 };
+  if (TRI[a] === b) return { hit: 15, dmg: 1 };
+  if (TRI[b] === a) return { hit: -15, dmg: -1 };
+  return { hit: 0, dmg: 0 };
+}
+
+/* ---------------- player roster ----------------
+   every unit: base stats total exactly 60, growths total exactly 300 */
+var ROSTER = [
+  { key: 'vex', name: 'VEX', cls: 'VANGUARD', promo: 'WARLORD', spr: 'vanguard', pal: 'vex', mov: 5, wpn: 'blade',
+    base: { hp: 20, str: 10, mag: 0, skl: 8, def: 8, res: 3, spd: 7, lck: 4 },
+    grow: { hp: 70, str: 50, mag: 0, skl: 45, def: 40, res: 20, spd: 45, lck: 30 },
+    bio: 'Breach specialist. Arc blade, ablative plate. Holds the line and ends arguments.' },
+  { key: 'kestrel', name: 'KESTREL', cls: 'SKIRMISHER', promo: 'PHANTOM', spr: 'skirmisher', pal: 'kestrel', mov: 6, wpn: 'smg',
+    base: { hp: 17, str: 8, mag: 0, skl: 11, def: 5, res: 4, spd: 11, lck: 4 },
+    grow: { hp: 55, str: 45, mag: 0, skl: 55, def: 25, res: 25, spd: 60, lck: 35 },
+    bio: 'Runs the flanks. Twin SMGs, doubles almost everything, dies to a stiff breeze.' },
+  { key: 'nova', name: 'NOVA', cls: 'TECHNOMANCER', promo: 'ARCHIVIST', spr: 'techno', pal: 'nova', mov: 5, wpn: 'tech',
+    base: { hp: 15, str: 2, mag: 12, skl: 9, def: 4, res: 10, spd: 6, lck: 2 },
+    grow: { hp: 50, str: 5, mag: 60, skl: 50, def: 20, res: 55, spd: 45, lck: 15 },
+    bio: 'Weaponized code. Hits RES instead of DEF, which is how armour dies.' },
+  { key: 'rampart', name: 'RAMPART', cls: 'BULWARK', promo: 'CITADEL', spr: 'heavy', pal: 'rampart', mov: 4, wpn: 'lance',
+    base: { hp: 24, str: 11, mag: 0, skl: 6, def: 12, res: 2, spd: 3, lck: 2 },
+    grow: { hp: 80, str: 55, mag: 0, skl: 35, def: 55, res: 15, spd: 35, lck: 25 },
+    bio: 'A door with opinions. Soaks physical damage; hex code goes straight through.' },
+  { key: 'echo', name: 'ECHO', cls: 'MEDTECH', promo: 'LIFEWARDEN', spr: 'medic', pal: 'echo', mov: 5, wpn: 'staff',
+    base: { hp: 16, str: 3, mag: 9, skl: 7, def: 5, res: 9, spd: 8, lck: 3 },
+    grow: { hp: 55, str: 10, mag: 50, skl: 40, def: 25, res: 50, spd: 45, lck: 25 },
+    bio: 'Mend drone repairs allies for MAG+8. Keep her alive and the squad stays alive.' }
+];
+
+/* later recruits, same 60 / 300 budget */
+var RECRUITS = [
+  { key: 'glitch', name: 'GLITCH', cls: 'MARKSMAN', promo: 'LONGSHOT', spr: 'grunt', pal: 'glitch', mov: 5, wpn: 'rail',
+    base: { hp: 18, str: 9, mag: 0, skl: 10, def: 5, res: 4, spd: 9, lck: 5 },
+    grow: { hp: 55, str: 50, mag: 0, skl: 50, def: 25, res: 25, spd: 55, lck: 40 },
+    bio: 'Rail rifle, range 2-3. Never takes a counter if you place her right.' },
+  { key: 'sable', name: 'SABLE', cls: 'HEXWRIGHT', promo: 'NULLMANCER', spr: 'techno', pal: 'sable', mov: 5, wpn: 'virus',
+    base: { hp: 16, str: 2, mag: 13, skl: 8, def: 4, res: 9, spd: 6, lck: 2 },
+    grow: { hp: 50, str: 5, mag: 65, skl: 45, def: 20, res: 50, spd: 45, lck: 20 },
+    bio: 'Virus lance. Highest raw MAG in the echelon.' },
+  { key: 'onyx', name: 'ONYX', cls: 'SENTINEL', promo: 'JUGGERNAUT', spr: 'heavy', pal: 'onyx', mov: 4, wpn: 'claw',
+    base: { hp: 22, str: 12, mag: 0, skl: 7, def: 10, res: 3, spd: 4, lck: 2 },
+    grow: { hp: 75, str: 55, mag: 0, skl: 40, def: 50, res: 15, spd: 40, lck: 25 },
+    bio: 'Rend claws. Walks into brutes and walks back out.' },
+  { key: 'wisp', name: 'WISP', cls: 'FIELD MEDIC', promo: 'SERAPH', spr: 'medic', pal: 'wisp', mov: 6, wpn: 'staff',
+    base: { hp: 15, str: 3, mag: 10, skl: 8, def: 4, res: 8, spd: 10, lck: 2 },
+    grow: { hp: 50, str: 10, mag: 50, skl: 40, def: 20, res: 45, spd: 55, lck: 30 },
+    bio: 'Fast healer, MOV 6. Reaches the casualty before the casualty happens.' }
+];
+
+/* ---------------- enemy templates ---------------- */
+var FOES = {
+  grunt:    { name: 'SYNTH GRUNT', spr: 'grunt', pal: 'foe', mov: 4, wpn: 'blade', from: 1, ai: 'hunt',
+              base: { hp: 18, str: 6, mag: 0, skl: 5, def: 5, res: 2, spd: 5, lck: 1 },
+              grow: { hp: 52, str: 40, mag: 0, skl: 30, def: 28, res: 14, spd: 32, lck: 10 } },
+  skitter:  { name: 'SKITTER DRONE', spr: 'drone', pal: 'foe3', mov: 6, wpn: 'claw', from: 1, ai: 'hunt',
+              base: { hp: 14, str: 6, mag: 0, skl: 7, def: 3, res: 3, spd: 9, lck: 2 },
+              grow: { hp: 40, str: 38, mag: 0, skl: 40, def: 16, res: 20, spd: 50, lck: 14 } },
+  pike:     { name: 'PIKE SENTRY', spr: 'grunt', pal: 'foe', mov: 4, wpn: 'lance', from: 2, ai: 'hunt',
+              base: { hp: 21, str: 7, mag: 0, skl: 4, def: 7, res: 2, spd: 4, lck: 1 },
+              grow: { hp: 58, str: 44, mag: 0, skl: 26, def: 36, res: 14, spd: 26, lck: 10 } },
+  sniper:   { name: 'RAIL SNIPER', spr: 'grunt', pal: 'foe2', mov: 4, wpn: 'rail', from: 3, ai: 'hunt',
+              base: { hp: 17, str: 7, mag: 0, skl: 8, def: 4, res: 3, spd: 6, lck: 2 },
+              grow: { hp: 46, str: 42, mag: 0, skl: 44, def: 20, res: 18, spd: 36, lck: 14 } },
+  hexer:    { name: 'HEX WRAITH', spr: 'techno', pal: 'foe2', mov: 4, wpn: 'tech', from: 5, ai: 'hunt',
+              base: { hp: 16, str: 2, mag: 8, skl: 6, def: 3, res: 8, spd: 5, lck: 2 },
+              grow: { hp: 44, str: 4, mag: 50, skl: 36, def: 16, res: 44, spd: 32, lck: 12 } },
+  brute:    { name: 'WAR BRUTE', spr: 'brute', pal: 'foe', mov: 4, wpn: 'cannon', from: 7, ai: 'hunt',
+              base: { hp: 28, str: 9, mag: 0, skl: 4, def: 9, res: 2, spd: 3, lck: 1 },
+              grow: { hp: 72, str: 50, mag: 0, skl: 24, def: 44, res: 12, spd: 22, lck: 8 } },
+  reaper:   { name: 'NULL REAPER', spr: 'skirmisher', pal: 'foe2', mov: 6, wpn: 'virus', from: 11, ai: 'hunt',
+              base: { hp: 20, str: 4, mag: 10, skl: 9, def: 5, res: 7, spd: 10, lck: 3 },
+              grow: { hp: 50, str: 10, mag: 52, skl: 46, def: 24, res: 40, spd: 52, lck: 16 } }
+};
+var BOSSES = [
+  { name: 'WARDEN MK-I', spr: 'brute', pal: 'boss', mov: 4, wpn: 'cannon', ai: 'guard',
+    base: { hp: 34, str: 10, mag: 0, skl: 6, def: 10, res: 4, spd: 4, lck: 2 },
+    grow: { hp: 84, str: 54, mag: 0, skl: 32, def: 48, res: 22, spd: 28, lck: 14 } },
+  { name: 'ORACLE OF RUST', spr: 'techno', pal: 'boss', mov: 4, wpn: 'virus', ai: 'guard',
+    base: { hp: 28, str: 3, mag: 13, skl: 9, def: 6, res: 11, spd: 7, lck: 3 },
+    grow: { hp: 70, str: 6, mag: 60, skl: 44, def: 28, res: 52, spd: 40, lck: 16 } },
+  { name: 'THE GARROTE', spr: 'skirmisher', pal: 'boss', mov: 6, wpn: 'claw', ai: 'hunt',
+    base: { hp: 30, str: 11, mag: 0, skl: 12, def: 8, res: 6, spd: 12, lck: 4 },
+    grow: { hp: 72, str: 52, mag: 0, skl: 56, def: 32, res: 26, spd: 58, lck: 20 } },
+  { name: 'COLOSSUS GATE', spr: 'brute', pal: 'boss', mov: 3, wpn: 'lance', ai: 'guard',
+    base: { hp: 40, str: 12, mag: 0, skl: 5, def: 13, res: 3, spd: 3, lck: 2 },
+    grow: { hp: 96, str: 58, mag: 0, skl: 28, def: 56, res: 14, spd: 20, lck: 12 } }
+];
+
+var TRAITS = {
+  shield:    { name: 'SHIELDED',   desc: '-3 damage taken' },
+  overclock: { name: 'OVERCLOCK',  desc: '+3 SPD, +10 avoid' },
+  regen:     { name: 'REGEN',      desc: 'heals 15% each phase' },
+  volatile:  { name: 'VOLATILE',   desc: 'explodes on death' },
+  marksman:  { name: 'MARKSMAN',   desc: '+15 hit, +1 range' }
+};
+
+
+/* ---------------- terrains ---------------- */
+/* special tiles keep their colours everywhere so the marks stay readable;
+   only the deck, bulkheads and grating change with the terrain */
+var THEMES = [
+  { id: 'foundry', name: 'ASH FOUNDRY',
+    sites: ['SLAG LINE', 'CRUCIBLE ROW', 'CINDER DECK', 'TAP FLOOR', 'EMBER WALK'],
+    base: '#1b1711', hi: '#241f16', edge: '#110e09', deco: '#3b3324', deco2: '#4a3c23',
+    wbody: '#231c14', wtop: '#6a4a24', wedge: '#b07a2e', wdark: '#0d0a06',
+    grate: '#151109', grateHi: '#2e2616' },
+  { id: 'vault', name: 'DEEP ARCHIVE',
+    sites: ['STACK SEVEN', 'COLD INDEX', 'READING CELL', 'LEDGER HALL', 'SEALED WING'],
+    base: '#14182b', hi: '#1b2038', edge: '#0b0e1a', deco: '#32407a', deco2: '#44539c',
+    wbody: '#191e38', wtop: '#4356a8', wedge: '#6f82d8', wdark: '#080a14',
+    grate: '#101429', grateHi: '#262e55' },
+  { id: 'spine', name: 'COOLANT SPINE',
+    sites: ['HEAT SINK', 'FROST GALLERY', 'CONDENSER', 'RIME CHANNEL', 'CHILL VAULT'],
+    base: '#0e1e24', hi: '#132830', edge: '#071216', deco: '#2c5f69', deco2: '#3d8290',
+    wbody: '#112730', wtop: '#2d7f90', wedge: '#55b8c8', wdark: '#050e12',
+    grate: '#0b1a20', grateHi: '#1d3d47' },
+  { id: 'garden', name: 'SIGNAL GARDEN',
+    sites: ['MOSS TERRACE', 'FERN RELAY', 'BLOOM YARD', 'ROOT LATTICE', 'SPORE WALK'],
+    base: '#121d16', hi: '#17261c', edge: '#0a110c', deco: '#2f5e3a', deco2: '#428352',
+    wbody: '#152417', wtop: '#3a7a46', wedge: '#5fb36f', wdark: '#060d08',
+    grate: '#0e1a12', grateHi: '#203a27' },
+  { id: 'hulk', name: 'CARRIER HULK',
+    sites: ['BROKEN KEEL', 'RIB SECTION', 'DEAD HANGAR', 'TORN SPINE', 'DRIFT WARD'],
+    base: '#1a1819', hi: '#232022', edge: '#0f0e0f', deco: '#4a3b38', deco2: '#6b4a42',
+    wbody: '#221d1d', wtop: '#6e4038', wedge: '#a85f4e', wdark: '#0b0909',
+    grate: '#161314', grateHi: '#302829' }
+];
+function themeOf(ch) { return THEMES[(ch - 1) % THEMES.length]; }
+function themeIdx(ch) { return (ch - 1) % THEMES.length; }
+var LCH = { '.': 'floor', ',': 'grate', '#': 'wall', 'o': 'cover', '=': 'dais', '+': 'node', '^': 'vent' };
+
+/* ---------------- terrain ---------------- */
+var TER = {
+  floor:   { name: 'DECK PLATE', cost: 1, def: 0, avo: 0, block: false },
+  grate:   { name: 'GRATING',    cost: 1, def: 0, avo: 5, block: false },
+  cover:   { name: 'BARRICADE',  cost: 2, def: 2, avo: 20, block: false },
+  wall:    { name: 'BULKHEAD',   cost: 99, def: 0, avo: 0, block: true },
+  node:    { name: 'REPAIR NODE',cost: 1, def: 0, avo: 10, block: false, heal: 0.15 },
+  vent:    { name: 'PLASMA VENT',cost: 1, def: 0, avo: 0, block: false, burn: 0.12 },
+  dais:    { name: 'DATA DAIS',  cost: 2, def: 1, avo: 25, block: false }
+};
+var TKEYS = ['floor', 'grate', 'cover', 'wall', 'node', 'vent', 'dais'];
+
+/* ================= STATE ================= */
+var S = {
+  screen: 'title', chapter: 1, turn: 1, phase: 'player',
+  units: [], grid: null, obj: null, objTurns: 0,
+  sel: null, mode: 'idle', reach: null, atkTiles: null, hoverPath: null,
+  target: null, danger: false, kits: 2, log: [], fx: [], movers: [],
+  busy: 0, best: 1, dead: [], uid: 1, bannerT: 0, banner: '', gameover: false,
+  rewards: null, levelups: [], shake: 0, cursor: null, inspect: null
+};
+
+function say(t) { S.log.unshift(t); if (S.log.length > 40) S.log.pop(); }
+function statSum(o) { var t = 0; for (var k in o) t += o[k]; return t; }
+var STATK = ['hp', 'str', 'mag', 'skl', 'def', 'res', 'spd', 'lck'];
+var STATN = { hp: 'HP', str: 'STR', mag: 'MAG', skl: 'SKL', def: 'DEF', res: 'RES', spd: 'SPD', lck: 'LCK' };
+
+/* ================= UNIT BUILD ================= */
+function mkUnit(def, side, lvl, opt) {
+  opt = opt || {};
+  var look;
+  if (opt.look) look = { name: opt.look.name || def.name, spr: opt.look.spr || def.spr, pal: opt.look.pal || def.pal };
+  else if (side === 'ply' && !opt.fair) look = lookOf(def.key || def.name, def);
+  else look = { name: def.name, spr: def.spr, pal: def.pal };
+  var u = {
+    id: S.uid++, key: def.key || def.name, name: look.name, cls: def.cls || def.name,
+    promo: def.promo || null, spr: look.spr, pal: look.pal, side: side, mark: opt.mark || 0,
+    mov: def.mov, lvl: 1, exp: 0, x: 0, y: 0, px: 0, py: 0,
+    stats: {}, grow: {}, bio: def.bio || '', acted: false, promoted: false,
+    wpn: mkWpn(def.wpn, opt.plus || 0), traits: [], boss: !!opt.boss,
+    ai: def.ai || 'hunt', flash: 0
+  };
+  for (var i = 0; i < STATK.length; i++) { u.stats[STATK[i]] = def.base[STATK[i]]; u.grow[STATK[i]] = def.grow[STATK[i]]; }
+  /* deterministic scaling to a target level: expected growth, accumulated */
+  var target = Math.max(1, lvl || 1);
+  if (target > 1) {
+    var steps = target - 1, fac = (side === 'foe' && !opt.fair) ? 0.95 : 1;
+    for (var j = 0; j < STATK.length; j++) {
+      var k = STATK[j];
+      u.stats[k] += Math.round(u.grow[k] / 100 * steps * fac);
+    }
+    u.lvl = target;
+  }
+  /* past the level cap, hostiles escalate in marks instead of levels */
+  if (u.mark > 0) {
+    /* marks make hostiles deadlier faster than they make them unkillable,
+       so player damage stays meaningful however deep the run goes */
+    var MKG = { hp: 6, str: 2, mag: 2, skl: 2, spd: 2, def: 1, res: 1, lck: 1 };
+    for (var m = 0; m < STATK.length; m++) {
+      var mk = STATK[m];
+      u.stats[mk] += u.mark * MKG[mk];
+    }
+    u.name = u.name + ' MK-' + roman(u.mark + 1);
+  }
+  if (opt.boss) { u.stats.hp = Math.round(u.stats.hp * (opt.bossHp || 1.35)); }
+  u.chp = u.stats.hp;
+  return u;
+}
+
+function roman(n) {
+  var map = [[10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']], out = '';
+  if (n > 39) return '' + n;
+  while (n > 0) for (var i = 0; i < map.length; i++) if (n >= map[i][0]) { out += map[i][1]; n -= map[i][0]; break; }
+  return out;
+}
+
+function unitAt(x, y) {
+  for (var i = 0; i < S.units.length; i++) { var u = S.units[i]; if (u.chp > 0 && u.x === x && u.y === y) return u; }
+  return null;
+}
+function allies(side) { return S.units.filter(function (u) { return u.chp > 0 && u.side === side; }); }
+function foesOf(side) { return S.units.filter(function (u) { return u.chp > 0 && u.side !== side; }); }
+function inBounds(x, y) { return x >= 0 && y >= 0 && x < MAPW && y < MAPH; }
+function ter(x, y) { return TER[S.grid[y][x]]; }
+function dist(a, b) { return Math.abs(a.x - b.x) + Math.abs(a.y - b.y); }
+
+/* ================= MAP GEN ================= */
+/* ---- layout bag: no layout repeats until its terrain's ten are all used ---- */
+function shuffled(n) {
+  var a = [], i, j, t;
+  for (i = 0; i < n; i++) a.push(i);
+  for (i = n - 1; i > 0; i--) { j = Math.floor(rnd() * (i + 1)); t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function drawLayout(ti) {
+  if (!S.bags) S.bags = [];
+  if (!S.bags[ti] || !S.bags[ti].length) S.bags[ti] = shuffled(LAYOUTS[ti].length);
+  return S.bags[ti].pop();
+}
+function buildGrid(ti, li) {
+  var rows = LAYOUTS[ti][li], g = [], x, y;
+  for (y = 0; y < MAPH; y++) {
+    g[y] = [];
+    for (x = 0; x < MAPW; x++) g[y][x] = LCH[rows[y].charAt(x)] || 'floor';
+  }
+  return g;
+}
+function genMap(ch) {
+  var ti = themeIdx(ch);
+  var li = (S.resumeLayout !== null && S.resumeLayout !== undefined) ? S.resumeLayout : drawLayout(ti);
+  S.resumeLayout = null;
+  S.layout = li; S.terrain = ti;
+  return buildGrid(ti, li);
+}
+
+function openTiles(fromX, fromY) {
+  var seen = {}, q = [[fromX, fromY]];
+  seen[fromX + ',' + fromY] = 1;
+  while (q.length) {
+    var c = q.shift(), d = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (var i = 0; i < 4; i++) {
+      var nx = c[0] + d[i][0], ny = c[1] + d[i][1], k = nx + ',' + ny;
+      if (inBounds(nx, ny) && !seen[k] && !ter(nx, ny).block) { seen[k] = 1; q.push([nx, ny]); }
+    }
+  }
+  return seen;
+}
+
+/* ================= PATHFINDING ================= */
+function reachable(u) {
+  var best = {}, start = u.x + ',' + u.y;
+  best[start] = 0;
+  var frontier = [{ x: u.x, y: u.y, c: 0 }];
+  while (frontier.length) {
+    frontier.sort(function (a, b) { return a.c - b.c; });
+    var n = frontier.shift();
+    var d = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (var i = 0; i < 4; i++) {
+      var nx = n.x + d[i][0], ny = n.y + d[i][1];
+      if (!inBounds(nx, ny)) continue;
+      var t = ter(nx, ny); if (t.block) continue;
+      var occ = unitAt(nx, ny);
+      if (occ && occ.side !== u.side) continue;
+      var nc = n.c + t.cost;
+      if (nc > u.mov) continue;
+      var k = nx + ',' + ny;
+      if (best[k] === undefined || nc < best[k]) { best[k] = nc; frontier.push({ x: nx, y: ny, c: nc }); }
+    }
+  }
+  /* strip tiles occupied by allies (can pass, cannot stop) */
+  var out = {};
+  for (var k2 in best) {
+    var p = k2.split(','), ox = +p[0], oy = +p[1];
+    if (ox === u.x && oy === u.y) { out[k2] = best[k2]; continue; }
+    if (!unitAt(ox, oy)) out[k2] = best[k2];
+  }
+  return out;
+}
+
+function pathTo(u, tx, ty) {
+  var prev = {}, best = {}, start = u.x + ',' + u.y;
+  best[start] = 0;
+  var frontier = [{ x: u.x, y: u.y, c: 0 }];
+  while (frontier.length) {
+    frontier.sort(function (a, b) { return a.c - b.c; });
+    var n = frontier.shift();
+    if (n.x === tx && n.y === ty) break;
+    var d = [[0, -1], [1, 0], [0, 1], [-1, 0]];
+    for (var i = 0; i < 4; i++) {
+      var nx = n.x + d[i][0], ny = n.y + d[i][1];
+      if (!inBounds(nx, ny)) continue;
+      var t = ter(nx, ny); if (t.block) continue;
+      var occ = unitAt(nx, ny); if (occ && occ.side !== u.side) continue;
+      var nc = n.c + t.cost;
+      if (nc > u.mov) continue;
+      var k = nx + ',' + ny;
+      if (best[k] === undefined || nc < best[k]) { best[k] = nc; prev[k] = n.x + ',' + n.y; frontier.push({ x: nx, y: ny, c: nc }); }
+    }
+  }
+  var key = tx + ',' + ty;
+  if (best[key] === undefined) return null;
+  var path = [], cur = key;
+  while (cur !== start) { var pp = cur.split(','); path.unshift({ x: +pp[0], y: +pp[1] }); cur = prev[cur]; }
+  return path;
+}
+
+/* distance field over terrain from one tile, ignoring units.
+   greedy Manhattan approach gets enemies wedged behind bulkheads forever,
+   so navigation uses real path cost instead. */
+function distField(tx, ty) {
+  var best = {}, frontier = [{ x: tx, y: ty, c: 0 }];
+  best[tx + ',' + ty] = 0;
+  while (frontier.length) {
+    frontier.sort(function (a, b) { return a.c - b.c; });
+    var n = frontier.shift();
+    var d = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (var i = 0; i < 4; i++) {
+      var nx = n.x + d[i][0], ny = n.y + d[i][1];
+      if (!inBounds(nx, ny)) continue;
+      var t = ter(nx, ny); if (t.block) continue;
+      var nc = n.c + t.cost, k = nx + ',' + ny;
+      if (best[k] === undefined || nc < best[k]) { best[k] = nc; frontier.push({ x: nx, y: ny, c: nc }); }
+    }
+  }
+  return best;
+}
+
+/* tiles a unit may attack from any reachable tile */
+function attackTiles(u, reach) {
+  var w = u.wpn, out = {};
+  for (var k in reach) {
+    var p = k.split(','), ox = +p[0], oy = +p[1];
+    for (var dx = -w.rmax; dx <= w.rmax; dx++) {
+      for (var dy = -w.rmax; dy <= w.rmax; dy++) {
+        var d = Math.abs(dx) + Math.abs(dy);
+        if (d < w.rmin || d > wRange(u)) continue;
+        var tx = ox + dx, ty = oy + dy;
+        if (inBounds(tx, ty)) out[tx + ',' + ty] = 1;
+      }
+    }
+  }
+  return out;
+}
+function wRange(u) { return u.wpn.rmax + (u.traits.indexOf('marksman') >= 0 && u.wpn.rmax > 1 ? 1 : 0); }
+function canReachTarget(u, t) {
+  var d = dist(u, t);
+  return d >= u.wpn.rmin && d <= wRange(u);
+}
+
+/* ================= COMBAT MATH ================= */
+function spdOf(u) { return u.stats.spd + (u.traits.indexOf('overclock') >= 0 ? 3 : 0); }
+function avoidOf(u) {
+  var t = ter(u.x, u.y);
+  return spdOf(u) * 2 + u.stats.lck + t.avo + (u.traits.indexOf('overclock') >= 0 ? 10 : 0);
+}
+function forecast(a, d) {
+  var w = a.wpn, mag = w.mag;
+  var atk = (mag ? a.stats.mag : a.stats.str) + w.mt;
+  var tt = ter(d.x, d.y);
+  var dv = (mag ? d.stats.res : d.stats.def + tt.def);
+  var tri = triangle(w.type, d.wpn.type);
+  var dmg = Math.max(0, atk + tri.dmg - dv - (d.traits.indexOf('shield') >= 0 ? 3 : 0));
+  /* accuracy from a compressed skill-vs-evasion gap, so the curve stays sane
+     forever instead of saturating at 100 / decaying to nothing */
+  var off = a.stats.skl * 2 + Math.floor(a.stats.lck / 2);
+  var gap = off - avoidOf(d);
+  var comp = Math.round(42 * gap / (Math.abs(gap) + 26));
+  var hit = clamp(w.hit + comp + tri.hit + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 5, 100);
+  var crit = clamp(w.crit + Math.floor(a.stats.skl / 2) - d.stats.lck, 0, 60);
+  var dbl = spdOf(a) >= spdOf(d) + 4;
+  return { dmg: dmg, hit: Math.round(hit), crit: Math.round(crit), dbl: dbl, tri: tri };
+}
+function canCounter(d, a) {
+  if (d.chp <= 0) return false;
+  if (d.wpn.heal) return false;
+  var dd = dist(a, d);
+  return dd >= d.wpn.rmin && dd <= wRange(d);
+}
+
+function strike(a, d) {
+  var f = forecast(a, d);
+  if (rnd() * 100 >= f.hit) { fxText(d, 'MISS', '#9fb0c4'); return { hit: false }; }
+  var crit = rnd() * 100 < f.crit;
+  var dmg = crit ? f.dmg * 3 : f.dmg;
+  d.chp = Math.max(0, d.chp - dmg);
+  d.flash = 1;
+  S.shake = Math.max(S.shake, crit ? 7 : 3);
+  fxText(d, (crit ? '!' : '') + dmg, crit ? '#ffe066' : (d.side === 'ply' ? '#ff6a6a' : '#ffffff'));
+  fxHit(d);
+  return { hit: true, crit: crit, dmg: dmg, dead: d.chp <= 0 };
+}
+
+function doCombat(a, d) {
+  var expA = 0, kills = 0;
+  var fa = forecast(a, d);
+  var r = strike(a, d);
+  expA += r.hit ? 10 : 2;
+  if (d.chp <= 0) { kills++; }
+  else {
+    if (canCounter(d, a)) {
+      var r2 = strike(d, a);
+      if (a.chp <= 0) { onDeath(a, d); return finishCombat(a, d, expA, kills); }
+      if (!r2.hit) { } // nothing
+      var fd = forecast(d, a);
+      if (fd.dbl && a.chp > 0) { strike(d, a); if (a.chp <= 0) { onDeath(a, d); return finishCombat(a, d, expA, kills); } }
+    }
+    if (fa.dbl && d.chp > 0 && a.chp > 0) {
+      var r3 = strike(a, d);
+      expA += r3.hit ? 8 : 2;
+      if (d.chp <= 0) kills++;
+    }
+  }
+  if (d.chp <= 0) onDeath(d, a);
+  return finishCombat(a, d, expA, kills);
+}
+function finishCombat(a, d, expA, kills) {
+  if (a.side !== 'ply') return true;
+  var lvlDiff = Math.max(0, d.lvl - a.lvl);
+  var gain = 0;
+  if (a.chp > 0) {
+    gain = expA + lvlDiff * 3 + (kills ? 48 + lvlDiff * 8 : 0);
+    if (kills && d.boss) gain += 70;
+    grantExp(a, Math.round(gain));
+  }
+  /* the rest of the squad learns from the engagement too, so the roster
+     levels together instead of one carry outpacing everyone */
+  if (kills) {
+    var share = Math.round((48 + lvlDiff * 8 + (d.boss ? 70 : 0)) * 0.4);
+    var mates = allies('ply');
+    for (var i = 0; i < mates.length; i++) if (mates[i].id !== a.id) grantExp(mates[i], share);
+  }
+  return true;
+}
+
+function onDeath(u, killer) {
+  say(u.name + (u.side === 'ply' ? ' is DOWN.' : ' destroyed.'));
+  fxBoom(u);
+  S.shake = 9;
+  if (u.traits.indexOf('volatile') >= 0) {
+    var d = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    for (var i = 0; i < 4; i++) {
+      var t = unitAt(u.x + d[i][0], u.y + d[i][1]);
+      if (t && t.chp > 0) {
+        var dmg = 6 + Math.floor(S.chapter / 2);
+        t.chp = Math.max(0, t.chp - dmg); fxText(t, dmg, '#ff8a3a');
+        if (t.chp <= 0) onDeath(t, u);
+      }
+    }
+  }
+  if (u.side === 'ply') S.dead.push({ name: u.name, cls: u.cls, lvl: u.lvl, def: u.key, chapter: S.chapter });
+}
+
+/* ================= EXP / LEVELS ================= */
+function atMax(u) { return u.lvl >= MAXLVL; }
+/* at the cap, combat experience no longer buys levels: it is spent on single
+   stat points instead, still weighted by the growths that define the unit */
+function overdrive(u, amt) {
+  u.over = (u.over || 0) + amt;
+  while (u.over >= 120) {
+    u.over -= 120;
+    var total = 0, i, k;
+    for (i = 0; i < STATK.length; i++) total += u.grow[STATK[i]];
+    if (total <= 0) return;
+    var roll = rnd() * total, acc = 0, pickK = STATK[0];
+    for (i = 0; i < STATK.length; i++) { k = STATK[i]; acc += u.grow[k]; if (roll <= acc) { pickK = k; break; } }
+    u.stats[pickK] += 1;
+    if (pickK === 'hp') u.chp += 1;
+    S.levelups.push({ name: u.name, lvl: u.lvl, gains: {}, over: pickK, pal: u.pal, spr: u.spr });
+    fxText(u, 'OVERDRIVE', '#ffd166');
+  }
+}
+function grantExp(u, amt) {
+  if (atMax(u)) { u.exp = 0; overdrive(u, amt); return; }
+  u.exp += amt;
+  while (u.exp >= 100) {
+    u.exp -= 100;
+    levelUp(u);
+    if (atMax(u)) { u.exp = 0; break; }
+  }
+}
+function levelUp(u) {
+  if (atMax(u)) return;
+  u.lvl++;
+  var gains = {};
+  for (var i = 0; i < STATK.length; i++) {
+    var k = STATK[i], g = u.grow[k];
+    var n = 0;
+    while (g >= 100) { n++; g -= 100; }
+    if (rnd() * 100 < g) n++;
+    if (n) { u.stats[k] += n; gains[k] = n; }
+  }
+  if (gains.hp) u.chp += gains.hp;
+  if (!Object.keys(gains).length) gains.none = 1;
+  if (u.lvl >= PROMOLVL && !u.promoted && u.promo) {
+    u.promoted = true; u.cls = u.promo; u.mov += 1;
+    u.stats.hp += 4; u.chp += 4;
+    var bst = STATK.slice(1).sort(function (a, b) { return u.grow[b] - u.grow[a]; });
+    u.stats[bst[0]] += 2; u.stats[bst[1]] += 2;
+    gains.promo = u.promo;
+  }
+  S.levelups.push({ name: u.name, lvl: u.lvl, gains: gains, pal: u.pal, spr: u.spr });
+  fxText(u, 'LV UP', '#b6ff6a');
+  say(u.name + ' reached level ' + u.lvl + '.');
+}
+
+/* ================= FX ================= */
+function fxPush(o) { if (HEADLESS) return; if (S.fx.length > 40) S.fx.splice(0, S.fx.length - 40); S.fx.push(o); }
+function fxText(u, txt, col) { fxPush({ k: 'txt', x: u.x, y: u.y, t: 0, dur: 0.85, txt: '' + txt, col: col }); }
+function fxHit(u) { fxPush({ k: 'hit', x: u.x, y: u.y, t: 0, dur: 0.3 }); }
+function fxBoom(u) { fxPush({ k: 'boom', x: u.x, y: u.y, t: 0, dur: 0.5, pal: u.pal }); }
+function fxHeal(u) { fxPush({ k: 'heal', x: u.x, y: u.y, t: 0, dur: 0.6 }); }
+
+/* ================= ACTIONS ================= */
+function healPower(u) { return u.stats.mag + 8 + u.wpn.plus * 2; }
+
+function doHeal(a, t) {
+  var amt = Math.min(healPower(a), t.stats.hp - t.chp);
+  t.chp += amt;
+  fxText(t, '+' + amt, '#54f0c8'); fxHeal(t);
+  say(a.name + ' repaired ' + t.name + ' for ' + amt + '.');
+  grantExp(a, Math.max(20, 26 + Math.floor(amt / 2)));
+}
+function useKit(u) {
+  if (S.kits <= 0) return;
+  S.kits--;
+  var amt = Math.min(20, u.stats.hp - u.chp);
+  u.chp += amt; fxText(u, '+' + amt, '#54f0c8'); fxHeal(u);
+  say(u.name + ' used a repair kit (+' + amt + ').');
+}
+
+function moveUnit(u, path, cb) {
+  if (!path || !path.length) { if (cb) cb(); return; }
+  var last = path[path.length - 1];
+  if (HEADLESS) { u.x = last.x; u.y = last.y; u.px = last.x; u.py = last.y; if (cb) cb(); return; }
+  S.busy++;
+  S.movers.push({ u: u, path: path, i: 0, t: 0, fx: u.x, fy: u.y, cb: function () { S.busy--; if (cb) cb(); } });
+}
+
+/* ================= AI ================= */
+function aiScore(u, tile, t) {
+  var save = { x: u.x, y: u.y };
+  u.x = tile.x; u.y = tile.y;
+  var f = forecast(u, t);
+  var hits = (f.dbl ? 2 : 1);
+  var expect = Math.min(t.chp, f.dmg * hits) * (f.hit / 100);
+  var sc = expect * 3;
+  if (expect >= t.chp) sc += 60;
+  /* machines learn to hunt the medic, but not from the very first skirmish */
+  if (t.wpn && t.wpn.heal) sc += Math.min(12, 2 + S.chapter * 0.8);
+  if (canCounter(t, u)) {
+    var fc = forecast(t, u);
+    sc -= Math.min(u.chp, fc.dmg * (fc.dbl ? 2 : 1)) * (fc.hit / 100) * 1.6;
+    if (fc.dmg * (fc.dbl ? 2 : 1) >= u.chp) sc -= 45;
+  }
+  var tt = ter(tile.x, tile.y);
+  sc += tt.def * 2 + tt.avo * 0.1;
+  if (tt.burn) sc -= 14;
+  u.x = save.x; u.y = save.y;
+  return sc;
+}
+
+function aiAct(u, done) {
+  if (u.chp <= 0) { done(); return; }
+  var reach = reachable(u);
+  var enemies = foesOf(u.side);
+  var isHealer = !!u.wpn.heal;
+
+  /* healer logic first */
+  if (isHealer) {
+    var hurt = allies(u.side).filter(function (a) { return a.id !== u.id && a.chp < a.stats.hp * 0.75; })
+      .sort(function (a, b) { return (a.chp / a.stats.hp) - (b.chp / b.stats.hp); });
+    if (hurt.length) {
+      var tgt = hurt[0], bestT = null, bestD = 1e9;
+      for (var k in reach) {
+        var p = k.split(','), ox = +p[0], oy = +p[1];
+        var d = Math.abs(ox - tgt.x) + Math.abs(oy - tgt.y);
+        if (d >= u.wpn.rmin && d <= wRange(u)) {
+          if (d < bestD) { bestD = d; bestT = { x: ox, y: oy }; }
+        }
+      }
+      if (bestT) {
+        moveUnit(u, pathTo(u, bestT.x, bestT.y), function () { doHeal(u, tgt); u.acted = true; done(); });
+        return;
+      }
+    }
+  }
+
+  /* best attack */
+  var best = null;
+  for (var kk in reach) {
+    var pp = kk.split(','), tx = +pp[0], ty = +pp[1];
+    for (var i = 0; i < enemies.length; i++) {
+      var e = enemies[i];
+      var dd = Math.abs(tx - e.x) + Math.abs(ty - e.y);
+      if (dd < u.wpn.rmin || dd > wRange(u)) continue;
+      if (u.wpn.heal) continue;
+      var sc = aiScore(u, { x: tx, y: ty }, e);
+      if (!best || sc > best.sc) best = { sc: sc, x: tx, y: ty, e: e };
+    }
+  }
+  function engage() {
+    moveUnit(u, pathTo(u, best.x, best.y), function () {
+      if (best.e.chp > 0 && u.chp > 0) doCombat(u, best.e);
+      u.acted = true; done();
+    });
+  }
+  /* machines trade willingly, and grow less patient as the fight drags on.
+     without this a wounded enemy would decline every attack and freeze the map. */
+  if (best && best.sc > (-30 - S.turn * 6)) { engage(); return; }
+
+  /* guard behaviour: stay unless someone is close */
+  var nearest = null, nd = 1e9;
+  for (var j = 0; j < enemies.length; j++) { var d2 = dist(u, enemies[j]); if (d2 < nd) { nd = d2; nearest = enemies[j]; } }
+  if (!nearest) { u.acted = true; done(); return; }
+  /* commanders hold position early, then come for you: no endless standoffs */
+  if (u.ai === 'guard' && nd > 5 && S.turn < 8) { u.acted = true; done(); return; }
+
+  /* approach along real path cost, so walls are routed around, not into */
+  var fld = distField(nearest.x, nearest.y);
+  var pick = null, pd = 1e9;
+  for (var k3 in reach) {
+    var p3 = k3.split(','), ax = +p3[0], ay = +p3[1];
+    var d3 = fld[k3];
+    if (d3 === undefined) d3 = Math.abs(ax - nearest.x) + Math.abs(ay - nearest.y) + 50;
+    var t3 = ter(ax, ay);
+    var pen = (t3.burn ? 4 : 0) - t3.def * 0.3;
+    if (d3 + pen < pd) { pd = d3 + pen; pick = { x: ax, y: ay }; }
+  }
+  if (pick && (pick.x !== u.x || pick.y !== u.y)) {
+    moveUnit(u, pathTo(u, pick.x, pick.y), function () { u.acted = true; done(); });
+    return;
+  }
+  /* nowhere better to stand: if anything is in reach, swing at it */
+  if (best) { engage(); return; }
+  u.acted = true; done();
+}
+
+/* ================= CHAPTER SETUP ================= */
+var OBJS = {
+  wipe:   { name: 'PURGE', desc: 'Destroy every hostile.' },
+  boss:   { name: 'DECAPITATE', desc: 'Destroy the commander.' },
+  hold:   { name: 'HOLD', desc: 'Survive the assault.' }
+};
+var SITES = ['ORBITAL DOCK', 'COOLANT SPINE', 'RELAY VAULT', 'ASH FOUNDRY', 'SIGNAL GARDEN', 'CARRIER HULK',
+  'MAG-RAIL YARD', 'DEEP ARCHIVE', 'SLAG TERRACE', 'BLACK CHAPEL', 'DRIFT NURSERY', 'VOID SPILLWAY'];
+
+function foeLevel(ch) { return Math.min(MAXLVL, 1 + Math.floor((ch - 1) * 1.3)); }
+/* once hostiles hit the level cap they escalate in marks instead */
+function foeMark(ch) { var over = ch - 15; return over <= 0 ? 0 : Math.ceil(over / 4); }
+function foeCount(ch) {
+  var base = Math.min(12, 3 + Math.floor(ch * 0.55));
+  var sq = S.squadSize || 5;
+  return Math.max(2, Math.round(base * (0.55 + 0.09 * sq)));
+}
+function wpnPlus(ch) { return Math.min(14, Math.floor((ch - 1) / 2.5)); }
+function traitChance(ch) { return ch < 9 ? 0 : Math.min(0.65, (ch - 8) * 0.07); }
+
+function foePool(ch) {
+  var pool = [];
+  for (var k in FOES) if (FOES[k].from <= ch) pool.push(k);
+  return pool;
+}
+
+function placeNear(x, y, used) {
+  for (var r = 0; r < 9; r++) {
+    for (var dx = -r; dx <= r; dx++) for (var dy = -r; dy <= r; dy++) {
+      var nx = x + dx, ny = y + dy, k = nx + ',' + ny;
+      if (!inBounds(nx, ny) || used[k]) continue;
+      if (ter(nx, ny).block) continue;
+      if (unitAt(nx, ny)) continue;
+      used[k] = 1; return { x: nx, y: ny };
+    }
+  }
+  return { x: x, y: y };
+}
+
+function startChapter() {
+  var ch = S.chapter;
+  S.grid = genMap(ch);
+  RNG.seed(Math.floor(rnd() * 2000000000) + 1);
+  S.turn = 1; S.phase = 'player'; S.sel = null; S.mode = 'idle';
+  S.fx = []; S.movers = []; S.busy = 0; S.levelups = []; S.rewards = null; S.inspect = null;
+  S.obj = ch % 5 === 0 ? 'boss' : (ch > 3 && RNG.chance(0.22) ? 'hold' : 'wipe');
+  S.objTurns = 4 + Math.floor(ch / 4);
+  var th = themeOf(ch);
+  S.site = th.name + ' / ' + th.sites[S.layout % th.sites.length];
+  S.reinforce = [];
+
+  /* keep survivors, clear foes */
+  S.units = S.units.filter(function (u) { return u.side === 'ply' && u.chp > 0; });
+  var used = {};
+  /* player spawn: left edge, reachable column */
+  var slots = [];
+  for (var y = 0; y < MAPH; y++) for (var x = 0; x < 3; x++) if (!ter(x, y).block) slots.push({ x: x, y: y });
+  for (var i = 0; i < S.units.length; i++) {
+    var sp = slots[(i * 3 + 1) % slots.length];
+    var pos = placeNear(sp.x, sp.y, used);
+    var u = S.units[i];
+    u.x = pos.x; u.y = pos.y; u.px = pos.x; u.py = pos.y; u.acted = false; u.flash = 0;
+    if (ch > 1) u.chp = Math.min(u.stats.hp, u.chp + Math.ceil(u.stats.hp * 0.6));
+  }
+  var anchor = { x: 1, y: Math.floor(MAPH / 2) };
+  var open = openTiles(S.units.length ? S.units[0].x : anchor.x, S.units.length ? S.units[0].y : anchor.y);
+
+  /* foes */
+  var pool = foePool(ch), lvl = foeLevel(ch), n = foeCount(ch), plus = wpnPlus(ch), tc = traitChance(ch);
+  var mark = foeMark(ch);
+  if (S.obj === 'boss') n = Math.max(2, Math.round(n * 0.7));
+  var tkeys = Object.keys(TRAITS);
+  function spawnFoe(def, isBoss, lv) {
+    var f = mkUnit(def, 'foe', lv, { plus: plus, boss: isBoss, mark: mark > 0 ? mark + (isBoss ? 1 : 0) : 0,
+      bossHp: isBoss ? (1.1 + Math.min(0.5, ch * 0.012)) : 1 });
+    if (tc > 0 && RNG.chance(isBoss ? Math.min(0.9, tc + 0.3) : tc)) {
+      f.traits.push(tkeys[RNG.int(tkeys.length)]);
+      if (isBoss && RNG.chance(0.4)) { var t2 = tkeys[RNG.int(tkeys.length)]; if (f.traits.indexOf(t2) < 0) f.traits.push(t2); }
+    }
+    if (f.traits.indexOf('marksman') >= 0 && f.wpn.rmax < 2) f.traits.splice(f.traits.indexOf('marksman'), 1);
+    /* early on the machines hold their ground, so there is room to learn to bait
+       and pick fights. from chapter four they come for you. */
+    if (!isBoss && ch <= 3) f.ai = 'guard';
+    /* find a spot on the far side that the squad can actually reach */
+    for (var t = 0; t < 400; t++) {
+      var sx = RNG.range(Math.floor(MAPW * 0.45), MAPW - 1), sy = RNG.range(0, MAPH - 1);
+      var k = sx + ',' + sy;
+      if (used[k] || ter(sx, sy).block || !open[k] || unitAt(sx, sy)) continue;
+      used[k] = 1; f.x = sx; f.y = sy; f.px = sx; f.py = sy;
+      S.units.push(f); return f;
+    }
+    var p = placeNear(MAPW - 2, Math.floor(MAPH / 2), used);
+    f.x = p.x; f.y = p.y; f.px = p.x; f.py = p.y; S.units.push(f); return f;
+  }
+  var magPool = pool.filter(function (p) { return WPN[FOES[p].wpn].mag; });
+  var magWant = magPool.length ? Math.max(1, Math.round(n * 0.28)) : 0;
+  for (var j = 0; j < n; j++) {
+    var pick;
+    if (j < magWant) pick = magPool[RNG.int(magPool.length)];
+    else pick = pool[RNG.int(pool.length)];
+    spawnFoe(FOES[pick], false, lvl);
+  }
+  if (S.obj === 'boss') {
+    var bd = BOSSES[(Math.floor(ch / 5) - 1) % BOSSES.length];
+    var b = spawnFoe(bd, true, Math.min(MAXLVL, lvl + 1 + Math.floor(ch / 10)));
+    b.boss = true; S.bossId = b.id;
+    say('Commander detected: ' + b.name + '.');
+  } else S.bossId = null;
+  if (S.obj === 'hold') {
+    var waves = 1 + Math.floor(ch / 8);
+    for (var w = 1; w <= waves; w++) S.reinforce.push({ turn: 1 + w * 2, n: 2 + Math.floor(ch / 7) });
+  }
+
+  S.screen = 'map'; S.gameover = false;
+  S.banner = 'CHAPTER ' + ch; S.bannerT = 1.6;
+  say('--- CHAPTER ' + ch + ': ' + S.site + ' / ' + OBJS[S.obj].name + ' ---');
+  saveGame();
+}
+
+function spawnReinforcements(n) {
+  var pool = foePool(S.chapter), lvl = foeLevel(S.chapter), plus = wpnPlus(S.chapter), used = {};
+  for (var i = 0; i < n; i++) {
+    var f = mkUnit(FOES[pool[RNG.int(pool.length)]], 'foe', lvl, { plus: plus, mark: foeMark(S.chapter) });
+    for (var t = 0; t < 200; t++) {
+      var sx = RNG.range(MAPW - 3, MAPW - 1), sy = RNG.range(0, MAPH - 1);
+      if (ter(sx, sy).block || unitAt(sx, sy) || used[sx + ',' + sy]) continue;
+      used[sx + ',' + sy] = 1; f.x = sx; f.y = sy; f.px = sx; f.py = sy; S.units.push(f); break;
+    }
+  }
+  say('Reinforcements inbound (' + n + ').');
+  S.banner = 'REINFORCEMENTS'; S.bannerT = 1.2;
+}
+
+/* ================= TURN FLOW ================= */
+function phaseStart(side) {
+  var list = allies(side);
+  for (var i = 0; i < list.length; i++) {
+    var u = list[i]; u.acted = false;
+    var t = ter(u.x, u.y);
+    if (t.heal && u.chp < u.stats.hp) {
+      var h = Math.max(1, Math.round(u.stats.hp * t.heal));
+      u.chp = Math.min(u.stats.hp, u.chp + h); fxText(u, '+' + h, '#54f0c8');
+    }
+    if (t.burn) {
+      var d = Math.max(1, Math.round(u.stats.hp * t.burn));
+      u.chp = Math.max(0, u.chp - d); fxText(u, d, '#ff8a3a');
+      if (u.chp <= 0) onDeath(u, null);
+    }
+    if (u.chp > 0 && u.traits.indexOf('regen') >= 0) {
+      var r = Math.max(1, Math.round(u.stats.hp * 0.15));
+      u.chp = Math.min(u.stats.hp, u.chp + r); fxText(u, '+' + r, '#8affd8');
+    }
+  }
+}
+
+function checkEnd() {
+  if (S.screen !== 'map') return true;
+  if (!allies('ply').length) { gameOver(); return true; }
+  var foesLeft = allies('foe').length;
+  if (S.obj === 'wipe' && foesLeft === 0) { chapterClear(); return true; }
+  if (S.obj === 'boss') {
+    var boss = S.units.filter(function (u) { return u.id === S.bossId; })[0];
+    if (!boss || boss.chp <= 0) { chapterClear(); return true; }
+  }
+  if (S.obj === 'hold' && S.turn > S.objTurns) { chapterClear(); return true; }
+  return false;
+}
+
+function endPlayerPhase() {
+  if (S.busy) return;
+  S.phase = 'foe'; S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null;
+  if (checkEnd()) return;
+  phaseStart('foe');
+  if (checkEnd()) return;
+  S.banner = 'ENEMY PHASE'; S.bannerT = 0.9;
+  var queue = allies('foe').slice().sort(function (a, b) { return (b.boss ? 1 : 0) - (a.boss ? 1 : 0); });
+  var qi = 0;
+  function step() {
+    if (S.screen !== 'map') return;
+    while (qi < queue.length && queue[qi].chp <= 0) qi++;
+    if (qi >= queue.length) { endFoePhase(); return; }
+    var u = queue[qi++];
+    aiAct(u, function () { if (checkEnd()) return; schedule(step, 110); });
+  }
+  schedule(step, HEADLESS ? 0 : 420);
+}
+function endFoePhase() {
+  S.turn++;
+  S.phase = 'player';
+  if (checkEnd()) return;
+  for (var i = 0; i < S.reinforce.length; i++) {
+    if (S.reinforce[i].turn === S.turn) { spawnReinforcements(S.reinforce[i].n); }
+  }
+  phaseStart('ply');
+  if (checkEnd()) return;
+  S.banner = 'PLAYER PHASE'; S.bannerT = 0.9;
+  if (typeof refreshUI === 'function') refreshUI();
+}
+function schedule(fn, ms) { if (HEADLESS) { fn(); } else { setTimeout(fn, ms); } }
+
+/* ================= CHAPTER CLEAR / REWARDS ================= */
+function chapterClear() {
+  S.screen = 'clear';
+  S.best = Math.max(S.best, S.chapter);
+  say('Chapter ' + S.chapter + ' cleared.');
+  rollRewards();
+  saveGame();
+  if (typeof refreshUI === 'function') refreshUI();
+}
+
+function rollRewards() {
+  var pool = [], ch = S.chapter, live = allies('ply');
+  function pickUnit() { return live[RNG.int(live.length)]; }
+  if (live.length) {
+    var a = pickUnit();
+    pool.push({ k: 'wpn', t: 'WEAPON FORGE', d: a.name + "'s " + wpnLabel(a.wpn) + ' -> +2 might', id: a.id });
+    var b = pickUnit(), sk = STATK[1 + RNG.int(7)];
+    pool.push({ k: 'stat', t: 'IMPLANT', d: b.name + ': +3 ' + STATN[sk] + ' permanently', id: b.id, s: sk });
+    var cPool = live.filter(function (x) { return x.lvl < MAXLVL; });
+    if (cPool.length) {
+      var c = cPool[RNG.int(cPool.length)], sk2 = STATK[RNG.int(8)];
+      pool.push({ k: 'grow', t: 'GENE SPLICE', d: c.name + ': +15% ' + STATN[sk2] + ' growth', id: c.id, s: sk2 });
+    } else {
+      var c2 = pickUnit();
+      pool.push({ k: 'wpn', t: 'OVERCLOCK FORGE', d: c2.name + "'s " + wpnLabel(c2.wpn) + ' -> +3 might', id: c2.id, amt: 3 });
+    }
+    var growable = live.filter(function (x) { return x.lvl < MAXLVL; });
+    if (growable.length) {
+      var d = growable[RNG.int(growable.length)];
+      pool.push({ k: 'exp', t: 'SIM TRAINING', d: d.name + ': +60 EXP', id: d.id });
+    } else {
+      var o = pickUnit(), sko = STATK[RNG.int(8)];
+      pool.push({ k: 'stat', t: 'OVERDRIVE CHIP', d: o.name + ': +2 ' + STATN[sko], id: o.id, s: sko, amt: 2 });
+    }
+  }
+  pool.push({ k: 'kits', t: 'SUPPLY DROP', d: '+3 repair kits (heal 20 each)' });
+  if (S.dead.length) {
+    var f = S.dead[S.dead.length - 1];
+    pool.push({ k: 'revive', t: 'RESURRECTION', d: 'Reactivate ' + f.name + ' at half HP' });
+  }
+  if (ch >= 2 && live.length < 9) {
+    var have = {}; S.units.forEach(function (u) { if (u.side === 'ply') have[u.key] = 1; });
+    var avail = ALLCHARS.filter(function (r) { return !have[r.key]; });
+    if (avail.length) {
+      var r = avail[RNG.int(avail.length)];
+      pool.push({ k: 'recruit', t: 'NEW SIGNAL', d: 'Recruit ' + r.name + ', ' + r.cls, key: r.key });
+    }
+  }
+  if (live.length) pool.push({ k: 'heal', t: 'FIELD REPAIR', d: 'Fully repair the whole echelon' });
+  /* three distinct offers */
+  var out = [];
+  while (out.length < 3 && pool.length) out.push(pool.splice(RNG.int(pool.length), 1)[0]);
+  S.rewards = out;
+}
+
+function takeReward(i) {
+  var r = S.rewards[i];
+  if (!r) return;
+  var u = r.id ? S.units.filter(function (x) { return x.id === r.id; })[0] : null;
+  if (r.k === 'wpn' && u) { var wa = r.amt || 2; u.wpn.plus += wa; u.wpn.mt += wa; }
+  else if (r.k === 'stat' && u) { var sa = r.amt || 3; u.stats[r.s] += sa; if (r.s === 'hp') u.chp += sa; }
+  else if (r.k === 'grow' && u) { u.grow[r.s] += 15; }
+  else if (r.k === 'exp' && u) { grantExp(u, 60); }
+  else if (r.k === 'kits') { S.kits += 3; }
+  else if (r.k === 'heal') { allies('ply').forEach(function (x) { x.chp = x.stats.hp; }); }
+  else if (r.k === 'revive') {
+    var f = S.dead.pop();
+    var def = charByKey(f.def);
+    if (def) {
+      var nu = mkUnit(def, 'ply', 1, { plus: wpnPlus(S.chapter) });
+      /* restore their level by re-levelling with growths */
+      while (nu.lvl < f.lvl) levelUp(nu);
+      S.levelups = [];
+      nu.chp = Math.max(1, Math.floor(nu.stats.hp / 2));
+      S.units.push(nu);
+      say(nu.name + ' is back online.');
+    }
+  } else if (r.k === 'recruit') {
+    var rd = charByKey(r.key);
+    if (rd) {
+      var lv = Math.max(1, Math.min(MAXLVL, Math.round(avgLevel() * 0.85)));
+      var ru = mkUnit(rd, 'ply', 1, { plus: wpnPlus(S.chapter) });
+      while (ru.lvl < lv) levelUp(ru);
+      S.levelups = [];
+      ru.chp = ru.stats.hp;
+      S.units.push(ru);
+      say(ru.name + ' joined the echelon.');
+    }
+  }
+  S.rewards = null;
+  S.chapter++;
+  startChapter();
+  if (typeof refreshUI === 'function') refreshUI();
+}
+function avgLevel() {
+  var l = allies('ply'), t = 0;
+  if (!l.length) return 1;
+  l.forEach(function (u) { t += u.lvl; });
+  return t / l.length;
+}
+
+function gameOver() {
+  S.screen = 'over'; S.gameover = true;
+  S.best = Math.max(S.best, S.chapter);
+  say('Echelon lost on chapter ' + S.chapter + '.');
+  try { localStorage.removeItem('echelon_run'); } catch (e) { }
+  saveBest();
+  if (typeof refreshUI === 'function') refreshUI();
+}
+
+/* ================= RUN START ================= */
+var ALLCHARS = ROSTER.concat(RECRUITS);
+function charByKey(k) {
+  for (var i = 0; i < ALLCHARS.length; i++) if (ALLCHARS[i].key === k) return ALLCHARS[i];
+  return null;
+}
+function newRun(keys) {
+  if (!keys || !keys.length) keys = ROSTER.map(function (r) { return r.key; });
+  S.units = []; S.dead = []; S.uid = 1; S.chapter = 1; S.kits = 3; S.log = []; S.levelups = [];
+  S.bags = []; S.resumeLayout = null;
+  S.squadSize = keys.length;
+  for (var i = 0; i < keys.length; i++) {
+    var def = charByKey(keys[i]);
+    if (def) S.units.push(mkUnit(def, 'ply', 1, {}));
+  }
+  if (!S.units.length) S.units.push(mkUnit(ROSTER[0], 'ply', 1, {}));
+  S.squadSize = S.units.length;
+  startChapter();
+}
+
+/* ================= SAVE ================= */
+function saveGame() {
+  if (HEADLESS) return;
+  try {
+    var data = {
+      v: 3, chapter: S.chapter, kits: S.kits, best: S.best, dead: S.dead, uid: S.uid, squadSize: S.squadSize,
+      bags: S.bags, layout: S.layout,
+      units: allies('ply').map(function (u) {
+        return { key: u.key, lvl: u.lvl, exp: u.exp, over: u.over || 0, stats: u.stats, grow: u.grow, chp: u.chp,
+          wpn: u.wpn.id, plus: u.wpn.plus, promoted: u.promoted, cls: u.cls, mov: u.mov };
+      })
+    };
+    localStorage.setItem('echelon_run', JSON.stringify(data));
+    saveBest();
+  } catch (e) { }
+}
+function saveBest() { try { localStorage.setItem('echelon_best', String(S.best)); } catch (e) { } }
+function loadBest() { try { var b = localStorage.getItem('echelon_best'); if (b) S.best = parseInt(b, 10) || 1; } catch (e) { } }
+function hasSave() { try { return !!localStorage.getItem('echelon_run'); } catch (e) { return false; } }
+function loadGame() {
+  try {
+    var raw = localStorage.getItem('echelon_run');
+    if (!raw) return false;
+    var d = JSON.parse(raw);
+    if (!d || !d.units || !d.units.length || d.v !== 3) return false;
+    var all = ALLCHARS;
+    S.units = []; S.uid = d.uid || 1; S.chapter = d.chapter || 1; S.kits = d.kits || 0;
+    S.dead = d.dead || []; S.best = Math.max(S.best, d.best || 1); S.squadSize = d.squadSize || d.units.length;
+    S.bags = d.bags || []; S.resumeLayout = (typeof d.layout === 'number') ? d.layout : null;
+    for (var i = 0; i < d.units.length; i++) {
+      var s = d.units[i];
+      var def = all.filter(function (x) { return x.key === s.key; })[0];
+      if (!def) continue;
+      var u = mkUnit(def, 'ply', 1, { plus: s.plus || 0 });
+      u.lvl = s.lvl; u.exp = s.exp; u.over = s.over || 0; u.promoted = !!s.promoted;
+      u.cls = s.cls || u.cls; u.mov = s.mov || u.mov;
+      for (var j = 0; j < STATK.length; j++) { u.stats[STATK[j]] = s.stats[STATK[j]]; u.grow[STATK[j]] = s.grow[STATK[j]]; }
+      u.chp = Math.max(1, Math.min(s.chp, u.stats.hp));
+      S.units.push(u);
+    }
+    if (!S.units.length) return false;
+    S.levelups = [];
+    startChapter();
+    return true;
+  } catch (e) { return false; }
+}
+
+/* ================= CANVAS ================= */
+var cv, ctx, sprCache = {}, bgCanvas = null, bgCh = -1, bgLayout = -1;
+
+function px(c, x, y, w, h, col) { c.fillStyle = col; c.fillRect(x * SC, y * SC, w * SC, h * SC); }
+
+function getSpr(spr, pal) {
+  var key = spr + '|' + pal;
+  if (sprCache[key]) return sprCache[key];
+  var cnv = document.createElement('canvas');
+  cnv.width = TILE * SC; cnv.height = TILE * SC;
+  var c = cnv.getContext('2d');
+  var rows = SPR[spr], p = PALS[pal] || PALS.foe;
+  for (var r = 0; r < rows.length; r++) {
+    for (var q = 0; q < rows[r].length; q++) {
+      var ch = rows[r][q];
+      if (ch === '.') continue;
+      var col = p[ch]; if (!col) continue;
+      c.fillStyle = col; c.fillRect(q * SC, r * SC, SC, SC);
+    }
+  }
+  sprCache[key] = cnv;
+  return cnv;
+}
+
+function tileRng(x, y) { var n = (x * 73856093) ^ (y * 19349663); n = (n ^ (n >>> 13)) >>> 0; return (n % 1000) / 1000; }
+function tileRng2(x, y) { var n = (x * 2654435761) ^ (y * 40503); n = (n ^ (n >>> 11)) >>> 0; return (n % 997) / 997; }
+
+var curTheme = 0;
+function TH() { return THEMES[curTheme] || THEMES[0]; }
+
+/* tile symbols, so a glance tells you what a square does */
+var ICON = {
+  heal: ['..XXX..', '..XXX..', 'XXXXXXX', 'XXXXXXX', 'XXXXXXX', '..XXX..', '..XXX..'],
+  shield: ['XXXXXXX', 'XXXXXXX', 'XXXXXXX', 'XXXXXXX', '.XXXXX.', '..XXX..', '...X...'],
+  high: ['...X...', '..XXX..', '.XXXXX.', 'XXXXXXX', '...X...', '...X...', '...X...'],
+  warn: ['...X...', '..XXX..', '..X.X..', '.XX.XX.', '.X...X.', 'XXXXXXX', '.......']
+};
+function drawIcon(c, ox, oy, name, col, shadow) {
+  var g = ICON[name];
+  for (var r = 0; r < g.length; r++) for (var q = 0; q < g[r].length; q++) {
+    if (g[r][q] !== 'X') continue;
+    if (shadow) px(c, ox + q, oy + r + 1, 1, 1, shadow);
+    px(c, ox + q, oy + r, 1, 1, col);
+  }
+}
+
+function drawTile(c, x, y, kind) {
+  var ox = x * TILE, oy = y * TILE, r = tileRng(x, y), r2 = tileRng2(x, y);
+
+  /* deck plating: a few panel treatments so the floor is not one flat colour */
+  var T = TH();
+  px(c, ox, oy, 16, 16, T.base);
+  px(c, ox + 1, oy + 1, 14, 14, T.hi);
+  px(c, ox + 1, oy + 1, 14, 1, T.deco);
+  px(c, ox, oy, 16, 1, T.edge);
+  px(c, ox, oy, 1, 16, T.edge);
+
+  if (r < 0.17) {                                  /* riveted plate */
+    px(c, ox + 2, oy + 2, 1, 1, T.deco2); px(c, ox + 13, oy + 2, 1, 1, T.deco2);
+    px(c, ox + 2, oy + 13, 1, 1, T.deco2); px(c, ox + 13, oy + 13, 1, 1, T.deco2);
+    px(c, ox + 4, oy + 7, 8, 1, T.edge);
+  } else if (r < 0.30) {                           /* seam panel */
+    px(c, ox + 1, oy + 8, 14, 1, T.edge);
+    px(c, ox + 1, oy + 9, 14, 1, T.deco);
+    px(c, ox + 7, oy + 1, 1, 7, T.edge);
+  } else if (r < 0.40) {                           /* cable conduit */
+    var cy = r2 < 0.5 ? 5 : 10;
+    px(c, ox + 1, oy + cy, 14, 3, T.edge);
+    px(c, ox + 1, oy + cy, 14, 1, T.deco);
+    px(c, ox + 3, oy + cy + 1, 2, 1, T.deco2); px(c, ox + 9, oy + cy + 1, 2, 1, T.deco2);
+  } else if (r < 0.47) {                           /* hazard stripes */
+    for (var hs = 0; hs < 5; hs++) px(c, ox + 2 + hs * 3, oy + 12, 2, 2, hs % 2 ? '#3d3620' : T.base);
+  } else if (r < 0.54) {                           /* scorch */
+    px(c, ox + 4 + Math.floor(r2 * 4), oy + 5 + Math.floor(r2 * 5), 4, 3, T.edge);
+    px(c, ox + 5 + Math.floor(r2 * 4), oy + 6 + Math.floor(r2 * 5), 2, 1, T.wdark);
+  } else if (r < 0.60) {                           /* floor marking */
+    px(c, ox + 3, oy + 3, 2, 1, T.deco2); px(c, ox + 3, oy + 3, 1, 2, T.deco2);
+    px(c, ox + 11, oy + 12, 2, 1, T.deco2); px(c, ox + 12, oy + 11, 1, 2, T.deco2);
+  }
+  if (r2 > 0.93) px(c, ox + 6, oy + 2, 4, 1, T.deco);     /* stencil tick */
+
+  if (kind === 'grate') {
+    px(c, ox + 1, oy + 1, 14, 14, T.grate);
+    for (var i = 2; i < 15; i += 3) { px(c, ox + 2, oy + i, 12, 2, T.grateHi); px(c, ox + 2, oy + i, 12, 1, T.deco); }
+    px(c, ox + 1, oy + 1, 14, 1, T.deco2);
+  } else if (kind === 'cover') {
+    px(c, ox + 1, oy + 3, 14, 11, T.edge);
+    px(c, ox + 2, oy + 4, 12, 10, '#24344a');
+    px(c, ox + 2, oy + 4, 12, 1, '#4a658f');
+    px(c, ox + 2, oy + 13, 12, 1, '#0b1119');
+    px(c, ox + 2, oy + 4, 1, 10, '#33465f');
+    px(c, ox + 13, oy + 4, 1, 10, '#162133');
+    drawIcon(c, ox + 5, oy + 5, 'shield', '#7df9ff', '#061016');
+  } else if (kind === 'wall') {
+    px(c, ox, oy, 16, 16, T.wdark);
+    px(c, ox + 1, oy + 1, 14, 14, T.wtop);
+    px(c, ox + 2, oy + 2, 12, 12, T.wbody);
+    px(c, ox + 2, oy + 2, 12, 1, T.wedge);
+    px(c, ox + 2, oy + 2, 1, 12, T.wtop);
+    px(c, ox + 2, oy + 13, 12, 1, T.wdark);
+    px(c, ox + 13, oy + 2, 1, 12, T.wdark);
+    for (var wv = 4; wv < 13; wv += 4) px(c, ox + 3, oy + wv, 10, 1, T.wdark);
+    px(c, ox + 7, oy + 3, 2, 10, T.wdark);
+    if (r2 > 0.6) { px(c, ox + 4, oy + 3, 1, 1, T.wedge); px(c, ox + 11, oy + 11, 1, 1, T.wedge); }
+  } else if (kind === 'node') {
+    px(c, ox + 1, oy + 1, 14, 14, '#07221f');
+    px(c, ox + 2, oy + 2, 12, 12, '#0c3833');
+    px(c, ox + 2, oy + 2, 12, 1, '#54f0c8');
+    px(c, ox + 2, oy + 13, 12, 1, '#54f0c8');
+    px(c, ox + 2, oy + 3, 1, 10, '#2b9a8a');
+    px(c, ox + 13, oy + 3, 1, 10, '#2b9a8a');
+    drawIcon(c, ox + 5, oy + 5, 'heal', '#8dffe4', '#032a24');
+    px(c, ox + 1, oy + 1, 1, 1, '#aaffee'); px(c, ox + 14, oy + 14, 1, 1, '#aaffee');
+  } else if (kind === 'vent') {
+    px(c, ox + 1, oy + 1, 14, 14, '#1a1008');
+    px(c, ox + 2, oy + 2, 12, 12, '#2a1709');
+    for (var vs = 0; vs < 6; vs += 2) px(c, ox + 2 + vs * 2, oy + 2, 2, 12, '#120a05');
+    px(c, ox + 2, oy + 2, 12, 1, '#ff8a3a');
+    px(c, ox + 2, oy + 13, 12, 1, '#ff8a3a');
+    drawIcon(c, ox + 5, oy + 5, 'warn', '#ffc266', '#1a0d04');
+  } else if (kind === 'dais') {
+    px(c, ox + 1, oy + 2, 14, 12, '#0a1826');
+    px(c, ox + 2, oy + 3, 12, 10, '#13293d');
+    px(c, ox + 2, oy + 3, 12, 1, '#7df9ff');
+    px(c, ox + 2, oy + 12, 12, 1, '#7df9ff');
+    px(c, ox + 2, oy + 4, 1, 8, '#2f7f96');
+    px(c, ox + 13, oy + 4, 1, 8, '#2f7f96');
+    drawIcon(c, ox + 5, oy + 4, 'high', '#ffffff', '#04161e');
+    px(c, ox + 4, oy + 2, 1, 1, '#7df9ff'); px(c, ox + 11, oy + 2, 1, 1, '#7df9ff');
+  }
+}
+
+/* render one tile type into a standalone context, for the legend */
+function drawTileTo(g, kind, themeIndex) {
+  var prev = curTheme;
+  if (typeof themeIndex === 'number') curTheme = themeIndex;
+  var saveCtx = { fillStyle: g.fillStyle };
+  var fake = { fillStyle: '', fillRect: function (a, b, w, h) { g.fillStyle = fake.fillStyle; g.fillRect(a, b, w, h); } };
+  drawTile(fake, 0, 0, kind);
+  curTheme = prev;
+  g.fillStyle = saveCtx.fillStyle;
+}
+
+function buildBG() {
+  curTheme = (typeof S.terrain === 'number') ? S.terrain : 0;
+  bgCanvas = document.createElement('canvas');
+  bgCanvas.width = MAPW * TP; bgCanvas.height = MAPH * TP;
+  var c = bgCanvas.getContext('2d');
+  for (var y = 0; y < MAPH; y++) for (var x = 0; x < MAPW; x++) drawTile(c, x, y, S.grid[y][x]);
+  bgCh = S.chapter; bgLayout = S.layout;
+}
+
+function computeDanger() {
+  var tiles = {};
+  var foes = allies('foe');
+  for (var i = 0; i < foes.length; i++) {
+    var f = foes[i];
+    var r = reachable(f);
+    r[f.x + ',' + f.y] = 0;
+    var at = attackTiles(f, r);
+    for (var k in at) tiles[k] = 1;
+  }
+  S.dangerTiles = tiles;
+}
+
+/* ================= DRAW ================= */
+var lastT = 0;
+function frame(ts) {
+  var dt = Math.min(0.05, (ts - lastT) / 1000 || 0); lastT = ts;
+  update(dt);
+  draw();
+  requestAnimationFrame(frame);
+}
+
+function update(dt) {
+  if (typeof netTick === 'function') netTick();
+  /* movers */
+  for (var i = S.movers.length - 1; i >= 0; i--) {
+    var m = S.movers[i];
+    m.t += dt / 0.09;
+    while (m.t >= 1 && m.i < m.path.length) {
+      m.fx = m.path[m.i].x; m.fy = m.path[m.i].y; m.i++; m.t -= 1;
+    }
+    if (m.i >= m.path.length) {
+      m.u.x = m.fx; m.u.y = m.fy; m.u.px = m.fx; m.u.py = m.fy;
+      S.movers.splice(i, 1);
+      m.cb();
+      continue;
+    }
+    var nx = m.path[m.i];
+    m.u.px = m.fx + (nx.x - m.fx) * m.t;
+    m.u.py = m.fy + (nx.y - m.fy) * m.t;
+  }
+  for (var j = S.fx.length - 1; j >= 0; j--) { S.fx[j].t += dt; if (S.fx[j].t > S.fx[j].dur) S.fx.splice(j, 1); }
+  for (var k = 0; k < S.units.length; k++) if (S.units[k].flash > 0) S.units[k].flash -= dt * 4;
+  if (S.bannerT > 0) S.bannerT -= dt;
+  if (S.shake > 0) S.shake = Math.max(0, S.shake - dt * 30);
+}
+
+function draw() {
+  if (!ctx) return;
+  var sx = 0, sy = 0;
+  if (S.shake > 0) { sx = (rnd() - 0.5) * S.shake; sy = (rnd() - 0.5) * S.shake; }
+  ctx.save();
+  ctx.translate(sx, sy);
+  ctx.clearRect(-20, -20, cv.width + 40, cv.height + 40);
+  if (S.screen !== 'map' && S.screen !== 'clear' && S.screen !== 'over') { ctx.restore(); return; }
+  if (!S.grid) { ctx.restore(); return; }
+  if (!bgCanvas || bgCh !== S.chapter || bgLayout !== S.layout) buildBG();
+  ctx.drawImage(bgCanvas, 0, 0);
+
+  var i, k, p, u;
+  /* danger zone */
+  if (S.danger && S.dangerTiles) {
+    ctx.fillStyle = 'rgba(255,70,70,0.20)';
+    for (k in S.dangerTiles) { p = k.split(','); ctx.fillRect(+p[0] * TP, +p[1] * TP, TP, TP); }
+  }
+  /* move + attack range */
+  if (S.sel && S.reach && (S.mode === 'move')) {
+    ctx.fillStyle = 'rgba(80,160,255,0.26)';
+    for (k in S.reach) { p = k.split(','); ctx.fillRect(+p[0] * TP, +p[1] * TP, TP, TP); }
+    ctx.fillStyle = 'rgba(255,90,90,0.16)';
+    for (k in S.atkTiles) { if (S.reach[k] !== undefined) continue; p = k.split(','); ctx.fillRect(+p[0] * TP, +p[1] * TP, TP, TP); }
+  }
+  if (S.sel && (S.mode === 'target' || S.mode === 'healt')) {
+    var col = S.mode === 'target' ? 'rgba(255,90,90,0.28)' : 'rgba(84,240,200,0.28)';
+    ctx.fillStyle = col;
+    var w = S.sel;
+    for (var dx = -wRange(w); dx <= wRange(w); dx++) for (var dy = -wRange(w); dy <= wRange(w); dy++) {
+      var d = Math.abs(dx) + Math.abs(dy);
+      if (d < w.wpn.rmin || d > wRange(w)) continue;
+      var tx = w.x + dx, ty = w.y + dy;
+      if (inBounds(tx, ty)) ctx.fillRect(tx * TP, ty * TP, TP, TP);
+    }
+  }
+  /* selected highlight */
+  if (S.sel) {
+    ctx.strokeStyle = '#7df9ff'; ctx.lineWidth = 3;
+    ctx.strokeRect(S.sel.px * TP + 2, S.sel.py * TP + 2, TP - 4, TP - 4);
+  }
+  if (S.inspect && S.inspect.chp > 0) {
+    ctx.strokeStyle = '#ffd166'; ctx.lineWidth = 3;
+    ctx.strokeRect(S.inspect.px * TP + 2, S.inspect.py * TP + 2, TP - 4, TP - 4);
+  }
+  /* units: back to front */
+  var list = S.units.filter(function (u) { return u.chp > 0; }).sort(function (a, b) { return a.py - b.py; });
+  for (i = 0; i < list.length; i++) {
+    u = list[i];
+    var ux = u.px * TP, uy = u.py * TP;
+    /* shadow + side ring */
+    ctx.fillStyle = 'rgba(0,0,0,0.35)';
+    ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.3, TP * 0.12, 0, 0, 6.3); ctx.fill();
+    ctx.strokeStyle = isMine(u) ? 'rgba(125,249,255,0.75)' : (u.boss ? 'rgba(255,224,102,0.9)' : 'rgba(255,90,90,0.7)');
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.32, TP * 0.14, 0, 0, 6.3); ctx.stroke();
+    var img = getSpr(u.spr, u.pal);
+    ctx.save();
+    if (u.acted && isMine(u)) ctx.globalAlpha = 0.55;
+    ctx.drawImage(img, Math.round(ux), Math.round(uy - 2));
+    if (u.boss) ctx.drawImage(getSpr('crown', u.pal), Math.round(ux), Math.round(uy - 8));
+    ctx.restore();
+    if (u.flash > 0) {
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.globalAlpha = Math.min(0.8, u.flash);
+      ctx.drawImage(img, Math.round(ux), Math.round(uy - 2));
+      ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
+    }
+    /* hp bar */
+    var bw = TP - 14, frac = u.chp / u.stats.hp;
+    ctx.fillStyle = '#05080d'; ctx.fillRect(ux + 7, uy + TP - 5, bw, 5);
+    ctx.fillStyle = isMine(u) ? (frac > 0.5 ? '#54f0c8' : frac > 0.25 ? '#ffd166' : '#ff5a5a')
+      : (u.boss ? '#ffb24a' : '#ff5a5a');
+    ctx.fillRect(ux + 8, uy + TP - 4, Math.max(0, (bw - 2) * frac), 3);
+    if (u.traits.length) { ctx.fillStyle = '#ff8a3a'; ctx.fillRect(ux + TP - 10, uy + 2, 5, 5); }
+  }
+  /* fx */
+  for (i = 0; i < S.fx.length; i++) {
+    var f = S.fx[i], pr = f.t / f.dur, cx = f.x * TP + TP / 2, cy = f.y * TP + TP / 2;
+    if (f.k === 'txt') {
+      ctx.globalAlpha = Math.max(0, 1 - pr * pr);
+      ctx.font = 'bold 22px ui-monospace, Menlo, Consolas, monospace';
+      ctx.textAlign = 'center';
+      ctx.lineWidth = 5; ctx.strokeStyle = '#05080d';
+      ctx.strokeText(f.txt, cx, cy - 10 - pr * 22);
+      ctx.fillStyle = f.col; ctx.fillText(f.txt, cx, cy - 10 - pr * 22);
+      ctx.globalAlpha = 1;
+    } else if (f.k === 'hit') {
+      ctx.globalAlpha = 1 - pr;
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.arc(cx, cy, 6 + pr * 26, 0, 6.3); ctx.stroke();
+      ctx.globalAlpha = 1;
+    } else if (f.k === 'boom') {
+      ctx.globalAlpha = 1 - pr;
+      var pp = PALS[f.pal] || PALS.foe;
+      for (var b = 0; b < 8; b++) {
+        var ang = b * 0.785, rr = pr * 40;
+        ctx.fillStyle = b % 2 ? pp.V : pp.A;
+        ctx.fillRect(cx + Math.cos(ang) * rr - 3, cy + Math.sin(ang) * rr - 3, 6, 6);
+      }
+      ctx.globalAlpha = 1;
+    } else if (f.k === 'heal') {
+      ctx.globalAlpha = 1 - pr;
+      ctx.strokeStyle = '#54f0c8'; ctx.lineWidth = 3;
+      ctx.strokeRect(cx - 18 + pr * 8, cy - 18 + pr * 8, 36 - pr * 16, 36 - pr * 16);
+      ctx.globalAlpha = 1;
+    }
+  }
+  /* banner */
+  if (S.bannerT > 0 && S.banner) {
+    var a = Math.min(1, S.bannerT * 2);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = 'rgba(5,8,13,0.82)';
+    ctx.fillRect(0, cv.height / 2 - 34, cv.width, 68);
+    ctx.fillStyle = '#7df9ff';
+    ctx.fillRect(0, cv.height / 2 - 34, cv.width, 2);
+    ctx.fillRect(0, cv.height / 2 + 32, cv.width, 2);
+    ctx.font = 'bold 34px ui-monospace, Menlo, Consolas, monospace';
+    ctx.textAlign = 'center'; ctx.fillStyle = '#eaf6ff';
+    ctx.fillText(S.banner, cv.width / 2, cv.height / 2 + 12);
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
+
+/* ================= ONLINE VERSUS =================
+   Host-authoritative. The host owns the rules; everyone else sends intents and
+   renders the state the host broadcasts. Every broadcast is absolute, because
+   the room drops messages and never replays them. */
+
+var NET = {
+  api: null, sub: null, available: false, tried: false,
+  code: '', name: '', id: '', host: false, side: null,
+  peers: [], lobby: {}, phase: 'idle',   /* idle | lobby | match | done */
+  lastHeard: 0, lastSend: 0, err: '', winner: null, pending: false, keys: [],
+  mode: null,        /* null | 'create' | 'join' | 'local' */
+  local: false, localStep: 1, keysA: [], keysB: [], copied: ''
+};
+var VS_LEVEL = 8, VS_MAX = 4, VS_ROUNDS = 20;
+
+function netId() {
+  var a = 'abcdefghijklmnopqrstuvwxyz0123456789', o = '';
+  for (var i = 0; i < 12; i++) o += a.charAt(Math.floor(rnd() * a.length));
+  return o;
+}
+function roomCode() {
+  var a = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', o = '';
+  for (var i = 0; i < 4; i++) o += a.charAt(Math.floor(rnd() * a.length));
+  return o;
+}
+function netOnline() { return NET.phase === 'match' || NET.phase === 'done'; }
+function mySide() {
+  if (NET.local) return turnSideNow();
+  return NET.side || 'ply';
+}
+function sideName(side) {
+  if (NET.local) return side === 'ply' ? 'PLAYER 1' : 'PLAYER 2';
+  if (side === mySide()) return 'YOU';
+  var o = netOpponent();
+  return (o && o.name) || 'OPPONENT';
+}
+function isMine(u) { return netOnline() ? (u.side === mySide()) : (u.side === 'ply'); }
+function turnSideNow() { return S.phase === 'player' ? 'ply' : 'foe'; }
+function canAct() {
+  if (S.gameover || S.busy) return false;
+  if (!netOnline()) return S.phase === 'player';
+  if (NET.local) return NET.phase === 'match' && !S.handoff;
+  return NET.phase === 'match' && turnSideNow() === mySide() && !NET.pending;
+}
+
+/* ---------------- capability ---------------- */
+function netInit() {
+  if (NET.tried) return;
+  NET.tried = true;
+  try {
+    if (typeof window === 'undefined' || !window.claude || !window.claude.use) return;
+    window.claude.use('room').then(function (r) {
+      if (!r) return;
+      NET.api = r; NET.available = true;
+      NET.id = netId();
+      if (typeof refreshUI === 'function') refreshUI();
+    }, function () { });
+  } catch (e) { }
+}
+
+function netResolve(v, cb) {
+  try {
+    if (v && typeof v.then === 'function') { v.then(cb, function () { cb(null); }); return; }
+    cb(v);
+  } catch (e) { cb(null); }
+}
+
+function netJoin(code, name) {
+  if (!NET.api) { NET.err = 'Online is not available on this page.'; return; }
+  NET.code = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  NET.name = String(name || '').toUpperCase().slice(0, 11) || 'PLAYER';
+  if (!NET.code) { NET.err = 'Enter a room code.'; return; }
+  NET.err = ''; NET.phase = 'joining';
+  if (typeof refreshUI === 'function') refreshUI();
+  var joined;
+  try { joined = NET.api.join('hyperfights-' + NET.code); }
+  catch (e) { NET.err = 'Could not open that room.'; NET.phase = 'idle'; refreshUI(); return; }
+  netResolve(joined, function (sub) {
+    if (!sub) { NET.err = 'Could not open that room.'; NET.phase = 'idle'; refreshUI(); return; }
+    NET.sub = sub;
+    NET.phase = 'lobby';
+    NET.lobby = {};
+    NET.keys = ROSTER.slice(0, VS_MAX).map(function (r) { return r.key; });
+    try {
+      sub.on('state', onNetState);
+      sub.on('act', onNetAct);
+      sub.on('hello', onNetHello);
+      sub.onPeers(onNetPeers);
+    } catch (e) { }
+    netPresence();
+    netHello();
+    S.screen = 'net';
+    refreshUI();
+  });
+}
+
+function netLeave() {
+  try { if (NET.sub && NET.sub.leave) NET.sub.leave(); } catch (e) { }
+  NET.sub = null; NET.phase = 'idle'; NET.peers = []; NET.lobby = {};
+  NET.side = null; NET.host = false; NET.winner = null; NET.pending = false;
+  NET.local = false; NET.mode = null; NET.localStep = 1; NET.copied = '';
+  S.handoff = false;
+  S.screen = 'title';
+  if (typeof refreshUI === 'function') refreshUI();
+}
+
+function netPresence() {
+  if (!NET.sub) return;
+  try {
+    NET.sub.presence({
+      id: NET.id, name: NET.name, ready: !!NET.ready,
+      keys: NET.keys, looks: netLooks(NET.keys)
+    });
+  } catch (e) { }
+}
+function netLooks(keys) {
+  var o = {};
+  for (var i = 0; i < keys.length; i++) {
+    var def = charByKey(keys[i]);
+    if (def) o[keys[i]] = lookOf(keys[i], def);
+  }
+  return o;
+}
+function netHello() { netEmit('hello', { id: NET.id, name: NET.name }); }
+function netEmit(topic, data) {
+  if (!NET.sub) return;
+  try { NET.sub.emit(topic, data); } catch (e) { }
+}
+
+/* peers: everyone with the page open in this room right now */
+function onNetPeers(list) {
+  var arr = [];
+  try {
+    if (Array.isArray(list)) arr = list;
+    else if (list && Array.isArray(list.peers)) arr = list.peers;
+    else if (list && typeof list === 'object') { for (var k in list) arr.push(list[k]); }
+  } catch (e) { }
+  NET.peers = arr.filter(function (p) { return p && (p.id || p.name); });
+  var me = false;
+  for (var i = 0; i < NET.peers.length; i++) if (NET.peers[i].id === NET.id) me = true;
+  if (!me) NET.peers.push({ id: NET.id, name: NET.name, ready: !!NET.ready, keys: NET.keys, you: true });
+  NET.host = (netHostId() === NET.id);
+  if (typeof refreshUI === 'function') refreshUI();
+}
+function netHostId() {
+  var ids = NET.peers.map(function (p) { return String(p.id || ''); }).filter(Boolean).sort();
+  return ids.length ? ids[0] : NET.id;
+}
+function netOpponent() {
+  for (var i = 0; i < NET.peers.length; i++) {
+    var p = NET.peers[i];
+    if (String(p.id) !== NET.id) return p;
+  }
+  return null;
+}
+function onNetHello() { if (NET.host && NET.phase === 'match') netBroadcast(); else netPresence(); }
+
+/* ---------------- match setup (host only) ---------------- */
+function netStart() {
+  if (!NET.host) return;
+  var opp = netOpponent();
+  if (!opp) { NET.err = 'No opponent in the room yet.'; refreshUI(); return; }
+  var ti = Math.floor(rnd() * LAYOUTS.length);
+  var li = Math.floor(rnd() * LAYOUTS[ti].length);
+  S.terrain = ti; S.layout = li; S.chapter = 1;
+  S.grid = buildGrid(ti, li);
+  S.units = []; S.uid = 1; S.fx = []; S.movers = []; S.busy = 0; S.levelups = [];
+  S.dead = []; S.kits = 0; S.gameover = false; S.rewards = null;
+  S.obj = 'wipe'; S.turn = 1; S.phase = 'player';
+  NET.winner = null;
+
+  var mine = (NET.keys || []).slice(0, VS_MAX);
+  var theirs = (opp.keys || []).slice(0, VS_MAX);
+  if (!theirs.length) theirs = ROSTER.slice(0, VS_MAX).map(function (r) { return r.key; });
+  var myLooks = netLooks(mine), theirLooks = opp.looks || {};
+
+  placeSquad(mine, 'ply', myLooks, 0);
+  placeSquad(theirs, 'foe', theirLooks, 1);
+  NET.side = 'ply';
+  NET.phase = 'match';
+  S.screen = 'map';
+  S.banner = 'ROUND 1'; S.bannerT = 1.4;
+  say('Match started against ' + (opp.name || 'opponent') + '.');
+  netBroadcast();
+  refreshUI();
+}
+
+function placeSquad(keys, side, looks, right) {
+  var used = {}, i;
+  for (i = 0; i < S.units.length; i++) used[S.units[i].x + ',' + S.units[i].y] = 1;
+  var cols = right ? [MAPW - 1, MAPW - 2, MAPW - 3] : [0, 1, 2];
+  var slots = [];
+  for (var c = 0; c < cols.length; c++)
+    for (var y = 0; y < MAPH; y++)
+      if (!TER[S.grid[y][cols[c]]].block) slots.push({ x: cols[c], y: y });
+  for (i = 0; i < keys.length; i++) {
+    var def = charByKey(keys[i]);
+    if (!def) continue;
+    var u = mkUnit(def, side, VS_LEVEL, { fair: true, look: looks[keys[i]] });
+    var spot = null;
+    for (var t = 0; t < slots.length; t++) {
+      var s2 = slots[(i * 3 + t) % slots.length], k = s2.x + ',' + s2.y;
+      if (!used[k]) { used[k] = 1; spot = s2; break; }
+    }
+    if (!spot) spot = { x: cols[0], y: i % MAPH };
+    u.x = spot.x; u.y = spot.y; u.px = u.x; u.py = u.y;
+    S.units.push(u);
+  }
+}
+
+/* ---------------- local two player ---------------- */
+function netStartLocal() {
+  var ti = Math.floor(rnd() * LAYOUTS.length);
+  var li = Math.floor(rnd() * LAYOUTS[ti].length);
+  S.terrain = ti; S.layout = li; S.chapter = 1;
+  S.grid = buildGrid(ti, li);
+  S.units = []; S.uid = 1; S.fx = []; S.movers = []; S.busy = 0; S.levelups = [];
+  S.dead = []; S.kits = 0; S.gameover = false; S.rewards = null; S.handoff = false;
+  S.obj = 'wipe'; S.turn = 1; S.phase = 'player';
+  NET.winner = null; NET.local = true; NET.host = true; NET.side = null;
+  NET.phase = 'match'; NET.pending = false;
+  var a = NET.keysA.length ? NET.keysA : ROSTER.slice(0, VS_MAX).map(function (r) { return r.key; });
+  var b = NET.keysB.length ? NET.keysB : RECRUITS.slice(0, VS_MAX).map(function (r) { return r.key; });
+  placeSquad(a, 'ply', netLooks(a), 0);
+  placeSquad(b, 'foe', netLooks(b), 1);
+  S.screen = 'map';
+  S.banner = 'PLAYER 1'; S.bannerT = 1.4;
+  if (typeof refreshUI === 'function') refreshUI();
+}
+function netHandoffDone() {
+  S.handoff = false;
+  S.banner = sideName(turnSideNow()); S.bannerT = 1.2;
+  if (typeof refreshUI === 'function') refreshUI();
+}
+
+/* ---------------- state wire format ---------------- */
+function netState() {
+  return {
+    t: S.terrain, l: S.layout, turn: S.turn, phase: S.phase,
+    winner: NET.winner, reason: NET.reason || '', host: NET.id,
+    u: S.units.filter(function (x) { return x.chp > 0; }).map(function (x) {
+      return { i: x.id, k: x.key, s: x.side, x: x.x, y: x.y, hp: x.chp, mx: x.stats.hp,
+        st: x.stats, lv: x.lvl, w: x.wpn.id, wp: x.wpn.plus, a: x.acted ? 1 : 0,
+        n: x.name, p: x.pal, sp: x.spr, mv: x.mov, cl: x.cls };
+    })
+  };
+}
+function netBroadcast() {
+  if (!NET.host || NET.local || !NET.sub) return;
+  NET.lastSend = Date.now();
+  netEmit('state', netState());
+}
+function onNetState(msg) {
+  var d = msg && msg.data ? msg.data : msg;
+  if (!d || !d.u) return;
+  if (NET.host) return;                 /* the host is the source of truth */
+  NET.lastHeard = Date.now();
+  applyNetState(d);
+}
+function applyNetState(d) {
+  /* the broadcaster is always the host and always side 'ply'; everyone else is 'foe' */
+  NET.side = (d.host && d.host === NET.id) ? 'ply' : 'foe';
+  if (NET.phase === 'lobby' || NET.phase === 'joining') {
+    NET.phase = 'match';
+    S.screen = 'map';
+    S.banner = 'MATCH START'; S.bannerT = 1.4;
+  }
+  if (NET.phase === 'match') S.screen = 'map';
+  S.obj = 'wipe'; S.objTurns = 0; S.gameover = false; S.kits = 0;
+  var prev = {};
+  for (var i = 0; i < S.units.length; i++) prev[S.units[i].id] = { hp: S.units[i].chp, x: S.units[i].x, y: S.units[i].y };
+  if (S.terrain !== d.t || S.layout !== d.l || !S.grid) {
+    S.terrain = d.t; S.layout = d.l; S.grid = buildGrid(d.t, d.l);
+  }
+  var seen = {}, list = [];
+  for (i = 0; i < d.u.length; i++) {
+    var r = d.u[i], def = charByKey(r.k);
+    if (!def) continue;
+    var u = mkUnit(def, r.s, 1, { fair: true, look: { name: r.n, pal: r.p, spr: r.sp } });
+    u.id = r.i; u.lvl = r.lv; u.cls = r.cl || u.cls; u.mov = r.mv;
+    for (var k in r.st) u.stats[k] = r.st[k];
+    u.stats.hp = r.mx; u.chp = r.hp;
+    u.wpn = mkWpn(r.w, r.wp);
+    u.x = r.x; u.y = r.y; u.acted = !!r.a;
+    var p = prev[u.id];
+    u.px = p ? p.x : u.x; u.py = p ? p.y : u.y;
+    if (p && p.hp > u.chp) fxText(u, p.hp - u.chp, u.side === mySide() ? '#ff6a6a' : '#ffffff');
+    u.px = u.x; u.py = u.y;
+    seen[u.id] = 1;
+    list.push(u);
+  }
+  for (i = 0; i < S.units.length; i++) {
+    var old = S.units[i];
+    if (old.chp > 0 && !seen[old.id]) fxBoom(old);
+  }
+  S.units = list;
+  S.turn = d.turn; S.phase = d.phase;
+  NET.winner = d.winner || null; NET.reason = d.reason || '';
+  NET.pending = false;
+  S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null;
+  if (NET.winner) { NET.phase = 'done'; S.screen = 'map'; }
+  else if (NET.phase === 'done') { NET.phase = 'match'; }
+  if (typeof refreshUI === 'function') refreshUI();
+}
+
+/* ---------------- intents ---------------- */
+function netSubmit(intent) {
+  if (NET.host) { netApply(intent, mySide()); return; }
+  NET.pending = true;
+  intent.from = NET.id;
+  netEmit('act', intent);
+  if (typeof refreshUI === 'function') refreshUI();
+  setTimeout(function () { if (NET.pending) { NET.pending = false; refreshUI(); } }, 6000);
+}
+function onNetAct(msg) {
+  if (!NET.host || NET.phase !== 'match') return;
+  var d = msg && msg.data ? msg.data : msg;
+  if (!d || !d.t) return;
+  /* whoever is not the host plays the other side; never trust the sender's word for it */
+  netApply(d, 'foe');
+}
+
+function netApply(intent, side) {
+  if (NET.phase !== 'match') return;
+  if (turnSideNow() !== side) { netBroadcast(); return; }
+  if (intent.t === 'end') { netEndTurn(); return; }
+  if (intent.t === 'resync') { netBroadcast(); return; }
+  if (intent.t !== 'act') return;
+  var u = null, i;
+  for (i = 0; i < S.units.length; i++) if (S.units[i].id === intent.uid) u = S.units[i];
+  if (!u || u.chp <= 0 || u.side !== side || u.acted) { netBroadcast(); return; }
+
+  /* validate the move */
+  var tx = u.x, ty = u.y;
+  if (intent.x !== undefined && intent.y !== undefined) {
+    var reach = reachable(u);
+    reach[u.x + ',' + u.y] = 0;
+    if (reach[intent.x + ',' + intent.y] === undefined) { netBroadcast(); return; }
+    tx = intent.x; ty = intent.y;
+  }
+  u.x = tx; u.y = ty; u.px = tx; u.py = ty;
+
+  if (intent.a === 'attack' || intent.a === 'repair') {
+    var t = null;
+    for (i = 0; i < S.units.length; i++) if (S.units[i].id === intent.tid) t = S.units[i];
+    if (t && t.chp > 0 && canReachTarget(u, t)) {
+      if (intent.a === 'attack' && t.side !== u.side) doCombat(u, t);
+      else if (intent.a === 'repair' && t.side === u.side && t.id !== u.id) doHeal(u, t);
+    }
+  }
+  u.acted = true;
+  netCheckWin();
+  if (NET.phase === 'match') {
+    var left = S.units.filter(function (x) { return x.chp > 0 && x.side === side && !x.acted; });
+    if (!left.length) { netEndTurn(); return; }
+  }
+  netBroadcast();
+  refreshUI();
+}
+
+function netEndTurn() {
+  if (!NET.host) return;
+  var next = turnSideNow() === 'ply' ? 'foe' : 'ply';
+  S.phase = next === 'ply' ? 'player' : 'foe';
+  if (next === 'ply') S.turn++;
+  phaseStart(next);
+  S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null;
+  netCheckWin();
+  if (NET.phase === 'match' && NET.local) { S.handoff = true; }
+  else if (NET.phase === 'match') { S.banner = (next === mySide() ? 'YOUR TURN' : 'THEIR TURN'); S.bannerT = 1.0; }
+  netBroadcast();
+  if (typeof refreshUI === 'function') refreshUI();
+}
+
+function sideHp(side) {
+  var t = 0;
+  for (var i = 0; i < S.units.length; i++) {
+    var u = S.units[i];
+    if (u.chp > 0 && u.side === side) t += u.chp;
+  }
+  return t;
+}
+function netCheckWin() {
+  var a = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply'; }).length;
+  var b = S.units.filter(function (x) { return x.chp > 0 && x.side === 'foe'; }).length;
+  if (a && b) {
+    /* nobody can stall the match out: past the round limit the healthier squad takes it */
+    if (S.turn > VS_ROUNDS) {
+      var ha = sideHp('ply'), hb = sideHp('foe');
+      NET.winner = ha === hb ? 'draw' : (ha > hb ? 'ply' : 'foe');
+      NET.reason = 'round limit';
+      NET.phase = 'done';
+      netBroadcast();
+    }
+    return;
+  }
+  NET.winner = a ? 'ply' : (b ? 'foe' : 'draw');
+  NET.reason = 'wipe';
+  NET.phase = 'done';
+  netBroadcast();
+}
+
+/* keep the guest honest about drops: ask again if nothing has arrived */
+function netTick() {
+  if (NET.phase !== 'match') return;
+  var now = Date.now();
+  if (NET.host) {
+    if (now - NET.lastSend > 2500) netBroadcast();
+  } else if (now - NET.lastHeard > 5000) {
+    NET.lastHeard = now;
+    netEmit('act', { t: 'resync', from: NET.id });
+  }
+}
+
+/* ================= DOM HELPERS ================= */
+function $(id) { return document.getElementById(id); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;'); }
+function bar(frac, col) {
+  return '<span class="bar"><i style="width:' + Math.max(0, Math.min(100, frac * 100)) + '%;background:' + col + '"></i></span>';
+}
+function hpCol(f) { return f > 0.5 ? '#54f0c8' : f > 0.25 ? '#ffd166' : '#ff5a5a'; }
+
+function statGrid(u) {
+  var h = '<div class="sgrid">';
+  for (var i = 0; i < STATK.length; i++) {
+    var k = STATK[i];
+    h += '<div class="sc"><b>' + STATN[k] + '</b><span>' + (k === 'hp' ? u.chp + '/' + u.stats.hp : u.stats[k]) +
+      '</span><em>' + u.grow[k] + '%</em></div>';
+  }
+  return h + '</div>';
+}
+
+function unitCard(u, extra) {
+  var f = u.chp / u.stats.hp;
+  var tr = u.traits.map(function (t) { return '<span class="tag">' + TRAITS[t].name + '</span>'; }).join('');
+  return '<div class="ucard">' +
+    '<div class="uhead"><span class="unm">' + esc(u.name) + '</span>' +
+    '<span class="ucls">' + (u.side === 'ply' ? esc(u.cls) : (u.boss ? 'COMMANDER' : 'HOSTILE')) +
+    ' &middot; LV ' + u.lvl + (u.mark ? ' &middot; MK-' + roman(u.mark + 1) : '') +
+    (u.side === 'ply' ? ' &middot; ' + (atMax(u) ? 'MAX' : u.exp + '/100 XP') : '') + '</span></div>' +
+    '<div class="urow">' + bar(f, hpCol(f)) + '<span class="hpn">' + u.chp + '/' + u.stats.hp + '</span></div>' +
+    '<div class="urow small">' + esc(wpnLabel(u.wpn)) + ' &middot; MT ' + u.wpn.mt + ' &middot; RNG ' + u.wpn.rmin + '-' + wRange(u) +
+    ' &middot; ' + (u.wpn.mag ? 'MAG' : 'PHYS') + ' &middot; MOV ' + u.mov + '</div>' +
+    (tr ? '<div class="urow">' + tr + '</div>' : '') +
+    statGrid(u) + (extra || '') + '</div>';
+}
+
+/* ================= FORECAST CARD ================= */
+function forecastCard(a, d) {
+  var fa = forecast(a, d);
+  var fd = canCounter(d, a) ? forecast(d, a) : null;
+  function side(u, f, label) {
+    if (!f) return '<div class="fcol"><b>' + esc(u.name) + '</b><span class="no">no counter</span></div>';
+    return '<div class="fcol"><b>' + esc(u.name) + '</b>' +
+      '<div class="frow"><i>DMG</i><s>' + f.dmg + (f.dbl ? ' x2' : '') + '</s></div>' +
+      '<div class="frow"><i>HIT</i><s>' + f.hit + '%</s></div>' +
+      '<div class="frow"><i>CRIT</i><s>' + f.crit + '%</s></div>' +
+      '<div class="frow"><i>HP</i><s>' + u.chp + '</s></div></div>';
+  }
+  var tri = fa.tri.dmg > 0 ? '<span class="adv">ADVANTAGE</span>' : fa.tri.dmg < 0 ? '<span class="dis">DISADVANTAGE</span>' : '';
+  var lethal = fa.dmg * (fa.dbl ? 2 : 1) >= d.chp ? '<span class="adv">LETHAL</span>' : '';
+  return '<div class="fcast">' + side(a, fa) + '<div class="fvs">VS ' + tri + lethal + '</div>' + side(d, fd) + '</div>';
+}
+
+/* ================= HUD + PANEL ================= */
+function refreshUI() {
+  if (HEADLESS) return;
+  var hud = $('hud'), panel = $('panel'), roster = $('roster');
+  if (!hud) return;
+
+  var inGame = (S.screen === 'map' || S.screen === 'clear' || S.screen === 'over');
+  $('title-screen').style.display = S.screen === 'title' ? 'flex' : 'none';
+  $('squad-screen').style.display = (S.screen === 'squad' || S.screen === 'net') ? 'flex' : 'none';
+  $('game-screen').style.display = inGame ? 'flex' : 'none';
+  $('overlay').style.display = (S.screen === 'clear' || S.screen === 'over' || S.screen === 'help' || S.skinKey) ? 'flex' : 'none';
+
+  if (S.skinKey) { renderSkin(); return; }
+  if (S.screen === 'title') { renderTitle(); return; }
+  if (S.screen === 'squad') { renderSquad(); return; }
+  if (S.screen === 'net') { renderNet(); return; }
+  if (S.screen === 'clear') renderClear();
+  if (S.screen === 'over') renderOver();
+  if (S.screen === 'help') { renderHelp(); return; }
+
+  var foes = allies('foe').length;
+  var objTxt = OBJS[S.obj] ? OBJS[S.obj].name : '';
+  if (S.obj === 'hold') objTxt += ' ' + Math.min(S.turn, S.objTurns + 1) + '/' + (S.objTurns + 1);
+  if (netOnline()) {
+    var opp = netOpponent(), th = THEMES[S.terrain || 0];
+    var aLeft = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply'; }).length;
+    var bLeft = S.units.filter(function (x) { return x.chp > 0 && x.side === 'foe'; }).length;
+    var mineLeft = NET.local ? aLeft : S.units.filter(function (x) { return x.chp > 0 && x.side === mySide(); }).length;
+    var theirLeft = NET.local ? bLeft : S.units.filter(function (x) { return x.chp > 0 && x.side !== mySide(); }).length;
+    var myTurn = NET.local ? true : turnSideNow() === mySide();
+    hud.innerHTML =
+      '<div class="hleft"><b>' + (NET.local ? 'LOCAL VERSUS' : 'VS ' + esc((opp && opp.name) || 'OPPONENT')) + '</b>' +
+      '<span>' + esc(th.name) + (NET.local ? '' : ' &middot; ROOM ' + esc(NET.code)) + '</span></div>' +
+      '<div class="hmid"><b>' + (NET.winner ? 'MATCH OVER'
+        : (NET.local ? sideName(turnSideNow()) + "'S TURN" : (myTurn ? 'YOUR TURN' : 'THEIR TURN'))) + '</b>' +
+      '<span>' + (NET.local ? 'P1 ' + aLeft + ' &middot; P2 ' + bLeft : 'YOU ' + mineLeft + ' &middot; THEM ' + theirLeft) + '</span></div>' +
+      '<div class="hright">' +
+      '<span class="pill ' + (myTurn ? 'ply' : 'foe') + '">ROUND ' + Math.min(S.turn, VS_ROUNDS) + '/' + VS_ROUNDS + '</span>' +
+      '<button class="mini" data-act="danger">' + (S.danger ? 'ZONE ON' : 'ZONE OFF') + '</button>' +
+      (NET.winner ? '<button class="mini" data-act="netleave">LEAVE</button>'
+        : '<button class="mini" data-act="end"' + (myTurn ? '' : ' disabled') + '>END TURN</button>') +
+      '</div>';
+    panel.innerHTML = netPanel();
+    roster.innerHTML = netRoster();
+    return;
+  }
+  hud.innerHTML =
+    '<div class="hleft"><b>CH ' + S.chapter + '</b><span>' + esc(S.site) + '</span></div>' +
+    '<div class="hmid"><b>' + objTxt + '</b><span>' + (OBJS[S.obj] ? OBJS[S.obj].desc : '') + '</span></div>' +
+    '<div class="hright">' +
+    '<span class="pill ' + (S.phase === 'player' ? 'ply' : 'foe') + '">' + (S.phase === 'player' ? 'YOUR TURN' : 'ENEMY') + ' &middot; T' + S.turn + '</span>' +
+    '<span class="pill">HOSTILES ' + foes + '</span>' +
+    '<button class="mini" data-act="danger">' + (S.danger ? 'ZONE ON' : 'ZONE OFF') + '</button>' +
+    '<button class="mini" data-act="end">END TURN</button>' +
+    '</div>';
+
+  /* panel */
+  var h = '';
+  if (S.phase !== 'player') {
+    h = '<div class="hint">Enemy phase &mdash; hold on.</div>';
+  } else if (S.mode === 'act' && S.sel) {
+    var u = S.sel;
+    var tgts = attackableFrom(u);
+    var heals = u.wpn.heal ? healableFrom(u) : [];
+    h = '<div class="acts">' +
+      (tgts.length ? '<button data-act="attack">ATTACK (' + tgts.length + ')</button>' : '<button disabled>NO TARGET</button>') +
+      (u.wpn.heal ? (heals.length ? '<button data-act="repair">REPAIR (' + heals.length + ')</button>' : '<button disabled>NO ALLY</button>') : '') +
+      (S.kits > 0 && u.chp < u.stats.hp ? '<button data-act="kit">KIT x' + S.kits + '</button>' : '') +
+      '<button data-act="wait">WAIT</button>' +
+      '<button class="ghost" data-act="cancel">CANCEL</button>' +
+      '</div>' + unitCard(u);
+  } else if ((S.mode === 'target' || S.mode === 'healt') && S.sel) {
+    if (S.target) {
+      h = (S.mode === 'target' ? forecastCard(S.sel, S.target) : healCard(S.sel, S.target)) +
+        '<div class="acts"><button data-act="confirm">' + (S.mode === 'target' ? 'ENGAGE' : 'REPAIR') + '</button>' +
+        '<button class="ghost" data-act="back">BACK</button></div>';
+    } else {
+      h = '<div class="hint">' + (S.mode === 'target' ? 'Tap a hostile in range.' : 'Tap an ally in range.') + '</div>' +
+        '<div class="acts"><button class="ghost" data-act="back">BACK</button></div>';
+    }
+  } else if (S.mode === 'move' && S.sel) {
+    h = '<div class="hint">Tap a blue tile to move, or tap ' + esc(S.sel.name) + ' again to act in place.</div>' + unitCard(S.sel);
+  } else if (S.tileInfo) {
+    h = terCard(S.tileInfo.x, S.tileInfo.y) +
+      '<div class="acts"><button class="ghost" data-act="cleartile">CLOSE</button></div>';
+  } else if (S.inspect) {
+    h = unitCard(S.inspect, S.inspect.side === 'foe' ? '<div class="urow small dim">' + esc(terInfo(S.inspect)) + '</div>' : '') +
+      '<div class="acts"><button class="ghost" data-act="clearinspect">CLOSE</button></div>';
+  } else {
+    h = '<div class="hint">Tap one of your units to move. ' + (S.kits ? S.kits + ' repair kits left.' : 'No repair kits left.') + '</div>';
+  }
+  panel.innerHTML = h;
+
+  /* roster */
+  var ps = allies('ply'), rh = '';
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i], fr = p.chp / p.stats.hp;
+    rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
+      '<span class="rnm">' + esc(p.name) + '</span>' +
+      '<span class="rlv">L' + p.lvl + '</span>' + bar(fr, hpCol(fr)) + '</button>';
+  }
+  roster.innerHTML = rh;
+}
+
+function netPanel() {
+  if (NET.winner) {
+    var won = NET.winner === mySide();
+    var title = NET.winner === 'draw' ? 'DRAW'
+      : (NET.local ? sideName(NET.winner) + ' WINS' : (won ? 'YOU WIN' : 'YOU LOSE'));
+    return '<div class="ucard"><div class="uhead"><span class="unm">' + title + '</span>' +
+      '<span class="ucls">ROUND ' + S.turn + '</span></div>' +
+      '<div class="urow small">' + (NET.reason === 'round limit'
+        ? 'Round limit reached. Decided on surviving HP: P1 ' + sideHp('ply') + ', P2 ' + sideHp('foe') + '.'
+        : (NET.winner === 'draw' ? 'Both squads fell.'
+          : (NET.local ? 'The other squad is gone.' : (won ? 'Their squad is gone.' : 'Your squad is gone.')))) + '</div></div>' +
+      '<div class="acts"><button data-act="netleave">BACK TO TITLE</button></div>';
+  }
+  if (S.handoff) {
+    return '<div class="handoff"><b>' + sideName(turnSideNow()) + '</b>' +
+      '<span>Pass the device over, then tap to take your turn.</span>' +
+      '<button data-act="handoff">I AM ' + sideName(turnSideNow()) + '</button></div>';
+  }
+  if (NET.pending) return '<div class="hint">Sending your move...</div>';
+  if (turnSideNow() !== mySide()) {
+    return '<div class="hint">Waiting for your opponent.</div>' +
+      (S.inspect ? unitCard(S.inspect) : (S.tileInfo ? terCard(S.tileInfo.x, S.tileInfo.y) : ''));
+  }
+  if (S.mode === 'act' && S.sel) {
+    var u = S.sel, tgts = attackableFrom(u), heals = u.wpn.heal ? healableFrom(u) : [];
+    return '<div class="acts">' +
+      (tgts.length ? '<button data-act="attack">ATTACK (' + tgts.length + ')</button>' : '<button disabled>NO TARGET</button>') +
+      (u.wpn.heal ? (heals.length ? '<button data-act="repair">REPAIR (' + heals.length + ')</button>' : '<button disabled>NO ALLY</button>') : '') +
+      '<button data-act="wait">WAIT</button>' +
+      '<button class="ghost" data-act="cancel">CANCEL</button></div>' + unitCard(u);
+  }
+  if ((S.mode === 'target' || S.mode === 'healt') && S.sel) {
+    if (S.target) {
+      return (S.mode === 'target' ? forecastCard(S.sel, S.target) : healCard(S.sel, S.target)) +
+        '<div class="acts"><button data-act="confirm">' + (S.mode === 'target' ? 'ENGAGE' : 'REPAIR') + '</button>' +
+        '<button class="ghost" data-act="back">BACK</button></div>';
+    }
+    return '<div class="hint">' + (S.mode === 'target' ? 'Tap an enemy in range.' : 'Tap an ally in range.') + '</div>' +
+      '<div class="acts"><button class="ghost" data-act="back">BACK</button></div>';
+  }
+  if (S.mode === 'move' && S.sel) return '<div class="hint">Tap a blue tile to move, or tap ' + esc(S.sel.name) + ' again to act in place.</div>' + unitCard(S.sel);
+  if (S.tileInfo) return terCard(S.tileInfo.x, S.tileInfo.y) + '<div class="acts"><button class="ghost" data-act="cleartile">CLOSE</button></div>';
+  if (S.inspect) return unitCard(S.inspect) + '<div class="acts"><button class="ghost" data-act="clearinspect">CLOSE</button></div>';
+  return '<div class="hint">Your move. Tap one of your operatives.</div>';
+}
+function netRoster() {
+  if (S.handoff) return '';
+  var ps = S.units.filter(function (u) { return u.chp > 0 && u.side === mySide(); }), rh = '';
+  for (var i = 0; i < ps.length; i++) {
+    var p = ps[i], fr = p.chp / p.stats.hp;
+    rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
+      '<span class="rnm">' + esc(p.name) + '</span><span class="rlv">L' + p.lvl + '</span>' + bar(fr, hpCol(fr)) + '</button>';
+  }
+  return rh;
+}
+
+function terCard(x, y) {
+  var t = ter(x, y), bits = [];
+  bits.push('MOVE COST ' + (t.block ? '&mdash;' : t.cost));
+  if (t.def) bits.push('+' + t.def + ' DEF');
+  if (t.avo) bits.push('+' + t.avo + ' AVOID');
+  if (t.heal) bits.push('HEALS ' + Math.round(t.heal * 100) + '% MAX HP EACH TURN');
+  if (t.burn) bits.push('BURNS ' + Math.round(t.burn * 100) + '% MAX HP EACH TURN');
+  if (t.block) bits.push('BLOCKS MOVEMENT AND FIRE');
+  var sym = { cover: 'shield mark', node: 'cross mark', dais: 'arrow mark', vent: 'hazard mark' }[S.grid[y][x]];
+  return '<div class="ucard">' +
+    '<div class="uhead"><span class="unm">' + t.name + '</span><span class="ucls">TERRAIN ' + x + ',' + y + '</span></div>' +
+    '<div class="urow small">' + bits.join(' &middot; ') + '</div>' +
+    (sym ? '<div class="urow small dim">marked with a ' + sym + '</div>' : '') +
+    '</div>';
+}
+
+function terInfo(u) {
+  var t = ter(u.x, u.y);
+  return t.name + (t.def ? ' +' + t.def + ' DEF' : '') + (t.avo ? ' +' + t.avo + ' AVO' : '');
+}
+function healCard(a, t) {
+  var amt = Math.min(healPower(a), t.stats.hp - t.chp);
+  return '<div class="fcast"><div class="fcol"><b>' + esc(a.name) + '</b>' +
+    '<div class="frow"><i>REPAIR</i><s>' + healPower(a) + '</s></div></div>' +
+    '<div class="fvs">-&gt;</div><div class="fcol"><b>' + esc(t.name) + '</b>' +
+    '<div class="frow"><i>HP</i><s>' + t.chp + ' -&gt; ' + (t.chp + amt) + '</s></div></div></div>';
+}
+
+function attackableFrom(u) {
+  if (u.wpn.heal && u.wpn.mt <= 0) return [];
+  return foesOf(u.side).filter(function (e) { return canReachTarget(u, e); });
+}
+function healableFrom(u) {
+  return allies(u.side).filter(function (a) { return a.id !== u.id && canReachTarget(u, a) && a.chp < a.stats.hp; });
+}
+
+/* ================= SCREENS ================= */
+function paintPortraits(root) {
+  if (!root || !root.querySelectorAll) return;
+  var cs = root.querySelectorAll('.tspr');
+  for (var i = 0; i < cs.length; i++) {
+    var c = cs[i];
+    c.width = TILE * SC; c.height = TILE * SC;
+    var g = c.getContext('2d');
+    g.clearRect(0, 0, c.width, c.height);
+    g.drawImage(getSpr(c.getAttribute('data-spr'), c.getAttribute('data-pal')), 0, 0);
+  }
+}
+
+function renderTitle() {
+  var t = $('title-screen');
+  t.innerHTML =
+    '<div class="tbox">' +
+    '<h1>HYPER<span>FIGHTS</span></h1>' +
+    '<p class="tag2">ENDLESS GRID TACTICS</p>' +
+    '<p class="tdesc">Build a squad, kit them out, and push as deep as you can. ' +
+    'Every operative carries sixty stat points and three hundred percent of growth. ' +
+    'Every chapter the machines bring bigger numbers than you do.</p>' +
+    '<div class="tbtns">' +
+    (hasSave() ? '<button data-act="continue">CONTINUE RUN</button>' : '') +
+    '<button data-act="tosquad">NEW RUN</button>' +
+    '<button class="ghost" data-act="online">VERSUS 1V1</button>' +
+    '<button class="ghost" data-act="help">HOW TO PLAY</button>' +
+    '</div>' +
+    '<p class="tbest">DEEPEST CHAPTER REACHED: ' + S.best + '</p>' +
+    '<div class="tmini">' + ALLCHARS.map(function (r) {
+      var lk = lookOf(r.key, r);
+      return '<canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>';
+    }).join('') + '</div>' +
+    '<p class="tfoot">NINE OPERATIVES &middot; PICK UP TO SIX &middot; MAX LEVEL ' + MAXLVL + '</p>' +
+    '</div>';
+  paintPortraits(t);
+}
+
+/* ---------------- squad select ---------------- */
+var MAXSQUAD = 6;
+function squadKeys() {
+  var out = [];
+  for (var i = 0; i < ALLCHARS.length; i++) if (S.pick[ALLCHARS[i].key]) out.push(ALLCHARS[i].key);
+  return out;
+}
+function renderSquad() {
+  var t = $('squad-screen');
+  var chosen = squadKeys();
+  var cards = ALLCHARS.map(function (r) {
+    var lk = lookOf(r.key, r), on = !!S.pick[r.key];
+    var w = WPN[r.wpn];
+    var cells = STATK.map(function (k) {
+      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + r.base[k] + '</span><em>' + r.grow[k] + '%</em></div>';
+    }).join('');
+    return '<div class="sqc' + (on ? ' on' : '') + '">' +
+      '<div class="sqtop">' +
+      '<canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
+      '<div class="sqid"><b>' + esc(lk.name) + '</b><span>' + esc(r.cls) + '</span>' +
+      '<i>' + esc(w.name) + ' &middot; ' + (w.heal ? 'REPAIR' : (w.mag ? 'MAG' : 'PHYS')) +
+      ' &middot; RNG ' + w.rmin + '-' + w.rmax + ' &middot; MOV ' + r.mov + '</i></div></div>' +
+      '<div class="tsg">' + cells + '</div>' +
+      '<p class="sqbio">' + esc(r.bio) + '</p>' +
+      '<div class="sqbtns">' +
+      '<button class="' + (on ? '' : 'ghost') + '" data-act="toggle" data-key="' + r.key + '">' + (on ? 'IN SQUAD' : 'ADD') + '</button>' +
+      '<button class="ghost" data-act="skin" data-key="' + r.key + '">APPEARANCE</button>' +
+      '</div></div>';
+  }).join('');
+  t.innerHTML =
+    '<div class="sqbox">' +
+    '<div class="sqhead"><h2>SELECT SQUAD</h2>' +
+    '<p class="osub">Choose one to ' + MAXSQUAD + ' operatives. A smaller squad faces fewer hostiles ' +
+    'but has fewer bodies and levels faster. Appearance is yours to set and sticks between runs.</p></div>' +
+    '<div class="sqgrid">' + cards + '</div>' +
+    '<div class="sqbar"><span class="sqcount">SQUAD <b>' + chosen.length + '</b> / ' + MAXSQUAD + '</span>' +
+    '<button class="ghost" data-act="totitle">BACK</button>' +
+    '<button ' + (chosen.length ? '' : 'disabled ') + 'data-act="deploy">DEPLOY</button></div>' +
+    '</div>';
+  paintPortraits(t);
+}
+
+/* ---------------- online lobby ---------------- */
+function squadCards(selected, actName) {
+  return ALLCHARS.map(function (r) {
+    var lk = lookOf(r.key, r), on = selected.indexOf(r.key) >= 0;
+    var u = mkUnit(r, 'ply', VS_LEVEL, { fair: true, look: lk });
+    var cells = STATK.map(function (k) {
+      return '<div class="tsc"><b>' + STATN[k] + '</b><span>' + u.stats[k] + '</span></div>';
+    }).join('');
+    return '<div class="sqc' + (on ? ' on' : '') + '">' +
+      '<div class="sqtop"><canvas class="tspr" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
+      '<div class="sqid"><b>' + esc(lk.name) + '</b><span>' + esc(r.cls) + ' &middot; LV ' + VS_LEVEL + '</span>' +
+      '<i>' + esc(WPN[r.wpn].name) + ' &middot; MOV ' + r.mov + '</i></div></div>' +
+      '<div class="tsg">' + cells + '</div>' +
+      '<div class="sqbtns"><button class="' + (on ? '' : 'ghost') + '" data-act="' + actName + '" data-key="' + r.key + '">' +
+      (on ? 'PICKED' : 'PICK') + '</button></div></div>';
+  }).join('');
+}
+
+function renderNet() {
+  var t = $('squad-screen'), h = '';
+
+  /* ---- menu ---- */
+  if (!NET.mode) {
+    h = '<div class="sqbox"><div class="sqhead"><h2>VERSUS</h2>' +
+      '<p class="osub">Four operatives a side, level ' + VS_LEVEL + ', one map, last squad standing.</p></div>' +
+      '<div class="vsmenu">' +
+      '<button class="vopt" data-act="netmode" data-v="create"><b>CREATE LOBBY</b>' +
+      '<span>Start a room and get a code to send your friend.</span></button>' +
+      '<button class="vopt" data-act="netmode" data-v="join"><b>JOIN LOBBY</b>' +
+      '<span>Type the code your friend sent you.</span></button>' +
+      '<button class="vopt" data-act="netmode" data-v="local"><b>SAME DEVICE</b>' +
+      '<span>Two players passing one screen. Works in any browser, online or not.</span></button>' +
+      '</div>' +
+      (NET.available ? '' : '<p class="netnote">Online lobbies need the hosted page on claude.ai. ' +
+        'On a downloaded copy of the file only SAME DEVICE works.</p>') +
+      '<div class="acts"><button class="ghost" data-act="totitle">BACK</button></div></div>';
+    t.innerHTML = h; return;
+  }
+
+  /* ---- same device: each player drafts in turn ---- */
+  if (NET.mode === 'local') {
+    var step = NET.localStep, picked = step === 1 ? NET.keysA : NET.keysB;
+    h = '<div class="sqbox"><div class="sqhead"><h2>PLAYER ' + step + ', PICK YOUR SQUAD</h2>' +
+      '<p class="osub">Up to ' + VS_MAX + ' operatives. Hand the device over when you are done.' +
+      (step === 2 ? ' Player 1 deploys on the left, you deploy on the right.' : '') + '</p></div>' +
+      '<div class="sqgrid">' + squadCards(picked, 'localpick') + '</div>' +
+      '<div class="sqbar"><span class="sqcount">SQUAD <b>' + picked.length + '</b> / ' + VS_MAX + '</span>' +
+      '<button class="ghost" data-act="netmenu">BACK</button>' +
+      '<button ' + (picked.length ? '' : 'disabled ') + 'data-act="localnext">' +
+      (step === 1 ? 'PASS TO PLAYER 2' : 'START MATCH') + '</button></div></div>';
+    t.innerHTML = h; paintPortraits(t); return;
+  }
+
+  /* ---- online, not connected yet ---- */
+  if (!NET.available) {
+    h = '<div class="sqbox"><div class="sqhead"><h2>ONLINE LOBBY</h2>' +
+      '<p class="osub">This copy of the game cannot reach other players. Online lobbies run on the hosted ' +
+      'page on claude.ai; a downloaded file has nothing to connect to. Open the artifact link, and share ' +
+      'that page with your friend with edit access so they can send moves. SAME DEVICE works here either way.</p></div>' +
+      '<div class="acts"><button data-act="netmode" data-v="local">PLAY SAME DEVICE</button>' +
+      '<button class="ghost" data-act="netmenu">BACK</button></div></div>';
+    t.innerHTML = h; return;
+  }
+
+  if (NET.phase === 'idle' || NET.phase === 'joining') {
+    var creating = NET.mode === 'create';
+    h = '<div class="sqbox"><div class="sqhead"><h2>' + (creating ? 'CREATE LOBBY' : 'JOIN LOBBY') + '</h2>' +
+      '<p class="osub">' + (creating
+        ? 'This is your room code. Send it to your friend, then wait for them here.'
+        : 'Type the code your friend gave you.') + '</p></div>' +
+      '<div class="netform">' +
+      '<label class="sklab">YOUR NAME</label>' +
+      '<input id="netname" maxlength="11" value="' + esc(NET.name || '') + '" autocomplete="off" spellcheck="false" placeholder="PLAYER">' +
+      '<label class="sklab">ROOM CODE</label>' +
+      (creating
+        ? '<div class="codebig">' + esc(NET.code) + '</div>' +
+          '<div class="acts"><button class="ghost" data-act="netcopy">' + (NET.copied === 'code' ? 'COPIED' : 'COPY CODE') + '</button>' +
+          '<button class="ghost" data-act="netroll">NEW CODE</button></div>'
+        : '<input id="netcode" maxlength="6" value="' + esc(NET.code || '') + '" autocomplete="off" spellcheck="false" placeholder="ABCD">') +
+      (NET.err ? '<p class="neterr">' + esc(NET.err) + '</p>' : '') +
+      '<div class="acts">' +
+      '<button data-act="netjoin">' + (NET.phase === 'joining' ? 'CONNECTING...' : (creating ? 'OPEN LOBBY' : 'JOIN')) + '</button>' +
+      '<button class="ghost" data-act="netmenu">BACK</button></div>' +
+      '<p class="netnote">Your friend opens the same page and uses JOIN LOBBY with this code. ' +
+      'They need edit access to the page, not just view access, or their moves will not send.</p>' +
+      '</div></div>';
+    t.innerHTML = h; return;
+  }
+
+  /* ---- lobby ---- */
+  var roster = NET.peers.map(function (p) {
+    var you = String(p.id) === NET.id;
+    return '<div class="plr' + (you ? ' you' : '') + '"><b>' + esc(p.name || 'PLAYER') + '</b>' +
+      '<span>' + (you ? 'YOU' : 'OPPONENT') + (netHostId() === String(p.id) ? ' &middot; HOST' : '') + '</span>' +
+      '<span class="' + (p.ready ? 'rdy' : 'dim') + '">' + (p.ready ? 'READY' : 'CHOOSING') + '</span></div>';
+  }).join('');
+  var waiting = NET.peers.length < 2;
+  h = '<div class="sqbox"><div class="sqhead"><h2>LOBBY ' + esc(NET.code) + '</h2>' +
+    '<p class="osub">' + (waiting
+      ? 'Waiting for someone to join with this code.'
+      : 'Pick up to ' + VS_MAX + ' operatives, then press READY. ' +
+        (NET.host ? 'You are the host and start the match.' : 'The host starts the match.')) + '</p>' +
+    '<div class="acts"><button class="ghost" data-act="netcopy">' + (NET.copied === 'code' ? 'COPIED' : 'COPY CODE') + '</button></div></div>' +
+    '<div class="plrs">' + roster + '</div>' +
+    '<div class="sqgrid">' + squadCards(NET.keys, 'nettoggle') + '</div>' +
+    '<div class="sqbar"><span class="sqcount">SQUAD <b>' + NET.keys.length + '</b> / ' + VS_MAX + '</span>' +
+    '<button class="ghost" data-act="netleave">LEAVE</button>' +
+    '<button class="' + (NET.ready ? 'ghost' : '') + '" data-act="netready">' + (NET.ready ? 'NOT READY' : 'READY') + '</button>' +
+    (NET.host ? '<button ' + (netCanStart() ? '' : 'disabled ') + 'data-act="netstart">START</button>' : '') +
+    '</div></div>';
+  t.innerHTML = h;
+  paintPortraits(t);
+}
+
+function netCanStart() {
+  var opp = netOpponent();
+  if (!opp) return false;
+  if (!NET.ready || !opp.ready) return false;
+  return NET.keys.length > 0;
+}
+
+/* ---------------- appearance ---------------- */
+function renderSkin() {
+  var key = S.skinKey, def = charByKey(key);
+  if (!def) { S.skinKey = null; return; }
+  var lk = lookOf(key, def);
+  var swatches = SCHEMES.map(function (sc) {
+    var p = PALS[sc.id];
+    return '<button class="sw' + (lk.pal === sc.id ? ' on' : '') + '" data-act="setpal" data-key="' + key + '" data-v="' + sc.id + '">' +
+      '<i style="background:' + p.A + '"></i><i style="background:' + p.B + '"></i><i style="background:' + p.V + '"></i>' +
+      '<span>' + sc.name + '</span></button>';
+  }).join('');
+  var frames = CHASSIS.map(function (c) {
+    return '<button class="ch' + (lk.spr === c.id ? ' on' : '') + '" data-act="setspr" data-key="' + key + '" data-v="' + c.id + '">' +
+      '<canvas class="tspr" data-spr="' + c.id + '" data-pal="' + lk.pal + '"></canvas>' +
+      '<span>' + c.name + '</span></button>';
+  }).join('');
+  $('overlay').innerHTML = '<div class="obox skinbox">' +
+    '<h2>APPEARANCE</h2>' +
+    '<div class="skprev"><canvas class="tspr big" data-spr="' + lk.spr + '" data-pal="' + lk.pal + '"></canvas>' +
+    '<div><b class="skname">' + esc(lk.name) + '</b><span class="dim">' + esc(def.cls) + '</span>' +
+    '<p class="dim small">Stats and weapon stay the same whatever they look like.</p></div></div>' +
+    '<label class="sklab">CALLSIGN</label>' +
+    '<input id="skinname" maxlength="11" value="' + esc(lk.name).replace(/"/g, '&quot;') + '" autocomplete="off" spellcheck="false">' +
+    '<label class="sklab">COLOUR</label><div class="swgrid">' + swatches + '</div>' +
+    '<label class="sklab">CHASSIS</label><div class="chgrid">' + frames + '</div>' +
+    '<div class="acts"><button data-act="skindone">DONE</button>' +
+    '<button class="ghost" data-act="skinreset" data-key="' + key + '">RESET</button></div></div>';
+  paintPortraits($('overlay'));
+}
+
+function renderHelp() {
+  $('overlay').innerHTML = '<div class="obox">' +
+    '<h2>HOW TO PLAY</h2>' +
+    '<ul class="help">' +
+    '<li><b>Turns.</b> Move each operative once, then END TURN. The enemy moves, then you go again.</li>' +
+    '<li><b>Combat.</b> Physical attacks hit DEF, hex code hits RES. SPD four or more above the target attacks twice. SKL drives hit and crit; SPD and LCK drive dodge.</li>' +
+    '<li><b>Triangle.</b> Blade beats Rail, Rail beats Lance, Lance beats Blade: plus or minus 15 hit and 1 damage. Tech is neutral.</li>' +
+    '<li><b>Terrain.</b> Barricades and data daises give DEF and avoid. Repair nodes heal. Plasma vents burn. Bulkheads block.</li>' +
+    '<li><b>Growth.</b> Each level, every stat rolls its growth percentage. 300% total means about three stat points a level.</li>' +
+    '<li><b>Levels.</b> Promotion at ' + PROMOLVL + ' (new class, +MOV, bonus stats), hard cap at ' + MAXLVL + '. ' +
+    'At the cap, experience becomes OVERDRIVE instead: single stat points, still weighted by growth.</li>' +
+    '<li><b>Marks.</b> Once hostiles hit the cap too they come back as MK-II, MK-III and worse. That part never stops.</li>' +
+    '<li><b>Death is permanent</b> unless you pick up a Resurrection reward. Lose everyone and the run ends.</li>' +
+    '<li><b>ZONE</b> shades every tile the enemy can reach and hit this turn. Use it.</li>' +
+    '<li><b>Tap any empty tile</b> to read what it does.</li>' +
+    '</ul>' +
+    '<h3 class="lgh">TILE MARKS</h3><div class="legend">' +
+    '<div class="lg"><canvas class="lgc" data-t="node"></canvas><div><b>REPAIR NODE</b><span>cross mark &middot; heals 15% max HP at the start of your turn</span></div></div>' +
+    '<div class="lg"><canvas class="lgc" data-t="cover"></canvas><div><b>BARRICADE</b><span>shield mark &middot; +2 DEF, +20 avoid, costs 2 to enter</span></div></div>' +
+    '<div class="lg"><canvas class="lgc" data-t="dais"></canvas><div><b>DATA DAIS</b><span>arrow mark &middot; high ground, +1 DEF and +25 avoid</span></div></div>' +
+    '<div class="lg"><canvas class="lgc" data-t="vent"></canvas><div><b>PLASMA VENT</b><span>hazard mark &middot; burns 12% max HP at the start of your turn</span></div></div>' +
+    '<div class="lg"><canvas class="lgc" data-t="grate"></canvas><div><b>GRATING</b><span>+5 avoid, otherwise ordinary deck</span></div></div>' +
+    '<div class="lg"><canvas class="lgc" data-t="wall"></canvas><div><b>BULKHEAD</b><span>blocks movement and line of fire</span></div></div>' +
+    '</div><div class="acts"><button data-act="closehelp">BACK</button></div></div>';
+}
+
+function renderClear() {
+  var h = '<div class="obox">' +
+    '<h2>CHAPTER ' + S.chapter + ' CLEAR</h2>';
+  if (S.levelups.length) {
+    h += '<div class="lvs">' + S.levelups.map(function (l) {
+      if (l.over) {
+        return '<div class="lv"><b>' + esc(l.name) + '</b><span>OVERDRIVE</span>' +
+          '<span class="promo">' + STATN[l.over] + ' +1</span></div>';
+      }
+      var g = Object.keys(l.gains).filter(function (k) { return k !== 'promo' && k !== 'none'; })
+        .map(function (k) { return '<span class="gn">' + STATN[k] + ' +' + l.gains[k] + '</span>'; }).join('');
+      return '<div class="lv"><b>' + esc(l.name) + '</b><span>LV ' + l.lvl + '</span>' +
+        (g || '<span class="dim">no gains</span>') +
+        (l.gains.promo ? '<span class="promo">PROMOTED: ' + esc(l.gains.promo) + '</span>' : '') + '</div>';
+    }).join('') + '</div>';
+  }
+  h += '<p class="osub">Pick one upgrade. Next chapter is harder.</p><div class="rews">';
+  (S.rewards || []).forEach(function (r, i) {
+    h += '<button class="rew" data-act="reward" data-i="' + i + '"><b>' + esc(r.t) + '</b><span>' + esc(r.d) + '</span></button>';
+  });
+  h += '</div></div>';
+  $('overlay').innerHTML = h;
+}
+
+function renderOver() {
+  $('overlay').innerHTML = '<div class="obox">' +
+    '<h2 class="dead">ECHELON LOST</h2>' +
+    '<p class="osub">You fell on chapter ' + S.chapter + '. Deepest run: ' + S.best + '.</p>' +
+    (S.dead.length ? '<div class="lvs">' + S.dead.map(function (d) {
+      return '<div class="lv"><b>' + esc(d.name) + '</b><span>' + esc(d.cls) + ' LV ' + d.lvl + '</span><span class="dim">lost on CH ' + d.chapter + '</span></div>';
+    }).join('') + '</div>' : '') +
+    '<div class="acts"><button data-act="new">NEW RUN</button><button class="ghost" data-act="totitle">TITLE</button></div></div>';
+}
+
+/* ================= INPUT ================= */
+function selectUnit(u) {
+  S.tileInfo = null;
+  if (u.acted || !canAct() || !isMine(u)) { S.inspect = u; S.sel = null; S.mode = 'idle'; refreshUI(); return; }
+  S.sel = u; S.inspect = null; S.origin = { x: u.x, y: u.y };
+  S.reach = reachable(u); S.reach[u.x + ',' + u.y] = 0;
+  S.atkTiles = attackTiles(u, S.reach);
+  S.mode = 'move';
+  refreshUI();
+}
+function deselect() { S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null; refreshUI(); }
+
+function finishAct(u) {
+  u.acted = true;
+  deselect();
+  if (netOnline()) { refreshUI(); return; }
+  if (S.danger) computeDanger();
+  if (checkEnd()) return;
+  if (!allies('ply').filter(function (p) { return !p.acted; }).length) {
+    schedule(function () { if (S.screen === 'map' && S.phase === 'player') endPlayerPhase(); }, 450);
+  }
+  refreshUI();
+}
+
+function onTile(tx, ty) {
+  if (S.screen !== 'map' || S.busy) return;
+  if (!canAct()) {
+    var ou = unitAt(tx, ty);
+    if (ou) { S.inspect = ou; S.tileInfo = null; } else { S.inspect = null; S.tileInfo = { x: tx, y: ty }; }
+    refreshUI(); return;
+  }
+  var u = unitAt(tx, ty);
+  if (S.mode === 'target') {
+    if (u && u.side !== S.sel.side && u.chp > 0 && canReachTarget(S.sel, u)) { S.target = u; refreshUI(); }
+    return;
+  }
+  if (S.mode === 'healt') {
+    if (u && u.side === S.sel.side && u.id !== S.sel.id && canReachTarget(S.sel, u)) { S.target = u; refreshUI(); }
+    return;
+  }
+  if (S.mode === 'act') return;
+  if (S.mode === 'move' && S.sel) {
+    if (u === S.sel) { S.mode = 'act'; refreshUI(); return; }
+    var key = tx + ',' + ty;
+    if (S.reach[key] !== undefined && !u) {
+      var path = pathTo(S.sel, tx, ty);
+      var sel = S.sel;
+      moveUnit(sel, path, function () { S.mode = 'act'; refreshUI(); });
+      S.mode = 'moving'; refreshUI();
+      return;
+    }
+    if (u && isMine(u)) { selectUnit(u); return; }
+    if (u) { S.inspect = u; deselect(); S.inspect = u; refreshUI(); return; }
+    deselect(); return;
+  }
+  if (u) {
+    if (isMine(u)) { S.tileInfo = null; selectUnit(u); }
+    else { S.inspect = u; S.tileInfo = null; refreshUI(); }
+  } else { S.inspect = null; S.tileInfo = { x: tx, y: ty }; refreshUI(); }
+}
+
+function doAction(act, el) {
+  if (act === 'online') { netInit(); S.screen = 'net'; NET.mode = null; NET.err = ''; refreshUI(); return; }
+  if (act === 'netmenu') {
+    if (NET.sub) { try { NET.sub.leave(); } catch (e) { } NET.sub = null; }
+    NET.mode = null; NET.phase = 'idle'; NET.err = ''; NET.copied = '';
+    NET.local = false; NET.localStep = 1; NET.keysA = []; NET.keysB = [];
+    refreshUI(); return;
+  }
+  if (act === 'netmode') {
+    var m = el.getAttribute('data-v');
+    NET.mode = m; NET.err = ''; NET.copied = '';
+    if (m === 'create') NET.code = roomCode();
+    if (m === 'join') NET.code = '';
+    if (m === 'local') { NET.localStep = 1; NET.keysA = []; NET.keysB = []; }
+    refreshUI(); return;
+  }
+  if (act === 'netcopy') {
+    try {
+      if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(NET.code).then(function () {
+          NET.copied = 'code'; refreshUI();
+        }, function () { });
+      }
+    } catch (e) { }
+    return;
+  }
+  if (act === 'netroll') { NET.code = roomCode(); NET.copied = ''; refreshUI(); return; }
+  if (act === 'localpick') {
+    var lk = el.getAttribute('data-key');
+    var arr = NET.localStep === 1 ? NET.keysA : NET.keysB;
+    var at2 = arr.indexOf(lk);
+    if (at2 >= 0) arr.splice(at2, 1);
+    else if (arr.length < VS_MAX) arr.push(lk);
+    refreshUI(); return;
+  }
+  if (act === 'localnext') {
+    if (NET.localStep === 1) { if (!NET.keysA.length) return; NET.localStep = 2; refreshUI(); return; }
+    if (!NET.keysB.length) return;
+    netStartLocal(); return;
+  }
+  if (act === 'handoff') { netHandoffDone(); return; }
+  if (act === 'netjoin') {
+    var nEl = $('netname'), cEl = $('netcode');
+    netJoin(cEl && cEl.value ? cEl.value : NET.code, nEl && nEl.value ? nEl.value : NET.name);
+    return;
+  }
+  if (act === 'netleave') { netLeave(); return; }
+  if (act === 'nettoggle') {
+    var nk = el.getAttribute('data-key'), at = NET.keys.indexOf(nk);
+    if (at >= 0) NET.keys.splice(at, 1);
+    else if (NET.keys.length < VS_MAX) NET.keys.push(nk);
+    NET.ready = false; netPresence(); refreshUI(); return;
+  }
+  if (act === 'netready') { NET.ready = !NET.ready; netPresence(); refreshUI(); return; }
+  if (act === 'netstart') { netStart(); return; }
+  if (act === 'tosquad') {
+    S.pick = {};
+    for (var pi = 0; pi < ROSTER.length; pi++) S.pick[ROSTER[pi].key] = true;
+    S.screen = 'squad'; refreshUI(); return;
+  }
+  if (act === 'toggle') {
+    var tk = el.getAttribute('data-key');
+    if (S.pick[tk]) delete S.pick[tk];
+    else if (squadKeys().length < MAXSQUAD) S.pick[tk] = true;
+    refreshUI(); return;
+  }
+  if (act === 'deploy') {
+    var keys = squadKeys();
+    if (!keys.length) return;
+    S.screen = 'map'; newRun(keys); refreshUI(); return;
+  }
+  if (act === 'skin') { S.skinKey = el.getAttribute('data-key'); refreshUI(); return; }
+  if (act === 'skindone') { S.skinKey = null; saveLooks(); refreshUI(); return; }
+  if (act === 'skinreset') { delete LOOKS[el.getAttribute('data-key')]; saveLooks(); refreshUI(); return; }
+  if (act === 'setpal' || act === 'setspr') {
+    var k = el.getAttribute('data-key'), v = el.getAttribute('data-v');
+    if (!LOOKS[k]) LOOKS[k] = {};
+    LOOKS[k][act === 'setpal' ? 'pal' : 'spr'] = v;
+    saveLooks(); applyLooks(); refreshUI(); return;
+  }
+  if (act === 'new') { S.screen = 'squad'; doAction('tosquad', el); return; }
+  if (act === 'continue') { if (!loadGame()) { S.screen = 'squad'; doAction('tosquad', el); return; } refreshUI(); return; }
+  if (act === 'help') { S.prevScreen = S.screen; S.screen = 'help'; refreshUI(); return; }
+  if (act === 'closehelp') { S.screen = S.prevScreen || 'title'; refreshUI(); return; }
+  if (act === 'totitle') { S.screen = 'title'; refreshUI(); return; }
+  if (act === 'reward') { takeReward(parseInt(el.getAttribute('data-i'), 10)); refreshUI(); return; }
+  if (S.screen !== 'map') return;
+  if (act === 'end') {
+    if (netOnline()) {
+      if (NET.local) { if (!S.handoff) { deselect(); netEndTurn(); refreshUI(); } return; }
+      if (canAct()) { deselect(); netSubmit({ t: 'end' }); }
+      return;
+    }
+    if (S.phase === 'player' && !S.busy) { deselect(); endPlayerPhase(); refreshUI(); }
+    return;
+  }
+  if (act === 'danger') { S.danger = !S.danger; if (S.danger) computeDanger(); refreshUI(); return; }
+  if (act === 'clearinspect') { S.inspect = null; refreshUI(); return; }
+  if (act === 'cleartile') { S.tileInfo = null; refreshUI(); return; }
+  if (act === 'focus') {
+    var id = parseInt(el.getAttribute('data-id'), 10);
+    var u = S.units.filter(function (x) { return x.id === id; })[0];
+    if (u) { if (u.acted) { S.inspect = u; S.sel = null; S.mode = 'idle'; refreshUI(); } else selectUnit(u); }
+    return;
+  }
+  if (!S.sel) return;
+  var s = S.sel;
+  if (act === 'attack') { S.mode = 'target'; S.target = null; var t = attackableFrom(s); if (t.length === 1) S.target = t[0]; refreshUI(); return; }
+  if (act === 'repair') { S.mode = 'healt'; S.target = null; var hh = healableFrom(s); if (hh.length === 1) S.target = hh[0]; refreshUI(); return; }
+  if (act === 'kit') { if (netOnline()) return; useKit(s); finishAct(s); return; }
+  if (act === 'wait') {
+    if (netOnline()) { netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y, a: 'wait' }); deselect(); return; }
+    finishAct(s); return;
+  }
+  if (act === 'back') { S.mode = 'act'; S.target = null; refreshUI(); return; }
+  if (act === 'cancel') {
+    if (S.origin) { s.x = S.origin.x; s.y = S.origin.y; s.px = s.x; s.py = s.y; }
+    if (netOnline() && NET.host) netBroadcast();
+    deselect(); return;
+  }
+  if (act === 'confirm' && S.target) {
+    var tgt = S.target;
+    if (netOnline()) {
+      netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y,
+        a: S.mode === 'target' ? 'attack' : 'repair', tid: tgt.id });
+      S.target = null; deselect(); return;
+    }
+    if (S.mode === 'target') { doCombat(s, tgt); }
+    else { doHeal(s, tgt); }
+    S.target = null;
+    if (s.chp <= 0) { deselect(); if (!checkEnd()) refreshUI(); return; }
+    finishAct(s);
+    return;
+  }
+}
+
+function applyLooks() {
+  for (var i = 0; i < S.units.length; i++) {
+    var u = S.units[i];
+    if (u.side !== 'ply') continue;
+    var def = charByKey(u.key);
+    if (!def) continue;
+    var lk = lookOf(u.key, def);
+    u.name = lk.name; u.spr = lk.spr; u.pal = lk.pal;
+  }
+}
+
+/* ================= BOOT ================= */
+function boot() {
+  cv = $('cv');
+  cv.width = MAPW * TP; cv.height = MAPH * TP;
+  ctx = cv.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  loadBest(); loadLooks(); netInit();
+  cv.addEventListener('pointerdown', function (e) {
+    e.preventDefault();
+    var r = cv.getBoundingClientRect();
+    var tx = Math.floor((e.clientX - r.left) / r.width * MAPW);
+    var ty = Math.floor((e.clientY - r.top) / r.height * MAPH);
+    if (inBounds(tx, ty)) onTile(tx, ty);
+  });
+  document.addEventListener('click', function (e) {
+    var el = e.target;
+    while (el && el !== document.body) {
+      if (el.getAttribute && el.getAttribute('data-act')) { doAction(el.getAttribute('data-act'), el); return; }
+      el = el.parentNode;
+    }
+  });
+  document.addEventListener('input', function (e) {
+    var el = e.target;
+    if (el && (el.id === 'netname' || el.id === 'netcode')) {
+      var v2 = String(el.value || '').toUpperCase().replace(/[^A-Z0-9 \-]/g, '');
+      if (el.id === 'netname') NET.name = v2.slice(0, 11); else NET.code = v2.replace(/[^A-Z0-9]/g, '').slice(0, 6);
+      el.value = (el.id === 'netname') ? NET.name : NET.code;
+      return;
+    }
+    if (el && el.id === 'skinname' && S.skinKey) {
+      var v = String(el.value || '').toUpperCase().replace(/[^A-Z0-9 \-]/g, '').slice(0, 11).trim();
+      if (!LOOKS[S.skinKey]) LOOKS[S.skinKey] = {};
+      if (v) LOOKS[S.skinKey].name = v; else delete LOOKS[S.skinKey].name;
+      saveLooks(); applyLooks();
+      var lbl = document.querySelector ? document.querySelector('.skname') : null;
+      if (lbl) lbl.textContent = v || (charByKey(S.skinKey) || {}).name || '';
+    }
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'e' || e.key === 'E') doAction('end');
+    if (e.key === 'd' || e.key === 'D') doAction('danger');
+    if (e.key === 'Escape') { if (S.mode === 'act' || S.mode === 'target' || S.mode === 'healt') doAction(S.mode === 'act' ? 'cancel' : 'back'); }
+  });
+  refreshUI();
+  requestAnimationFrame(frame);
+}
+if (typeof window !== 'undefined' && !HEADLESS) {
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
+}
+if (typeof window !== 'undefined') {
+  window.__GAME = { S: S, newRun: newRun, aiAct: aiAct, endPlayerPhase: endPlayerPhase, allies: allies,
+    takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
+    foeLevel: foeLevel, foeCount: foeCount, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
+    doCombat: doCombat, doHeal: doHeal, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
+    canReachTarget: canReachTarget, wRange: wRange, dist: dist, ter: ter, foesOf: foesOf,
+    healableFrom: healableFrom, useKit: useKit, wpnPlus: wpnPlus, inBounds: inBounds,
+    refreshUI: refreshUI, selectUnit: selectUnit, squadKeys: squadKeys, applyLooks: applyLooks,
+    NET: NET, netJoin: netJoin, netStart: netStart, netSubmit: netSubmit, netApply: netApply,
+    netStartLocal: netStartLocal, netHandoffDone: netHandoffDone, sideName: sideName, roomCode: roomCode,
+    VS_ROUNDS: VS_ROUNDS, VS_MAX: VS_MAX, sideHp: sideHp, distField: distField,
+    onNetPeers: onNetPeers, onNetState: onNetState, onNetAct: onNetAct, netState: netState,
+    applyNetState: applyNetState, canAct: canAct, isMine: isMine, netEndTurn: netEndTurn,
+    netCheckWin: netCheckWin, placeSquad: placeSquad, mySide: mySide, netTick: netTick,
+    ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS,
+    MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
+    LAYOUTS: LAYOUTS, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
+    cvRef: function () { return cv; },
+    renderInto: function (target) {
+      var oc = cv, octx = ctx;
+      cv = target; ctx = target.getContext('2d'); ctx.imageSmoothingEnabled = false;
+      bgCanvas = null; draw();
+      cv = oc; ctx = octx; bgCanvas = null;
+    }, computeDanger: computeDanger, rollRewards: rollRewards,
+    saveGame: saveGame, loadGame: loadGame, levelUp: levelUp, doAction: doAction, onTile: onTile,
+    draw: draw, update: update, finishAct: finishAct, deselect: deselect, gameOver: gameOver };
+}
+
+})();</script>
+</body>
+</html>
