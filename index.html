@@ -901,6 +901,7 @@ var BOSSES = [
 ];
 
 var TRAITS = {
+  checkpoint: {name:'TACTICAL COMMAND',desc:'Takes 20% less raw damage while a living escort is within 2 tiles. Separate the commander or defeat its escorts.'},
   shield:    { name: 'SHIELDED',   desc: '-3 damage taken' },
   overclock: { name: 'OVERCLOCK',  desc: '+3 SPD, +10 avoid' },
   regen:     { name: 'REGEN',      desc: 'heals 6% each phase' },
@@ -1240,6 +1241,9 @@ function balancedDamage(raw,hp){
  var adjusted=raw>knee?knee+(raw-knee)*.40:raw;
  return clamp(Math.round(adjusted),low,hpBound(hp,.48));
 }
+function isCheckpoint(ch){return ch>0&&ch%10===0;}
+function checkpointActive(){return S.obj==='boss'&&!!(S.checkpoint||S.units.some(function(u){return u.boss&&u.traits.indexOf('checkpoint')>=0;}));}
+function escortShield(u){return u.boss&&u.traits.indexOf('checkpoint')>=0&&allies(u.side).some(function(t){return t!==u&&dist(u,t)<=2;});}
 function forecast(a, d) {
   var w = a.wpn, mag = w.mag;
   var atk = (mag ? a.stats.mag : a.stats.str) + w.mt + (hasSkill(a,'onyx')?2+(a.chp<=a.stats.hp/2?Math.floor(a.stats.str*(.35+perk(a,'fury'))):0):0) + perk(a,'attack') + (d.jammed?perk(a,'jamDamage'):0) + (shrineBonus(a,'power')?2:0);
@@ -1252,9 +1256,11 @@ function forecast(a, d) {
   if(a.traits.indexOf('frenzy')>=0&&a.chp<=a.stats.hp/2)dmg=Math.floor(dmg*1.25);
   if(hasSkill(a,'vex')&&d.chp<=d.stats.hp/2)dmg=Math.floor(dmg*(1.4+perk(a,'execute')));
   if(hasSkill(a,'rampart'))dmg+=Math.floor(a.stats.def*(.4+perk(a,'defScale')));
-  if(hasSkill(a,'vex'))dmg=Math.round(dmg*1.10);
-  if(a.side==='ply'&&a.tier)dmg=Math.round(dmg*(1+.04*a.tier));
+  if(hasSkill(a,'vex'))dmg=Math.round(dmg*1.21);
+  if(hasSkill(a,'echo'))dmg=Math.round(dmg*1.10);
+  if(a.side==='ply'&&a.tier)dmg=Math.round(dmg*(1+.06*a.tier));
   if(hasSkill(d,'nova')&&!mag)dmg=Math.round(dmg*.90);
+  if(escortShield(d))dmg=Math.round(dmg*.80);
   dmg=balancedDamage(Math.max(0,dmg-perk(d,'guard')-(hasSkill(d,'rampart')?2:0)),d.stats.hp);
   /* accuracy from a compressed skill-vs-evasion gap, so the curve stays sane
      forever instead of saturating at 100 / decaying to nothing */
@@ -1475,7 +1481,7 @@ function fxBoom(u) { fxPush({ k: 'boom', x: u.x, y: u.y, t: 0, dur: 0.5, pal: u.
 function fxHeal(u) { fxPush({ k: 'heal', x: u.x, y: u.y, t: 0, dur: 0.6 }); }
 
 /* ================= ACTIONS ================= */
-function healPower(u) { return u.stats.mag + 8 + u.wpn.plus * 2 + (hasSkill(u,"echo")?4:0) + perk(u,"heal"); }
+function healPower(u) { return u.stats.mag + 8 + u.wpn.plus * 2 + (hasSkill(u,"echo")?6:0) + perk(u,"heal"); }
 
 function healAmount(a,t){
  var hp=t.stats.hp,raw=healPower(a),knee=hp*.25;
@@ -1509,10 +1515,11 @@ function moveUnit(u, path, cb) {
 /* ================= TACTICAL AI =================
    Plan from public board state only; no RNG, hidden information, or extra actions. */
 function aiMedic(u){return !!u.wpn.heal||u.traits.indexOf('repair')>=0;}
-function aiCanAttack(u){return !u.wpn.heal||hasSkill(u,'echo');}
+function aiCanAttack(u){return !u.wpn.heal||u.wpn.mt>0;}
 function aiProfile(u){
   if(u.autonomous)return {risk:1.25,focus:1.1,cover:1.15,kill:1.15};
-  return ({story:{risk:.35,focus:.35,cover:.65,kill:.65},normal:{risk:.7,focus:.75,cover:1,kill:1},hard:{risk:.95,focus:1.2,cover:1.2,kill:1.25},nightmare:{risk:1.1,focus:1.45,cover:1.3,kill:1.5}})[validDifficulty(S.difficulty)];
+  var p=({story:{risk:.35,focus:.35,cover:.65,kill:.65},normal:{risk:.7,focus:.75,cover:1,kill:1},hard:{risk:.95,focus:1.2,cover:1.2,kill:1.25},nightmare:{risk:1.1,focus:1.45,cover:1.3,kill:1.5}})[validDifficulty(S.difficulty)];
+  if(checkpointActive()){p.risk+=.10;p.focus+=.25;p.cover+=.10;p.kill+=.10;}return p;
 }
 /* Enumerate miss, hit and crit branches in actual combat order. Shields absorb
    one successful damaging strike. Class-triggered heals/splash remain estimates. */
@@ -1612,15 +1619,15 @@ function difficulty(){return DIFFICULTIES[validDifficulty(S.difficulty)];}
 function beginRecord(mode,n){S.difficulty=validDifficulty(S.nextDifficulty);S.runId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);S.recordMode=mode;S.recordSize=n;S.recordName=mode==='solo'?(S.units[0]&&S.units[0].name||'COMMANDER'):(NET.name||'CO-OP SQUAD');S.kits=difficulty().kits;}
 function foeLevel(ch) { var sq=startingSquadSize();return Math.min(MAXLVL,1+Math.floor((ch-1)*(sq<=2?.85:1.12)*(ch<=5?1:.75+1.25/ch))); }
 /* After the level cap, marks accelerate gradually to keep up with promotions. */
-function foeMark(ch) { var sq=startingSquadSize(), start=sq<=2?23:18;var base=Math.max(0,Math.floor((ch-start)/(sq<=2?4:3))+(ch>=start?1:0));var late=sq===1?Math.floor(Math.max(0,ch-45)/8):Math.floor(Math.max(0,ch-24)/(sq===2?3:2));return Math.floor((base+late+ (sq>=3?Math.floor(Math.max(0,ch-20)/5):0))*difficulty().marks*.75); }
+function foeMark(ch) { var sq=startingSquadSize(), start=sq<=2?23:18;var base=Math.max(0,Math.floor((ch-start)/(sq<=2?4:3))+(ch>=start?1:0));var late=sq===1?Math.floor(Math.max(0,ch-45)/8):Math.floor(Math.max(0,ch-24)/(sq===2?3:2));return Math.floor((base+late+ (sq>=3?Math.floor(Math.max(0,ch-20)/5):0))*difficulty().marks*.75*.65); }
 function startingSquadSize() {return Math.max(1,Math.min(16,Math.floor(Number(S.squadSize)||1)));}
 function foeCount(ch,squadSize) {
   var sq=squadSize===undefined?startingSquadSize():Math.max(1,Math.min(16,Math.floor(Number(squadSize)||1)));
-  var early=Math.min(9,Math.max(0,Math.floor((ch-1)*.5))),late=Math.floor(Math.max(0,ch-22)/8);
-  var raw=(sq<=2?sq:sq+1)+(sq>=6?Math.floor(sq/4):0)+Math.round(early*(sq<=2?.22+.10*sq:.42+.14*sq))+Math.min(sq+2,late)+ (sq>=3?Math.floor(Math.max(0,ch-15)/5):0);return Math.max(1,Math.min(30,Math.round((sq+Math.max(0,raw-sq)*.80)*difficulty().count)));
+  var early=Math.min(9,Math.max(0,Math.floor((ch-1)*.5))),late=Math.floor(Math.max(0,ch-22)/11);
+  var raw=(sq<=2?sq:sq+1)+(sq>=6?Math.floor(sq/4):0)+Math.round(early*(sq<=2?.22+.10*sq:.42+.14*sq))+Math.min(sq+2,late)+ (sq>=3?Math.floor(Math.max(0,ch-15)/8):0);var extra=Math.max(0,raw-sq)*(sq>=3?.60:.80);return Math.max(1,Math.min(30,Math.round((sq+extra*(isCheckpoint(ch)?1:.55))*difficulty().count)));
 }
-function reinforcementCount(ch) {var sq=startingSquadSize();return Math.max(1,Math.min(10,Math.round((1+(Math.floor((sq-1)/2)+Math.floor(ch/(sq<=2?15:10)))*.80)*difficulty().count)));}
-function wpnPlus(ch) {return Math.min(14,Math.floor((ch-1)/(ch<=5?3:4)));}
+function reinforcementCount(ch) {var sq=startingSquadSize();return Math.max(1,Math.min(10,Math.round((1+(Math.floor((sq-1)/2)+Math.floor(ch/(sq<=2?15:10)))*.64)*difficulty().count)));}
+function wpnPlus(ch) {return Math.min(8,Math.floor((ch-1)/(ch<=5?3:4)));}
 function traitChance(ch) {return ch<9?0:Math.min(.55,(ch-8)*.045);}
 function foePool(ch) {return Object.keys(FOES).filter(function(k){return FOES[k].from<=ch;});}
 /* Weighted random encounter composition; keep support and elite counts bounded.
@@ -1655,7 +1662,7 @@ function placeNear(x, y, used) {
 }
 
 function startChapter() {
-  var ch = S.chapter;
+  var ch = S.chapter, trial=isCheckpoint(ch), trialBoss=null; S.checkpoint=trial;
   S.grid = genMap(ch);
   RNG.seed(Math.floor(rnd() * 2000000000) + 1);
   S.turn = 1; S.phase = 'player'; S.sel = null; S.mode = 'idle';
@@ -1690,11 +1697,12 @@ function startChapter() {
   var pool = foePool(ch), lvl = foeLevel(ch), n = foeCount(ch), plus = wpnPlus(ch), tc = traitChance(ch);
   var mark = foeMark(ch);
   if (S.obj === 'boss') n = Math.max(0, Math.round((n - 1)*.80)); /* commander occupies one slot in the threat budget */
+  if(trial)n=Math.max(1,Math.min(n,startingSquadSize()+2));
   var pickedFoes=[];
   function spawnFoe(def, isBoss, lv) {
     var f = mkUnit(def, 'foe', lv, { plus: plus, boss: isBoss, mark: mark > 0 ? mark + (isBoss ? 1 : 0) : 0,
-      bossHp: isBoss ? (startingSquadSize()<=2?1.0+Math.min(.25,ch*.008):1.1+Math.min(.5,ch*.012)) : 1 });
-    randomFoeTraits(f,ch,isBoss);
+      bossHp: isBoss ? (startingSquadSize()<=2?1.0+Math.min(.25,ch*.008):1.1+Math.min(.5,ch*.012))*(trial?1.10:1) : 1 });
+    if(trial&&isBoss){f.traits.push('checkpoint');}else if(!trial)randomFoeTraits(f,ch,isBoss);
     /* early on the machines hold their ground, so there is room to learn to bait
        and pick fights. from chapter four they come for you. */
     if (!isBoss && ch <= 3) f.ai = 'guard';
@@ -1706,7 +1714,8 @@ function startChapter() {
     }
     if(preferred.length){
       if(isBoss)preferred.sort(function(a,b){return b.x-a.x||Math.abs(a.y-4.5)-Math.abs(b.y-4.5);});
-      var pp=preferred[isBoss?0:RNG.int(preferred.length)];used[pp.k]=1;f.x=f.px=pp.x;f.y=f.py=pp.y;S.units.push(f);return f;
+      var near=trialBoss&&pickedFoes.length<2?preferred.filter(function(p){return dist(p,trialBoss)<=2;}):[];
+      var pp=isBoss?preferred[0]:near.length?near[RNG.int(near.length)]:preferred[RNG.int(preferred.length)];used[pp.k]=1;f.x=f.px=pp.x;f.y=f.py=pp.y;S.units.push(f);return f;
     }
     /* Crowded boards: use any reachable free tile, farthest from the squad first. */
     var free = Object.keys(open).map(function (k) {
@@ -1718,14 +1727,15 @@ function startChapter() {
     f.x = p.x; f.y = p.y; f.px = p.x; f.py = p.y; S.units.push(f); return f;
   }
   if (S.obj === 'boss') {
-    var bd = BOSSES[RNG.int(Math.min(BOSSES.length,1+Math.floor((ch-5)/5)))];
+    var bd = BOSSES[trial?(Math.floor(ch/10)-1)%BOSSES.length:RNG.int(Math.min(BOSSES.length,1+Math.floor((ch-5)/5)))];
     var b = spawnFoe(bd, true, Math.min(MAXLVL, lvl + 1 + Math.floor(ch / 10)));
-    if (b) { b.boss = true; S.bossId = b.id; say('Commander detected: ' + b.name + '.'); }
-    else { S.obj = 'wipe'; S.bossId = null; n++; }
+    if (b) { b.boss = true; S.bossId = b.id; if(trial){trialBoss=b;b.name='TRIAL / '+b.name;} say('Commander detected: ' + b.name + '.'); }
+    else { S.obj = 'wipe'; S.checkpoint=false; S.bossId = null; n++; }
   } else S.bossId = null;
   /* A varied random mix, with a chance of magic pressure rather than a forced counter to small teams. */
   for(var j=0;j<n;j++){
-    var pick=pickFoe(ch,pickedFoes,j===0&&ch>=7&&n>=4&&RNG.chance(.65));
+    var formation=['pike','sniper','gunner','hexer'];
+    var pick=trial?formation[(j+Math.floor(ch/10)-1)%formation.length]:pickFoe(ch,pickedFoes,j===0&&ch>=7&&n>=4&&RNG.chance(.65));
     if(spawnFoe(FOES[pick],false,lvl))pickedFoes.push(pick);
   }
   if (S.obj === 'hold') {
@@ -1734,8 +1744,9 @@ function startChapter() {
   }
 
   S.screen = 'map'; S.gameover = false;
-  S.banner = 'CHAPTER ' + ch; S.bannerT = 1.6;
+  S.banner = trial?'SKILL CHECK '+ch:'CHAPTER ' + ch; S.bannerT = trial?2.4:1.6;
   say('--- CHAPTER ' + ch + ': ' + S.site + ' / ' + OBJS[S.obj].name + ' ---');
+  if(trial)say('SKILL CHECK: Eliminate the commander and all escorts. Separate them to weaken its shield. No reinforcements.');
   if (NET.local) { NET.localActive = 0; S.handoff = localOwners().length > 1; }
   S.origin=null;S.reach=null;S.atkTiles=null;S.target=null;S.moveTrace=null;S.tileInfo=null;requestNextUnit();saveGame();
   netSync();
@@ -1792,7 +1803,7 @@ function checkEnd() {
   if (S.obj === 'wipe' && foesLeft === 0) { chapterClear(); return true; }
   if (S.obj === 'boss') {
     var boss = S.units.filter(function (u) { return u.id === S.bossId; })[0];
-    if (!boss || boss.chp <= 0) { chapterClear(); return true; }
+    if ((!boss || boss.chp <= 0) && (!checkpointActive() || foesLeft===0)) { chapterClear(); return true; }
   }
   if (S.obj === 'hold' && S.turn > S.objTurns) { chapterClear(); return true; }
   return false;
@@ -1976,7 +1987,7 @@ function routeUnit(id){return allies('ply').filter(function(u){return u.id===id;
 function routeGrant(u,item){if(!u.items)u.items=[];u.items.push({s:item.s,name:item.name,bonus:item.bonus,rarity:itemRarity(item).id});u.grow[item.s]+=item.bonus;return u.name+' received '+item.name+' ['+itemRarity(item).name+'] (+'+item.bonus+'% '+STATN[item.s]+' growth).';}
 function routeLoss(){var pairs=[];allies('ply').forEach(function(u){(u.items||[]).forEach(function(it,i){pairs.push({u:u,i:i});});});if(!pairs.length)return 'No growth items to lose. Nothing was taken.';var p=routeRandom(pairs),it=p.u.items.splice(p.i,1)[0];p.u.grow[it.s]-=it.bonus;return p.u.name+' lost '+it.name+' (-'+it.bonus+'% '+STATN[it.s]+' growth).';}
 function routeFinish(msg){S.route.stage='result';S.route.message=msg;say(msg);}
-function beginRoute(){var choices=routeChoices();var earn=20+S.chapter*3+Math.min(20,(S.squadSize||1)*2);routeGold(earn);S.route={ch:S.chapter,rev:0,stage:'choose',choices:choices,node:null,earn:earn,stock:[],message:''};}
+function beginRoute(){var choices=routeChoices();var earn=20+S.chapter*3+Math.min(20,(S.squadSize||1)*2);if(checkpointActive()){earn=Math.round(earn*1.35);S.kits++;say('Skill check cleared: +35% victory gold and 1 repair kit.');}routeGold(earn);S.route={ch:S.chapter,rev:0,stage:'choose',choices:choices,node:null,earn:earn,stock:[],message:''};}
 function routeAction(cmd,arg,id,rev,ch,who){
   var r=S.route;if(S.screen!=='clear'||!r||r.rev!==rev||r.ch!==ch)return false;
   var live=allies('ply'),u=routeUnit(id),cost,it,msg;
@@ -2020,7 +2031,7 @@ function routeRender(){var r=S.route;if(!r)return '';var h=promotionPanel()+'<di
   if(r.stage==='choose'){
     h+='<p class="osub">Choose one of two routes. The other path closes. Medical Stations are rare (10% of maps). Mercenary Relay appears only when a player has a free recruit slot.</p><div class="route-map"><div class="route-start">✓ CHAPTER '+S.chapter+' CLEARED</div><div class="route-branch"></div><div class="route-choices">';
     r.choices.forEach(function(k){var d=ROUTES[k],sc=ROUTE_SCENES[k];h+=routeBtn('choose',k,0,'<i>'+d.icon+'</i><b>'+d.name+'</b><span class="scene-preview">'+sc.preview+'</span><span>'+d.desc+'</span>').replace('class="rew"','class="rew" style="--route-accent:'+sc.color+'"');});
-    h+='</div><div class="route-merge"></div><div class="route-start next">CHAPTER '+(S.chapter+1)+' →</div></div><div class="route-all">POSSIBLE DESTINATIONS: '+Object.keys(ROUTES).map(function(k){return ROUTES[k].icon+' '+ROUTES[k].name;}).join(' · ')+'</div>';
+    h+='</div><div class="route-merge"></div><div class="route-start next">'+(isCheckpoint(S.chapter+1)?'⚠ SKILL CHECK ':'CHAPTER ')+(S.chapter+1)+' →</div></div><div class="route-all">POSSIBLE DESTINATIONS: '+Object.keys(ROUTES).map(function(k){return ROUTES[k].icon+' '+ROUTES[k].name;}).join(' · ')+'</div>';
   }else{var d=ROUTES[r.node];h+=routeScene(r.node,r)+'<p class="osub">'+d.desc+'</p>';
     if(r.node==='wheel'){h+='<div class="fortune-wheel-wrap"><div class="fortune-wheel'+(r.stage==='result'?' landed':'')+'" style="--spin:'+(360*4-([27,63,162,261,279,324][r.roll]||27))+'deg"><span>◆</span></div></div><div class="wheel-key"><span style="color:#e77a86">15% Lose gold</span> · <span style="color:#b29af5">5% Permanent stat</span><br><span style="color:#ffd166">50% Win gold</span> · <span style="color:#54f0c8">5% Win item</span><br><span style="color:#8fbcf3">5% Lose item</span> · <span style="color:#a9bfd4">20% Nothing</span></div>';}
     if(r.message)h+='<p class="route-result">'+esc(r.message)+'</p>';
@@ -2191,7 +2202,7 @@ function safeSavePoint(){return (S.screen==='clear'||(S.screen==='map'&&S.phase=
 function saveGame(){
   if(!safeSavePoint())return false;
   try{
-    var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','best','dead','uid','squadSize','bags','layout','mapRevision','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
+    var fields=['chapter','turn','phase','obj','checkpoint','objTurns','bossId','reinforce','kits','best','dead','uid','squadSize','bags','layout','mapRevision','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
     var data={v:4,rng:RNG.s,units:S.units.filter(function(u){return u.chp>0;}),local:NET.local&&netOnline()?{players:NET.localPlayers,active:NET.localActive}:null};
     fields.forEach(function(k){data[k]=S[k];});
     localStorage.setItem('echelon_run',JSON.stringify(data));saveBest();return true;
@@ -2199,7 +2210,7 @@ function saveGame(){
 }
 function resumeExact(d){
   if(!Array.isArray(d.units)||!d.units.some(function(u){return u.side==='ply'&&u.chp>0;})||['map','clear'].indexOf(d.screen)<0||!LAYOUTS[d.terrain]||!LAYOUTS[d.terrain][d.layout]||(d.screen==='map'&&d.phase!=='player'))return false;
-  resetLooks();runEpoch++; var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','mapRevision','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
+  resetLooks();runEpoch++; S.checkpoint=!!d.checkpoint; var fields=['chapter','turn','phase','obj','checkpoint','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','mapRevision','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
   fields.forEach(function(k){S[k]=d[k];});S.difficulty=validDifficulty(S.difficulty);S.nextDifficulty=S.difficulty;S.runId=S.runId||Date.now().toString(36)+"-legacy";S.recordMode=S.recordMode||(d.local?"local co-op":"solo");S.recordSize=S.recordSize||S.squadSize;S.best=Math.max(S.best||1,d.best||1);S.reinforce=S.reinforce||[];S.log=S.log||[];S.levelups=S.levelups||[];
   S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){updateClassIdentity(u);u.moved=!!u.moved;u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.mapRevision=d.mapRevision===MAP_REVISION?MAP_REVISION:1;S.grid=buildGrid(S.terrain,S.layout,S.mapRevision);RNG.s=d.rng||1;
   S.sel=null;S.inspect=null;S.tileInfo=null;S.target=null;S.mode='idle';S.reach=null;S.atkTiles=null;S.origin=null;S.fx=[];S.movers=[];S.busy=0;S.gameover=false;S.resumeLayout=null;S.bannerT=0;S.shake=0;S.saveError='';S.invOpen=false;bgCanvas=null;
@@ -2237,7 +2248,7 @@ function loadGame() {
     }
     if (!S.units.length) return false;
     S.levelups = d.levelups||[];
-    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.mapRevision=1;S.grid=buildGrid(d.terrain,d.layout,1);S.site=d.site;S.obj=d.obj;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
+    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.mapRevision=1;S.grid=buildGrid(d.terrain,d.layout,1);S.site=d.site;S.obj=d.ob;S.checkpoint=!!d.checkpointj;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
     return true;
   } catch (e) { return false; }
 }
@@ -3211,7 +3222,7 @@ function unitFromWire(r) {
 }
 function netState() {
   return {
-    host: NET.id, difficulty:validDifficulty(S.difficulty), ownerColors: NET.ownerColors, recruitOwners:S.recruitOwners, replay:S.combatReplay, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
+    host: NET.id, difficulty:validDifficulty(S.difficulty), ownerColors: NET.ownerColors, recruitOwners:S.recruitOwners, replay:S.combatReplay, ch: S.chapter, site: S.site, ob: S.obj, checkpoint:checkpointActive(), ot: S.objTurns,
     tn: S.turn, ph: S.phase, t: S.terrain, l: S.layout, mapRevision:S.mapRevision||1, kt: S.kits,
     gold:S.gold, route:S.route, shrine:S.shrine, sc: S.screen, rw: S.rewards, lu: S.levelups, dd: S.dead,
     sq: S.squadSize, lg: S.log.slice(0, 6),
@@ -3268,7 +3279,7 @@ function applyNetState(d) {
   }
   S.units = list;
   S.inspect = inspectedId === null ? null : list.filter(function(u) { return u.id === inspectedId; })[0] || null;
-  S.difficulty=validDifficulty(d.difficulty);S.chapter = d.ch; S.site = d.site; S.obj = d.ob; S.objTurns = d.ot;
+  S.difficulty=validDifficulty(d.difficulty);S.chapter = d.ch; S.site = d.site; S.obj = d.ob;S.checkpoint=!!d.checkpoint; S.objTurns = d.ot;
   S.turn = d.tn; S.phase = d.ph; S.kits = d.kt; S.squadSize = d.sq;
   S.gold=typeof d.gold==='number'?d.gold:60; S.route=d.route||null; S.shrine=d.shrine||null; S.recruitOwners=d.recruitOwners||null;
   S.rewards = d.rw || null; S.levelups = d.lu || []; S.dead = d.dd || [];
@@ -3540,11 +3551,11 @@ function refreshUI() {
 
   if(S.screen==='map')queueAutoEnd();
   var foes = allies('foe').length;
-  var objTxt = OBJS[S.obj] ? OBJS[S.obj].name : '';
+  var objTxt = checkpointActive()?'SKILL CHECK':OBJS[S.obj] ? OBJS[S.obj].name : '';
   if (S.obj === 'hold') objTxt += ' ' + Math.min(S.turn, S.objTurns + 1) + '/' + (S.objTurns + 1);
   hud.innerHTML =
     '<div class="hleft"><b>CH ' + S.chapter + '</b><span>' + esc(S.site) + '</span></div>' +
-    '<div class="hmid"><b>' + objTxt + '</b><span>' + (OBJS[S.obj] ? OBJS[S.obj].desc : '') + '</span></div>' +
+    '<div class="hmid"><b>' + objTxt + '</b><span>' + (checkpointActive()?'Clear all hostiles. Separate escorts to weaken commander shield.':OBJS[S.obj] ? OBJS[S.obj].desc : '') + '</span></div>' +
     '<div class="hright">' +
     '<span class="pill ' + (S.phase === 'player' ? 'ply' : 'foe') + '">' + (S.phase === 'player' ? 'YOUR TURN' : S.phase==='ally'?'AI ALLIES':'ENEMY') + ' &middot; T' + S.turn + '</span>' +
     '<span class="pill gold">GOLD ' + S.gold + '</span>' +
@@ -3936,6 +3947,7 @@ function renderHelp() {
     '<li><b>Turns.</b> Tap an operative on the battlefield, then a highlighted tile to move, or tap the same operative again to act in place. Each operative can move once per turn, up to its MOV allowance including terrain costs. Choosing a destination commits movement immediately; switching units or earning a bonus action does not refund it. Attack, repair or wait afterward. Movement resets next turn. The bottom squad bar is optional. End your turn or use every action.</li>' +
     '<li><b>Combat.</b> Physical attacks hit DEF, hex code hits RES. A sufficient SPD lead grants a reduced-strength follow-up (65% damage; threshold grows slowly with target SPD). Both sides use the same damage curve: ordinary hits max 48% max HP, critical hits max 65%, and follow-up crits max 34%. Hits are 25–95%, crits max 35%. Repair actions restore up to 35% max HP. SKL drives hit and crit; SPD and LCK drive dodge.</li>' +
     '<li><b>Triangle.</b> Blade beats Rail, Rail beats Lance, Lance beats Blade: plus or minus 15 hit and 1 damage. Tech is neutral.</li>' +
+    '<li><b>Skill checks.</b> Every 10 chapters, defeat a trial commander and all escorts. The commander takes 20% less raw damage while an escort is within 2 tiles. Separate or eliminate escorts, use cover, and bait counterattacks. No extra enemy actions or reinforcement waves. Victory grants 35% extra gold and a repair kit. Ordinary bosses remain every fifth chapter.</li>' +
     '<li><b>Terrain.</b> Barricades and data daises give DEF and avoid. Repair nodes heal. Plasma vents burn. Bulkheads block.</li>' +
     '<li><b>Growth.</b> Each level, every stat rolls its growth percentage. 300% total means about three stat points a level.</li>' +
     '<li><b>Levels.</b> Promote between fights at level 15–20, twice per character. Choose a path, retain all stats, gain +100% total growth and reset to level 1. Wait until 20 for extra growth rolls. Final tier level 20 unlocks OVERDRIVE.</li>' +
@@ -4310,7 +4322,7 @@ if (typeof window !== 'undefined' && !HEADLESS) {
 if (typeof window !== 'undefined') {
   window.__GAME = { DIFFICULTIES:DIFFICULTIES, difficulty:difficulty, boardRead:boardRead, recordRun:recordRun, renderCodex:renderCodex, renderLeaderboard:renderLeaderboard, recruitStock:recruitStock, SPR:SPR, S: S, newRun: newRun, aiAct: aiAct, aiPlan:aiPlan, aiExchange:aiExchange, aiGoalField:aiGoalField, endPlayerPhase: endPlayerPhase, allies: allies,
     routeAction:routeAction, routeChoices:routeChoices, recruitParticipants:recruitParticipants, recruitEligible:recruitEligible, makeRecruit:makeRecruit, recruitProfile:recruitProfile, recruitCost:recruitCost, replayUnit:replayUnit, routeItem:routeItem, itemRarity:itemRarity, saveGame:saveGame, loadGame:loadGame, routeRender:routeRender, takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
-    foeLevel: foeLevel, foeCount: foeCount, foePool:foePool, pickFoe:pickFoe, spawnReinforcements:spawnReinforcements, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
+    isCheckpoint:isCheckpoint, checkpointActive:checkpointActive, escortShield:escortShield, foeMark:foeMark, reinforcementCount:reinforcementCount, beginRoute:beginRoute, foeLevel: foeLevel, foeCount: foeCount, foePool:foePool, pickFoe:pickFoe, spawnReinforcements:spawnReinforcements, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
     doCombat: doCombat, doHeal: doHeal, strike:strike, healAmount:healAmount, forecastCard:forecastCard, healCard:healCard, balancedDamage:balancedDamage, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
     canReachTarget: canReachTarget, wRange: wRange, dist: dist, ter: ter, foesOf: foesOf,
     healableFrom: healableFrom, useKit: useKit, wpnPlus: wpnPlus, inBounds: inBounds,
