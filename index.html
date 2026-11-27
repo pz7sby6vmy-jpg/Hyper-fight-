@@ -344,6 +344,50 @@ body.home-theme{background:radial-gradient(ellipse at 50% 0,#e4eee5 0%,transpare
 .command-settings .diff-card{background:#f8faf7!important;border-color:#bccdc4!important;color:#254c46!important;box-shadow:none!important}.command-settings .diff-card span{color:#536e60}.command-settings .diff-card.selected{background:#d9e8df!important;border-color:#43836d!important;box-shadow:inset 0 0 0 1px #43836d!important}.command-settings .diff-card.selected b{color:#245b55}.command-nav button{background:#f8faf7!important;border-color:#bccdc4!important;color:#254c46!important;box-shadow:none!important}.command-nav i{color:#367b66}.command-nav small{color:#536e60}.command-units>div{background:#f8faf7;border-color:#c7d5cd}.command-units small{color:#385a51}.command-home button:focus-visible{outline-color:#43836d}.command-home button:hover:not(:disabled){filter:brightness(.97)}
 .map-tools{flex-wrap:wrap;justify-content:flex-end}.map-tools #map-end-turn{min-width:88px;white-space:nowrap}.map-tools #map-end-turn:disabled{opacity:.5}.map-toolbar b{white-space:nowrap}@media(max-width:420px){.map-toolbar{padding:5px}.map-toolbar b{font-size:10px}.map-tools .zoom-label{display:none}.map-tools #map-end-turn{min-width:74px;font-size:11px!important}.map-tools button{min-width:28px;padding:4px 6px}}
 
+
+/* Shared home / deployment / co-op theme. Scoped to setup screens. */
+body.setup-theme{--cy:#24645e;--gr:#276c58;--am:#936519;--tx:#223c39;--dim:#647773;--line:#c9d5cd;--rd:#9f353b;color:#223c39}
+body.setup-theme #squad-screen{max-width:1000px}
+body.setup-theme .sqbox{background:#edf1ec;border:1px solid #b7c6bd;border-radius:10px;padding:20px 16px 85px;box-shadow:0 15px 45px #2d514225}
+body.setup-theme .sqhead h2{color:#254c46;text-shadow:none;font-size:24px;letter-spacing:.04em}
+body.setup-theme .sqhead .osub,body.setup-theme .osub,body.setup-theme .netnote{color:#536e60}
+body.setup-theme .sqc,body.setup-theme .plr,body.setup-theme .netform{background:#f8faf7;border:1px solid #bccdc4;border-radius:7px;box-shadow:none}
+body.setup-theme .sqc.on,body.setup-theme .plr.you{background:#e0eee5;border-color:#43836d;box-shadow:inset 0 0 0 1px #43836d}
+body.setup-theme .sqc.taken{background:#e7ece7;border-color:#c2cec5}
+body.setup-theme .sqtop canvas,body.setup-theme .skprev canvas.big{background:#dce8df;border-color:#becfc2}
+body.setup-theme .sqid b,body.setup-theme .plr b{color:#254c46}
+body.setup-theme .sqid span,body.setup-theme .sqid i,body.setup-theme .sqbio,body.setup-theme .plr span{color:#536e60}
+body.setup-theme .plr .rdy{color:#24684e;font-weight:750}
+body.setup-theme .tsc{background:#edf3ed;border-color:#cad9ce;border-radius:4px}
+body.setup-theme .tsc span{color:#223c39;font-weight:700}
+body.setup-theme .tsc b,body.setup-theme .tsc .grow-label{color:#536e60}
+body.setup-theme .tsc em{color:#276c58}
+body.setup-theme .sqbar{background:#f7f9f5f5;border-color:#b7c6bd;box-shadow:0 -4px 18px #2d51421a;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+body.setup-theme .sqcount,body.setup-theme .sklab{color:#536e60}
+body.setup-theme .sqcount b{color:#24645e}
+body.setup-theme .sqbox button,body.setup-theme .skinbox button{border-radius:5px;box-shadow:none}
+body.setup-theme .sqbox button:not(.ghost):not(:disabled),body.setup-theme .skinbox button:not(.ghost):not(:disabled){background:#245b55;border-color:#245b55;color:#fff}
+body.setup-theme .sqbox button.ghost,body.setup-theme .skinbox button.ghost{background:#f7f9f5!important;border-color:#bccdc4!important;color:#254c46!important}
+body.setup-theme .sqbox button:disabled,body.setup-theme .skinbox button:disabled{background:#dce3dd;border-color:#c3d0c5;color:#5d7167;box-shadow:none}
+body.setup-theme .sqbox button.diff-card,body.setup-theme .sqbox button.vopt{background:#f8faf7!important;border-color:#bccdc4!important;color:#254c46!important;box-shadow:none!important}
+body.setup-theme .diff-card span,body.setup-theme .vopt span{color:#536e60}
+body.setup-theme .sqbox button.diff-card.selected{background:#d9e8df!important;border-color:#43836d!important;box-shadow:inset 0 0 0 1px #43836d!important}
+body.setup-theme .diff-card.selected b,body.setup-theme .vopt b{color:#245b55}
+body.setup-theme .netform{padding:18px}
+body.setup-theme .netform input,body.setup-theme #skinname,body.setup-theme .codebig{background:#f7f9f5;border:1px solid #b7c6bd;color:#254c46;text-shadow:none}
+body.setup-theme .netform input:focus,body.setup-theme #skinname:focus{border-color:#43836d;box-shadow:0 0 0 2px #43836d33}
+body.setup-theme .neterr{color:#9f353b}
+body.setup-theme .skinbox{background:#edf1ec;color:#223c39;border-color:#b7c6bd}
+body.setup-theme .skinbox h2,body.setup-theme .skname{color:#254c46;text-shadow:none}
+body.setup-theme .skinbox .dim{color:#536e60}
+body.setup-theme .partpick,body.setup-theme .skinbox button.sw,body.setup-theme .skinbox button.ch{background:#f8faf7!important;border-color:#bccdc4!important;color:#254c46!important}
+body.setup-theme .partpick span,body.setup-theme .partpick output,body.setup-theme .sw span,body.setup-theme .ch span{color:#536e60}
+body.setup-theme .skinbox button.sw.on,body.setup-theme .skinbox button.ch.on{background:#d9e8df!important;border-color:#43836d!important;box-shadow:inset 0 0 0 1px #43836d}
+body.setup-theme .skinbox .acts{background:#edf1ec;border-color:#c9d5cd}
+body.setup-theme button:focus-visible{outline:2px solid #43836d;outline-offset:2px}
+body.setup-theme button:hover:not(:disabled){filter:brightness(.97)}
+@media(max-width:700px){body.setup-theme .sqbox{padding:14px 10px 125px}body.setup-theme .sqhead h2{font-size:20px}body.setup-theme .netform{padding:12px}}
+
 </style>
 </head>
 <body>
@@ -3313,7 +3357,8 @@ function refreshUI() {
   var hud = $('hud'), panel = $('panel'), roster = $('roster');
   if (!hud) return;
 
-  document.body.classList.toggle('home-theme',S.screen==='title');
+  document.body.classList.toggle('home-theme',S.screen==='title'||S.screen==='squad'||S.screen==='net');
+  document.body.classList.toggle('setup-theme',S.screen==='squad'||S.screen==='net');
   var inGame = (S.screen === 'map' || S.screen === 'clear' || S.screen === 'over');
   $('title-screen').style.display = S.screen === 'title' ? 'flex' : 'none';
   $('squad-screen').style.display = (S.screen === 'squad' || S.screen === 'net') ? 'flex' : 'none';
