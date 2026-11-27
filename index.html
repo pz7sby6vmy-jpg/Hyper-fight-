@@ -388,6 +388,29 @@ body.setup-theme button:focus-visible{outline:2px solid #43836d;outline-offset:2
 body.setup-theme button:hover:not(:disabled){filter:brightness(.97)}
 @media(max-width:700px){body.setup-theme .sqbox{padding:14px 10px 125px}body.setup-theme .sqhead h2{font-size:20px}body.setup-theme .netform{padding:12px}}
 
+
+/* Shared interface palette; illustrations, combat effects and rarity accents retain their identity. */
+body{--cy:#24645e;--gr:#276c58;--am:#936519;--tx:#223c39;--dim:#647773;--line:#c9d5cd;--rd:#9f353b;background:radial-gradient(ellipse at 50% 0,#e4eee5,transparent 65%),#d4dfd5;color:var(--tx)}body::after{display:none}
+#overlay{background:rgba(32,57,49,.60);backdrop-filter:blur(4px)}
+.obox,.duelbox{background:#edf1ec!important;color:#223c39;border:1px solid #b7c6bd!important;border-radius:10px;box-shadow:0 15px 45px #233e3655!important}
+.obox h2,.obox h3,.duelbox header{color:#254c46;text-shadow:none}.obox h2.dead{color:#9f353b;text-shadow:none}
+.obox .osub,.obox .hint,.obox .dim,.obox .help li,.obox .lg span,.obox .route-all,.obox .route-inventory,.obox .board-row small{color:#536e60}
+.obox button:not(:disabled),.duelbox button:not(:disabled){background:#245b55!important;color:white!important;border:1px solid #245b55!important;border-radius:5px;box-shadow:none!important}
+.obox button.ghost,.obox button.rew{background:#f8faf7!important;color:#254c46!important;border:1px solid #bccdc4!important;box-shadow:none!important}
+.obox button:disabled{background:#dce3dd!important;color:#647773!important;border-color:#c3d0c5!important;box-shadow:none!important}
+.obox .rew b,.obox .rew i,.obox .lv b,.obox .route-title,.obox .route-item>b,.obox .codex-card h3,.obox .codex-sub b,.obox .board-row strong,.obox .route-inventory summary,.obox .lg b{color:#245b55}
+.obox .rew span,.obox .lv span,.obox .route-buy,.obox .codex-card p,.obox .codex-stats small{color:#536e60}
+.obox .rew:hover:not(:disabled){background:#e0eee5!important;border-color:#43836d!important}.obox .lv,.obox .lg,.obox .route-item,.obox .codex-card,.obox .board-connection,.obox .board-table,.obox .item-odds{background:#f8faf7;border:1px solid #bccdc4;color:#223c39;border-radius:6px}
+.obox .codex-stats div{background:#e6eee7;color:#223c39}.obox .codex-stats em{color:#276c58}.obox .codex-sub,.obox .board-row{border-color:#c9d5cd}.obox .booktabs{background:#edf1ec}.obox .booktabs button:not(.ghost){color:#fff!important}
+.obox .route-wallet{background:#f8f4e7;border-color:#c7b378;color:#805c20}.obox .route-wallet span,.obox .route-item>span{color:#805c20}
+.obox .route-map{background:radial-gradient(ellipse at top,#e6f1e9,#d3e0d7);border-color:#abc5b6}.obox .route-choices .rew{background:#f8faf7!important;border-color:#a9c3b5!important}.obox .route-start{color:#276c58;border-color:#43836d}.obox .route-start.next{color:#245b55;border-color:#43836d}.obox .route-branch,.obox .route-merge{border-color:#749387}
+.obox .route-result{background:#e0eee5;border-color:#87ad98;color:#254c46}.obox .route-chest{color:#936519;text-shadow:none}.obox .item-odds b{color:#245b55}.obox .item-rarity,.obox .item-odds span,.obox .codex-card p[style*="color"],.obox .wheel-key span{filter:brightness(.58) saturate(1.2)}
+.obox .route-scene{border-color:#abc5b6;background:#f8faf7}.obox .scene-dialog{background:#f8faf7;color:#223c39;border-color:#abc5b6}.obox .scene-dialog b,.obox .scene-dialog p,.obox .scene-status{color:#254c46}.obox .scene-dialog p{font-size:13px}.obox .scene-status{opacity:.8}.obox .scene-header h3{color:#fff}.obox .scene-header small{color:#e0eee5}
+.obox input,.obox select{background:#f7f9f5;color:#254c46;border:1px solid #b7c6bd;border-radius:5px;padding:8px}.obox button:focus-visible,.duelbox button:focus-visible{outline:2px solid #43836d;outline-offset:2px}
+.duel-arena{background:radial-gradient(ellipse at 50% 80%,#dce9df,#b9d0c3 70%,#a9c4b5)}.duel-unit b,.duel-unit span,.duel-unit small,.duel-center,.duelbox p{color:#254c46}.duel-center strong{color:#936519}.duel-unit canvas{filter:drop-shadow(0 5px 3px #405b5266)}
+.sqtop canvas{width:72px;height:72px}.codex-card h3 canvas{width:64px;height:64px;flex-shrink:0}.side-unit-head canvas{image-rendering:pixelated}.obox .promo-growth{color:#276c58!important}
+@media(max-width:480px){.sqtop canvas{width:58px;height:58px}.codex-card h3 canvas{width:52px;height:52px}}
+
 </style>
 </head>
 <body>
@@ -772,23 +795,23 @@ function triangle(a, b) {
 /* ---------------- player roster ----------------
    every unit: base stats total exactly 60, growths total exactly 300 */
 var ROSTER = [
-  { key: 'vex', name: 'VEX', cls: 'BLADE COMMANDER', promo: 'WARLORD', spr: 'vanguard', pal: 'vex', mov: 5, wpn: 'blade',
+  { key: 'vex', name: 'KAEL', cls: 'ARC VANGUARD', promo: 'ARC CAPTAIN', spr: 'vanguard', pal: 'vex', mov: 5, wpn: 'blade',
     base: { hp: 20, str: 11, mag: 0, skl: 9, def: 7, res: 3, spd: 7, lck: 3 },
     grow: { hp: 65, str: 65, mag: 0, skl: 50, def: 35, res: 20, spd: 45, lck: 20 },
     bio: 'Reliable frontline finisher; builds damage against wounded targets.' },
-  { key: 'kestrel', name: 'KESTREL', cls: 'GUN RUNNER', promo: 'PHANTOM', spr: 'skirmisher', pal: 'kestrel', mov: 6, wpn: 'smg',
+  { key: 'kestrel', name: 'RYN', cls: 'JET SKIRMISHER', promo: 'GHOST RUNNER', spr: 'skirmisher', pal: 'kestrel', mov: 6, wpn: 'smg',
     base: { hp: 16, str: 9, mag: 0, skl: 10, def: 4, res: 3, spd: 14, lck: 4 },
     grow: { hp: 45, str: 50, mag: 0, skl: 55, def: 20, res: 20, spd: 80, lck: 30 },
     bio: 'Fast close-range attacker; chains kills and evades return fire.' },
-  { key: 'nova', name: 'NOVA', cls: 'PLASMA ARTILLERIST', promo: 'ARCHIVIST', spr: 'techno', pal: 'nova', mov: 5, wpn: 'tech',
+  { key: 'nova', name: 'LYRA', cls: 'PLASMA CHANNELER', promo: 'FLUX SCHOLAR', spr: 'techno', pal: 'nova', mov: 5, wpn: 'tech',
     base: { hp: 16, str: 0, mag: 14, skl: 9, def: 3, res: 9, spd: 6, lck: 3 },
     grow: { hp: 45, str: 0, mag: 75, skl: 45, def: 15, res: 50, spd: 45, lck: 25 },
     bio: 'Area damage specialist with powerful magical attacks.' },
-  { key: 'rampart', name: 'RAMPART', cls: 'AEGIS KNIGHT', promo: 'CITADEL', spr: 'heavy', pal: 'rampart', mov: 4, wpn: 'lance',
+  { key: 'rampart', name: 'BRAX', cls: 'BASTION SENTINEL', promo: 'BULWARK PRIME', spr: 'heavy', pal: 'rampart', mov: 4, wpn: 'lance',
     base: { hp: 23, str: 5, mag: 0, skl: 6, def: 16, res: 5, spd: 3, lck: 2 },
     grow: { hp: 75, str: 25, mag: 0, skl: 35, def: 85, res: 40, spd: 25, lck: 15 },
     bio: 'Physical tank whose armour directly powers attacks.' },
-  { key: 'echo', name: 'ECHO', cls: 'TRAUMA SPECIALIST', promo: 'LIFEWARDEN', spr: 'medic', pal: 'echo', mov: 5, wpn: 'staff',
+  { key: 'echo', name: 'MIRA', cls: 'NANO SURGEON', promo: 'CELL WEAVER', spr: 'medic', pal: 'echo', mov: 5, wpn: 'staff',
     base: { hp: 18, str: 0, mag: 12, skl: 7, def: 5, res: 10, spd: 5, lck: 3 },
     grow: { hp: 65, str: 0, mag: 70, skl: 35, def: 30, res: 65, spd: 20, lck: 15 },
     bio: 'High-output healer who protects nearby wounded allies.' }
@@ -796,19 +819,19 @@ var ROSTER = [
 
 /* later recruits, same 60 / 300 budget */
 var RECRUITS = [
-  { key: 'glitch', name: 'GLITCH', cls: 'RAIL OPERATIVE', promo: 'LONGSHOT', spr: 'grunt', pal: 'glitch', mov: 5, wpn: 'rail',
+  { key: 'glitch', name: 'JAX', cls: 'RAIL MARKSMAN', promo: 'HORIZON SNIPER', spr: 'grunt', pal: 'glitch', mov: 5, wpn: 'rail',
     base: { hp: 16, str: 11, mag: 0, skl: 14, def: 3, res: 4, spd: 8, lck: 4 },
     grow: { hp: 45, str: 65, mag: 0, skl: 80, def: 15, res: 25, spd: 45, lck: 25 },
     bio: 'Long-range precision shooter who disrupts enemy actions.' },
-  { key: 'sable', name: 'SABLE', cls: 'VOID ASSASSIN', promo: 'NULLMANCER', spr: 'techno', pal: 'sable', mov: 5, wpn: 'virus',
+  { key: 'sable', name: 'NYX', cls: 'PHASE STALKER', promo: 'NULL WRAITH', spr: 'techno', pal: 'sable', mov: 5, wpn: 'virus',
     base: { hp: 15, str: 0, mag: 12, skl: 10, def: 3, res: 6, spd: 11, lck: 3 },
     grow: { hp: 40, str: 0, mag: 65, skl: 55, def: 15, res: 35, spd: 70, lck: 20 },
     bio: 'Mobile magic assassin with strong critical strikes.' },
-  { key: 'onyx', name: 'ONYX', cls: 'SIEGE BERSERKER', promo: 'JUGGERNAUT', spr: 'heavy', pal: 'onyx', mov: 4, wpn: 'claw',
+  { key: 'onyx', name: 'TORQ', cls: 'REACTOR BRAWLER', promo: 'REACTOR TITAN', spr: 'heavy', pal: 'onyx', mov: 4, wpn: 'claw',
     base: { hp: 22, str: 13, mag: 0, skl: 6, def: 10, res: 3, spd: 4, lck: 2 },
     grow: { hp: 75, str: 80, mag: 0, skl: 35, def: 50, res: 15, spd: 30, lck: 15 },
     bio: 'Heavy bruiser who becomes more dangerous when wounded.' },
-  { key: 'wisp', name: 'WISP', cls: 'WARD WEAVER', promo: 'SERAPH', spr: 'medic', pal: 'wisp', mov: 6, wpn: 'staff',
+  { key: 'wisp', name: 'IONA', cls: 'AEGIS TECHNICIAN', promo: 'AURA ENGINEER', spr: 'medic', pal: 'wisp', mov: 6, wpn: 'staff',
     base: { hp: 16, str: 0, mag: 10, skl: 7, def: 5, res: 10, spd: 10, lck: 2 },
     grow: { hp: 50, str: 0, mag: 55, skl: 30, def: 30, res: 55, spd: 65, lck: 15 },
     bio: 'Mobile support who shields allies and counters attackers.' }
@@ -945,25 +968,28 @@ var STATN = { hp: 'HP', str: 'STR', mag: 'MAG', skl: 'SKL', def: 'DEF', res: 'RE
 /* ================= CLASS PROGRESSION ================= */
 var MAXTIER=2;
 var CLASS_PATHS={
- vex:[['WARLORD','DUELIST','OVERLORD','BLADEMASTER'],['str','def'],['spd','skl']],
- kestrel:[['PHANTOM','RAIDER','NIGHTSTALKER','STORMRUNNER'],['spd','skl'],['str','lck']],
- nova:[['ARCHIVIST','PYROMANCER','ORACLE','STARBREAKER'],['mag','res'],['mag','skl']],
- rampart:[['CITADEL','IRONCLAD','BASTION','DREADNOUGHT'],['def','res'],['str','def']],
- echo:[['LIFEWARDEN','COMBAT MEDIC','LIFEBINDER','TRIAGE COMMANDER'],['mag','res'],['mag','spd']],
- glitch:[['LONGSHOT','DISRUPTOR','DEADEYE','SIGNAL REAPER'],['skl','str'],['spd','lck']],
- sable:[['NULLMANCER','HEX ASSASSIN','VOID SOVEREIGN','NIGHT HEX'],['mag','res'],['mag','skl']],
- onyx:[['JUGGERNAUT','SIEGEBREAKER','COLOSSUS','WAR ENGINE'],['def','str'],['str','skl']],
- wisp:[['SERAPH','WARDEN','ARCHANGEL','AEGIS PRIME'],['mag','spd'],['res','def']]
+ vex:[['ARC CAPTAIN','EDGE STRIKER','WAR MARSHAL','PHASE BLADE'],['str','def'],['spd','skl']],
+ kestrel:[['GHOST RUNNER','BLITZ RAIDER','NIGHT VELOCITY','HYPER STRIKER'],['spd','skl'],['str','lck']],
+ nova:[['FLUX SCHOLAR','SOLAR CASTER','QUANTUM SAGE','SUPERNOVA'],['mag','res'],['mag','skl']],
+ rampart:[['BULWARK PRIME','KINETIC GUARD','FORTRESS PRIME','ATLAS ENGINE'],['def','res'],['str','def']],
+ echo:[['CELL WEAVER','FIELD SURGEON','GENESIS MEDIC','RESCUE DIRECTOR'],['mag','res'],['mag','spd']],
+ glitch:[['HORIZON SNIPER','SIGNAL HUNTER','ZERO POINT','SPECTRUM REAPER'],['skl','str'],['spd','lck']],
+ sable:[['NULL WRAITH','SHADOW STRIKE','VOID EMPRESS','ECLIPSE BLADE'],['mag','res'],['mag','skl']],
+ onyx:[['REACTOR TITAN','BREACH HAMMER','CORE LEVIATHAN','FUSION ENGINE'],['def','str'],['str','skl']],
+ wisp:[['AURA ENGINEER','SHIELD TECH','HALO ARCHITECT','AEGIS NEXUS'],['mag','spd'],['res','def']]
 };
 var CLASS_SKILLS={"vex": ["FINISHER", "Deal 40% more damage to enemies at or below half HP; recover 10% max HP on a kill."], "kestrel": ["RUN AND GUN", "+10 avoid; once per turn, an initiated kill grants another action."], "nova": ["PLASMA BURST", "Opening hit splashes 40% of dealt damage to adjacent hostiles."], "rampart": ["ARMOUR ENGINE", "Add 40% of DEF to all attack damage; take 2 less damage before critical multipliers."], "echo": ["TRAUMA RESPONSE", "+4 repair power; once per battle heal a nearby ally below 30% HP for 40% of max HP after a nonlethal hit."], "glitch": ["TARGET LOCK", "+12 hit; first successful hit each turn jams a non-boss enemy."], "sable": ["VOID CUT", "+10 critical chance, plus 15 more when flanking; ignore 2 RES."], "onyx": ["FURY ENGINE", "+1 range; +2 attack, plus 35% of STR below half HP."], "wisp": ["WARD LINK", "Healing grants a 5-point shield; can counterattack with a repair weapon."]};
-var PROMO_SKILLS={"WARLORD": ["Battle Hunger", "+3 damage; recover an extra 5% max HP per kill.", {"attack": 3, "killHeal": 0.05}], "DUELIST": ["Precision Guard", "+15 hit and +10 avoid.", {"hit": 15, "avoid": 10}], "OVERLORD": ["Death Sentence", "+25 percentage points finisher damage; +3 damage.", {"execute": 0.25, "attack": 3}], "BLADEMASTER": ["Perfect Edge", "+15 crit; doubles with a 2 SPD lead instead of 4.", {"crit": 15, "double": 2}], "PHANTOM": ["Ghost Step", "+15 avoid; +2 effective SPD.", {"avoid": 15, "speed": 2}], "RAIDER": ["Rapid Fire", "+3 damage; +10 hit.", {"attack": 3, "hit": 10}], "NIGHTSTALKER": ["Silent Finish", "+15 crit and 10% max HP recovered per kill.", {"crit": 15, "killHeal": 0.1}], "STORMRUNNER": ["Velocity", "+3 effective SPD; +1 attack range.", {"speed": 3, "range": 1}], "ARCHIVIST": ["Piercing Code", "Ignore 4 more RES; +10 hit.", {"pierce": 4, "hit": 10}], "PYROMANCER": ["Wildfire", "Splash increases by 25 percentage points.", {"splash": 0.25}], "ORACLE": ["Predictive Field", "+15 avoid; +4 damage reduction before critical multipliers.", {"avoid": 15, "guard": 4}], "STARBREAKER": ["Supernova", "+4 damage; splash increases by 20 percentage points.", {"attack": 4, "splash": 0.2}], "CITADEL": ["Fortress", "Reduce incoming base damage by 3; +10 avoid.", {"guard": 3, "avoid": 10}], "IRONCLAD": ["Spiked Armour", "Add another 20% of DEF to damage.", {"defScale": 0.2}], "BASTION": ["Living Fortress", "Reduce incoming base damage by another 4; recover 8% max HP each player phase.", {"guard": 4, "regen": 0.08}], "DREADNOUGHT": ["Siege Fist", "Add another 20% of DEF to damage; +10 hit.", {"defScale": 0.2, "hit": 10}], "LIFEWARDEN": ["Intensive Care", "+7 healing; +2 healing range.", {"heal": 7, "range": 2}], "COMBAT MEDIC": ["Combat Triage", "+3 damage; +3 healing; can counterattack.", {"attack": 3, "heal": 3, "counter": 1}], "LIFEBINDER": ["Life Infusion", "Repairs grant an 8-point shield; +6 healing.", {"shield": 8, "heal": 6}], "TRIAGE COMMANDER": ["Critical Care", "Emergency heal can reach 4 tiles; +20 percentage points max HP restored.", {"emergencyRange": 2, "emergency": 0.2}], "LONGSHOT": ["Extended Barrel", "+1 attack range and +10 crit.", {"range": 1, "crit": 10}], "DISRUPTOR": ["Signal Pierce", "Ignore 3 DEF; +10 hit.", {"pierce": 3, "hit": 10}], "DEADEYE": ["Perfect Aim", "+20 hit; +15 crit.", {"hit": 20, "crit": 15}], "SIGNAL REAPER": ["Circuit Breaker", "+4 damage against jammed targets; ignore 3 more DEF.", {"jamDamage": 4, "pierce": 3}], "NULLMANCER": ["Resistance Shred", "Ignore 4 additional RES.", {"pierce": 4}], "HEX ASSASSIN": ["Blood Hex", "+10 crit; recover 10% max HP per kill.", {"crit": 10, "killHeal": 0.1}], "VOID SOVEREIGN": ["Null Field", "Reduce incoming base damage by 3; +4 damage.", {"guard": 3, "attack": 4}], "NIGHT HEX": ["Phase Strike", "+15 avoid; +3 effective SPD.", {"avoid": 15, "speed": 3}], "JUGGERNAUT": ["Unbreakable", "Reduce incoming base damage by 3; recover 5% max HP each player phase.", {"guard": 3, "regen": 0.05}], "SIEGEBREAKER": ["Battering Ram", "Ignore 4 DEF; +2 damage.", {"pierce": 4, "attack": 2}], "COLOSSUS": ["Last Stand", "+25 percentage points STR scaling while wounded; +3 damage reduction before critical multipliers.", {"fury": 0.25, "guard": 3}], "WAR ENGINE": ["Heavy Barrage", "+1 attack range; +4 damage.", {"range": 1, "attack": 4}], "SERAPH": ["Radiant Repair", "+6 healing; +1 range.", {"heal": 6, "range": 1}], "WARDEN": ["Shield Craft", "+5 shield strength; reduce own incoming base damage by 2.", {"shield": 5, "guard": 2}], "ARCHANGEL": ["Renewal", "+7 healing; recover 8% max HP each player phase.", {"heal": 7, "regen": 0.08}], "AEGIS PRIME": ["Barrier Matrix", "+7 shield strength; +2 healing.", {"shield": 7, "heal": 2}]};
-function promotionSkills(u){if(u.side!=="ply")return [];var names=(u.path||[]).slice();if(u.promoted&&names.indexOf(u.cls)<0)names.push(u.cls);return names.filter(function(n,i){return names.indexOf(n)===i&&PROMO_SKILLS[n];}).map(function(n){return PROMO_SKILLS[n];});}
+var PROMO_SKILLS={"ARC CAPTAIN": ["Battle Hunger", "+3 damage; recover an extra 5% max HP per kill.", {"attack": 3, "killHeal": 0.05}], "EDGE STRIKER": ["Precision Guard", "+15 hit and +10 avoid.", {"hit": 15, "avoid": 10}], "WAR MARSHAL": ["Death Sentence", "+25 percentage points finisher damage; +3 damage.", {"execute": 0.25, "attack": 3}], "PHASE BLADE": ["Perfect Edge", "+15 crit; doubles with a 2 SPD lead instead of 4.", {"crit": 15, "double": 2}], "GHOST RUNNER": ["Ghost Step", "+15 avoid; +2 effective SPD.", {"avoid": 15, "speed": 2}], "BLITZ RAIDER": ["Rapid Fire", "+3 damage; +10 hit.", {"attack": 3, "hit": 10}], "NIGHT VELOCITY": ["Silent Finish", "+15 crit and 10% max HP recovered per kill.", {"crit": 15, "killHeal": 0.1}], "HYPER STRIKER": ["Velocity", "+3 effective SPD; +1 attack range.", {"speed": 3, "range": 1}], "FLUX SCHOLAR": ["Piercing Code", "Ignore 4 more RES; +10 hit.", {"pierce": 4, "hit": 10}], "SOLAR CASTER": ["Wildfire", "Splash increases by 25 percentage points.", {"splash": 0.25}], "QUANTUM SAGE": ["Predictive Field", "+15 avoid; +4 damage reduction before critical multipliers.", {"avoid": 15, "guard": 4}], "SUPERNOVA": ["Supernova", "+4 damage; splash increases by 20 percentage points.", {"attack": 4, "splash": 0.2}], "BULWARK PRIME": ["Fortress", "Reduce incoming base damage by 3; +10 avoid.", {"guard": 3, "avoid": 10}], "KINETIC GUARD": ["Spiked Armour", "Add another 20% of DEF to damage.", {"defScale": 0.2}], "FORTRESS PRIME": ["Living Fortress", "Reduce incoming base damage by another 4; recover 8% max HP each player phase.", {"guard": 4, "regen": 0.08}], "ATLAS ENGINE": ["Siege Fist", "Add another 20% of DEF to damage; +10 hit.", {"defScale": 0.2, "hit": 10}], "CELL WEAVER": ["Intensive Care", "+7 healing; +2 healing range.", {"heal": 7, "range": 2}], "FIELD SURGEON": ["Combat Triage", "+3 damage; +3 healing; can counterattack.", {"attack": 3, "heal": 3, "counter": 1}], "GENESIS MEDIC": ["Life Infusion", "Repairs grant an 8-point shield; +6 healing.", {"shield": 8, "heal": 6}], "RESCUE DIRECTOR": ["Critical Care", "Emergency heal can reach 4 tiles; +20 percentage points max HP restored.", {"emergencyRange": 2, "emergency": 0.2}], "HORIZON SNIPER": ["Extended Barrel", "+1 attack range and +10 crit.", {"range": 1, "crit": 10}], "SIGNAL HUNTER": ["Signal Pierce", "Ignore 3 DEF; +10 hit.", {"pierce": 3, "hit": 10}], "ZERO POINT": ["Perfect Aim", "+20 hit; +15 crit.", {"hit": 20, "crit": 15}], "SPECTRUM REAPER": ["Circuit Breaker", "+4 damage against jammed targets; ignore 3 more DEF.", {"jamDamage": 4, "pierce": 3}], "NULL WRAITH": ["Resistance Shred", "Ignore 4 additional RES.", {"pierce": 4}], "SHADOW STRIKE": ["Blood Hex", "+10 crit; recover 10% max HP per kill.", {"crit": 10, "killHeal": 0.1}], "VOID EMPRESS": ["Null Field", "Reduce incoming base damage by 3; +4 damage.", {"guard": 3, "attack": 4}], "ECLIPSE BLADE": ["Phase Strike", "+15 avoid; +3 effective SPD.", {"avoid": 15, "speed": 3}], "REACTOR TITAN": ["Unbreakable", "Reduce incoming base damage by 3; recover 5% max HP each player phase.", {"guard": 3, "regen": 0.05}], "BREACH HAMMER": ["Battering Ram", "Ignore 4 DEF; +2 damage.", {"pierce": 4, "attack": 2}], "CORE LEVIATHAN": ["Last Stand", "+25 percentage points STR scaling while wounded; +3 damage reduction before critical multipliers.", {"fury": 0.25, "guard": 3}], "FUSION ENGINE": ["Heavy Barrage", "+1 attack range; +4 damage.", {"range": 1, "attack": 4}], "AURA ENGINEER": ["Radiant Repair", "+6 healing; +1 range.", {"heal": 6, "range": 1}], "SHIELD TECH": ["Shield Craft", "+5 shield strength; reduce own incoming base damage by 2.", {"shield": 5, "guard": 2}], "HALO ARCHITECT": ["Renewal", "+7 healing; recover 8% max HP each player phase.", {"heal": 7, "regen": 0.08}], "AEGIS NEXUS": ["Barrier Matrix", "+7 shield strength; +2 healing.", {"shield": 7, "heal": 2}]};
+var CLASS_RENAMES={"BLADE COMMANDER": "ARC VANGUARD", "WARLORD": "ARC CAPTAIN", "DUELIST": "EDGE STRIKER", "OVERLORD": "WAR MARSHAL", "BLADEMASTER": "PHASE BLADE", "GUN RUNNER": "JET SKIRMISHER", "PHANTOM": "GHOST RUNNER", "RAIDER": "BLITZ RAIDER", "NIGHTSTALKER": "NIGHT VELOCITY", "STORMRUNNER": "HYPER STRIKER", "PLASMA ARTILLERIST": "PLASMA CHANNELER", "ARCHIVIST": "FLUX SCHOLAR", "PYROMANCER": "SOLAR CASTER", "ORACLE": "QUANTUM SAGE", "STARBREAKER": "SUPERNOVA", "AEGIS KNIGHT": "BASTION SENTINEL", "CITADEL": "BULWARK PRIME", "IRONCLAD": "KINETIC GUARD", "BASTION": "FORTRESS PRIME", "DREADNOUGHT": "ATLAS ENGINE", "TRAUMA SPECIALIST": "NANO SURGEON", "LIFEWARDEN": "CELL WEAVER", "COMBAT MEDIC": "FIELD SURGEON", "LIFEBINDER": "GENESIS MEDIC", "TRIAGE COMMANDER": "RESCUE DIRECTOR", "RAIL OPERATIVE": "RAIL MARKSMAN", "LONGSHOT": "HORIZON SNIPER", "DISRUPTOR": "SIGNAL HUNTER", "DEADEYE": "ZERO POINT", "SIGNAL REAPER": "SPECTRUM REAPER", "VOID ASSASSIN": "PHASE STALKER", "NULLMANCER": "NULL WRAITH", "HEX ASSASSIN": "SHADOW STRIKE", "VOID SOVEREIGN": "VOID EMPRESS", "NIGHT HEX": "ECLIPSE BLADE", "SIEGE BERSERKER": "REACTOR BRAWLER", "JUGGERNAUT": "REACTOR TITAN", "SIEGEBREAKER": "BREACH HAMMER", "COLOSSUS": "CORE LEVIATHAN", "WAR ENGINE": "FUSION ENGINE", "WARD WEAVER": "AEGIS TECHNICIAN", "SERAPH": "AURA ENGINEER", "WARDEN": "SHIELD TECH", "ARCHANGEL": "HALO ARCHITECT", "AEGIS PRIME": "AEGIS NEXUS"};
+function currentClass(n){return CLASS_RENAMES[n]||n;}
+function updateClassIdentity(u){if(u.side!=="ply")return u;u.cls=currentClass(u.cls);u.path=(u.path||[]).map(currentClass);if(u.promo)u.promo=currentClass(u.promo);return u;}
+function promotionSkills(u){if(u.side!=="ply")return [];var names=(u.path||[]).map(currentClass);if(u.promoted&&names.indexOf(currentClass(u.cls))<0)names.push(currentClass(u.cls));return names.filter(function(n,i){return names.indexOf(n)===i&&PROMO_SKILLS[n];}).map(function(n){return PROMO_SKILLS[n];});}
 function perk(u,k){return promotionSkills(u).reduce(function(t,p){return t+(p[2][k]||0);},0);}
 function hasSkill(u,k){return u.side==='ply'&&u.key===k;}
 function careerLevel(u){return (u.careerBase||0)+u.lvl;}
 /* Every promotion adds exactly 100 percentage points to growth. */
-var PROMO_GROWTH={"WARLORD":[25,30,0,10,20,5,5,5],"DUELIST":[10,20,0,30,5,5,25,5],"OVERLORD":[25,35,0,15,15,5,5,0],"BLADEMASTER":[10,20,0,30,0,0,30,10],"PHANTOM":[10,10,0,20,5,5,40,10],"RAIDER":[15,35,0,25,5,5,10,5],"NIGHTSTALKER":[10,20,0,25,0,5,25,15],"STORMRUNNER":[10,15,0,25,0,5,40,5],"ARCHIVIST":[10,0,30,20,5,30,5,0],"PYROMANCER":[15,0,40,25,0,5,10,5],"ORACLE":[15,0,15,15,10,25,15,5],"STARBREAKER":[10,0,45,25,0,10,10,0],"CITADEL":[30,5,0,5,30,25,0,5],"IRONCLAD":[20,15,0,10,45,5,5,0],"BASTION":[35,0,0,0,40,25,0,0],"DREADNOUGHT":[20,15,0,15,45,5,0,0],"LIFEWARDEN":[20,0,35,5,5,30,5,0],"COMBAT MEDIC":[20,0,30,20,10,10,10,0],"LIFEBINDER":[20,0,40,5,10,25,0,0],"TRIAGE COMMANDER":[20,0,25,10,5,15,25,0],"LONGSHOT":[10,25,0,40,0,5,10,10],"DISRUPTOR":[15,25,0,30,5,10,10,5],"DEADEYE":[5,25,0,45,0,0,10,15],"SIGNAL REAPER":[15,35,0,35,0,5,10,0],"NULLMANCER":[10,0,40,20,0,20,10,0],"HEX ASSASSIN":[10,0,30,25,0,5,20,10],"VOID SOVEREIGN":[20,0,35,10,10,20,5,0],"NIGHT HEX":[10,0,25,20,0,5,35,5],"JUGGERNAUT":[30,20,0,5,35,10,0,0],"SIEGEBREAKER":[20,40,0,25,10,0,5,0],"COLOSSUS":[35,35,0,0,25,5,0,0],"WAR ENGINE":[15,45,0,25,10,0,5,0],"SERAPH":[15,0,35,5,5,20,20,0],"WARDEN":[25,0,15,0,25,30,5,0],"ARCHANGEL":[25,0,40,0,5,20,10,0],"AEGIS PRIME":[20,0,20,0,30,30,0,0]};
-function promoGrowth(name){var out={},row=PROMO_GROWTH[name]||[];STATK.forEach(function(k,i){out[k]=row[i]||0;});return out;}
+var PROMO_GROWTH={"ARC CAPTAIN":[25,30,0,10,20,5,5,5],"EDGE STRIKER":[10,20,0,30,5,5,25,5],"WAR MARSHAL":[25,35,0,15,15,5,5,0],"PHASE BLADE":[10,20,0,30,0,0,30,10],"GHOST RUNNER":[10,10,0,20,5,5,40,10],"BLITZ RAIDER":[15,35,0,25,5,5,10,5],"NIGHT VELOCITY":[10,20,0,25,0,5,25,15],"HYPER STRIKER":[10,15,0,25,0,5,40,5],"FLUX SCHOLAR":[10,0,30,20,5,30,5,0],"SOLAR CASTER":[15,0,40,25,0,5,10,5],"QUANTUM SAGE":[15,0,15,15,10,25,15,5],"SUPERNOVA":[10,0,45,25,0,10,10,0],"BULWARK PRIME":[30,5,0,5,30,25,0,5],"KINETIC GUARD":[20,15,0,10,45,5,5,0],"FORTRESS PRIME":[35,0,0,0,40,25,0,0],"ATLAS ENGINE":[20,15,0,15,45,5,0,0],"CELL WEAVER":[20,0,35,5,5,30,5,0],"FIELD SURGEON":[20,0,30,20,10,10,10,0],"GENESIS MEDIC":[20,0,40,5,10,25,0,0],"RESCUE DIRECTOR":[20,0,25,10,5,15,25,0],"HORIZON SNIPER":[10,25,0,40,0,5,10,10],"SIGNAL HUNTER":[15,25,0,30,5,10,10,5],"ZERO POINT":[5,25,0,45,0,0,10,15],"SPECTRUM REAPER":[15,35,0,35,0,5,10,0],"NULL WRAITH":[10,0,40,20,0,20,10,0],"SHADOW STRIKE":[10,0,30,25,0,5,20,10],"VOID EMPRESS":[20,0,35,10,10,20,5,0],"ECLIPSE BLADE":[10,0,25,20,0,5,35,5],"REACTOR TITAN":[30,20,0,5,35,10,0,0],"BREACH HAMMER":[20,40,0,25,10,0,5,0],"CORE LEVIATHAN":[35,35,0,0,25,5,0,0],"FUSION ENGINE":[15,45,0,25,10,0,5,0],"AURA ENGINEER":[15,0,35,5,5,20,20,0],"SHIELD TECH":[25,0,15,0,25,30,5,0],"HALO ARCHITECT":[25,0,40,0,5,20,10,0],"AEGIS NEXUS":[20,0,20,0,30,30,0,0]};
+function promoGrowth(name){var out={},row=PROMO_GROWTH[currentClass(name)]||[];STATK.forEach(function(k,i){out[k]=row[i]||0;});return out;}
 function growthBonusLabel(g){return STATK.filter(function(k){return g[k]>0;}).map(function(k){return STATN[k]+" +"+g[k]+"%";}).join(" · ");}
 function promotionOptions(u){var d=CLASS_PATHS[u.key],tier=u.tier||0;if(!d||tier>=MAXTIER)return [];return [0,1].map(function(i){return {name:d[0][tier*2+i],stats:d[i+1],skill:PROMO_SKILLS[d[0][tier*2+i]],growth:promoGrowth(d[0][tier*2+i])};});}
 function canPromote(u){return u&&u.side==='ply'&&u.chp>0&&u.lvl>=PROMOLVL&&(u.tier||0)<MAXTIER&&promotionOptions(u).length>0;}
@@ -978,6 +1004,7 @@ function promoteUnit(u,i){
 function restoreCareer(u,p){
  u.tier=p.tier===undefined?(p.promoted?1:0):p.tier;u.careerBase=p.careerBase||0;u.path=p.path||[];
  if(p.tier===undefined&&p.promoted){u.careerBase=14;u.lvl=Math.max(1,u.lvl-14);u.path=[u.cls];}
+ updateClassIdentity(u);
  /* Preserve saved movement and all previous gains. */
 }
 function actionComplete(u){u.acted=!u.extraAction;u.extraAction=false;}
@@ -1333,8 +1360,9 @@ function reviveFallen(fullHealth, fallbackOwner) {
     while (nu.lvl < f.lvl && !atMax(nu)) levelUp(nu);
     S.levelups = oldLevelups;
     nu.cls = f.cls || nu.cls;
-    if(f.cls===def.promo){nu.promoted=true;restoreCareer(nu,{promoted:true});}
+    if(currentClass(f.cls)===def.promo){nu.promoted=true;restoreCareer(nu,{promoted:true});}
   }
+  updateClassIdentity(nu);
   nu.owner = f.autonomous?String(f.owner||''):(f.owner || fallbackOwner || '');nu.autonomous=!!f.autonomous;
   nu.chp = fullHealth ? nu.stats.hp : Math.max(1, Math.floor(nu.stats.hp / 2));
   S.dead.splice(index,1); S.units.push(nu); return nu;
@@ -2145,7 +2173,7 @@ function resumeExact(d){
   if(!Array.isArray(d.units)||!d.units.some(function(u){return u.side==='ply'&&u.chp>0;})||['map','clear'].indexOf(d.screen)<0||!LAYOUTS[d.terrain]||!LAYOUTS[d.terrain][d.layout]||(d.screen==='map'&&d.phase!=='player'))return false;
   resetLooks();runEpoch++; var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
   fields.forEach(function(k){S[k]=d[k];});S.difficulty=validDifficulty(S.difficulty);S.nextDifficulty=S.difficulty;S.runId=S.runId||Date.now().toString(36)+"-legacy";S.recordMode=S.recordMode||(d.local?"local co-op":"solo");S.recordSize=S.recordSize||S.squadSize;S.best=Math.max(S.best||1,d.best||1);S.reinforce=S.reinforce||[];S.log=S.log||[];S.levelups=S.levelups||[];
-  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.grid=buildGrid(S.terrain,S.layout);RNG.s=d.rng||1;
+  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){updateClassIdentity(u);u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.grid=buildGrid(S.terrain,S.layout);RNG.s=d.rng||1;
   S.sel=null;S.inspect=null;S.tileInfo=null;S.target=null;S.mode='idle';S.reach=null;S.atkTiles=null;S.origin=null;S.fx=[];S.movers=[];S.busy=0;S.gameover=false;S.resumeLayout=null;S.bannerT=0;S.shake=0;S.saveError='';S.invOpen=false;bgCanvas=null;
   NET.local=!!d.local;NET.phase=d.local?'match':'idle';NET.host=!!d.local;NET.started=!!d.local;NET.pending=false;NET.localPlayers=d.local?d.local.players:[];NET.localActive=d.local?d.local.active:0;NET.ownerColors=null;
   if(S.danger)computeDanger();return true;
@@ -2196,6 +2224,45 @@ function tintPart(hex,n) {
   function f(v){return Math.round(n>=0?v+(255-v)*n:v*(1+n));}
   return 'rgb('+f(r)+','+f(g)+','+f(b)+')';
 }
+
+function highDetailClass(c,p,spr){
+ var match=/^(class|merc)_(vex|kestrel|nova|rampart|echo|glitch|sable|onyx|wisp)$/.exec(spr);if(!match)return false;
+ var k=match[2],merc=match[1]==='merc',heavy=k==='rampart'||k==='onyx',robe=['nova','sable','wisp'].indexOf(k)>=0;
+ var D=tintPart(p.B,-.35),L=tintPart(p.A,.42),M=tintPart(p.W,-.38),S=tintPart(p.S,-.23),K=p.K;
+ function r(x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h);}
+ function poly(a,col){for(var y=0;y<48;y++){var hits=[];for(var i=0;i<a.length;i++){var v=a[i],w=a[(i+1)%a.length];if((v[1]>y+.5)!==(w[1]>y+.5))hits.push(v[0]+(y+.5-v[1])*(w[0]-v[0])/(w[1]-v[1]));}hits.sort(function(a,b){return a-b;});for(var j=0;j+1<hits.length;j+=2){var l=Math.ceil(hits[j]-.5),e=Math.ceil(hits[j+1]-.5);if(e>l)r(l,y,e-l,1,col);}}}
+ function plate(x,y,w,h,col){r(x+1,y,w-2,h,K);r(x,y+1,w,h-2,K);r(x+1,y+1,w-2,h-2,col);r(x+2,y+1,w-4,1,L);r(x+1,y+h-2,w-2,1,D);}
+ // Long coats, cloak and equipment sit behind the silhouette.
+ if(robe||k==='glitch'){poly([[16,15],[30,15],[34,31],[38,43],[25,41],[20,43],[10,42],[14,30]],K);poly([[17,17],[29,17],[32,32],[35,41],[25,39],[20,41],[12,40]],p.C);poly([[17,23],[20,24],[17,39],[14,40]],p.B);r(30,31,2,8,p.B);}
+ if(k==='kestrel'){plate(8,15,9,19,p.C);r(9,18,2,11,p.G);plate(31,16,7,17,p.B);r(34,28,2,6,p.V);}
+ if(k==='echo'){plate(9,17,9,17,p.A);r(11,22,5,2,p.G);r(13,20,1,6,p.G);}
+ if(k==='wisp'){plate(10,16,7,13,p.C);plate(32,16,6,13,p.C);r(11,19,2,6,p.G);r(35,19,2,6,p.G);}
+ // Boots, articulated legs, belts and torso.
+ var x=heavy?13:16,w=heavy?11:8;
+ plate(x,30,w,14,p.B);plate(25,30,w,14,p.B);plate(x-2,40,w+3,5,p.C);plate(25,40,w+3,5,p.C);
+ r(x+2,33,w-4,4,p.A);r(27,33,w-4,4,p.A);r(x+2,40,3,2,L);r(27,40,3,2,L);
+ poly([[heavy?10:14,16],[19,14],[29,14],[heavy?38:34,16],[heavy?35:31,29],[29,34],[19,34],[heavy?13:17,29]],K);
+ poly([[heavy?12:16,17],[20,15],[28,15],[heavy?36:32,17],[heavy?33:29,29],[28,32],[20,32],[heavy?15:19,29]],p.B);
+ poly([[heavy?13:17,18],[23,16],[heavy?35:31,18],[28,24],[24,26],[20,24]],p.A);r(23,19,3,5,p.G);r(24,19,1,2,p.H);r(19,27,10,2,p.C);r(22,29,4,3,p.X);r(22,29,4,1,L);
+ // Asymmetrical pauldrons and gloves.
+ plate(heavy?5:10,17,heavy?13:9,10,p.A);plate(heavy?31:30,17,heavy?13:9,10,p.A);plate(heavy?7:12,25,7,10,p.B);plate(heavy?35:32,25,7,10,p.B);r(heavy?9:14,29,3,3,p.G);r(heavy?37:34,29,3,3,p.C);
+ // Different head silhouettes, face and visor.
+ if(k==='sable'||k==='nova'){poly([[24,2],[31,5],[35,14],[30,17],[18,17],[13,14],[17,5]],K);poly([[24,4],[30,7],[32,14],[29,16],[19,16],[16,13],[19,7]],p.C);poly([[23,6],[29,8],[29,14],[19,14],[19,8]],p.A);r(20,10,8,4,K);r(21,11,2,1,p.V);r(26,11,2,1,p.V);if(k==='nova'){r(23,2,2,5,p.G);r(17,5,2,2,L);r(29,5,2,2,L);}}
+ else if(k==='echo'||k==='wisp'||k==='kestrel'){plate(16,4,16,14,p.A);r(18,8,12,8,p.S);r(18,13,12,3,S);r(18,8,12,3,K);r(19,9,4,2,p.V);r(25,9,4,2,p.V);r(21,14,6,1,K);if(k==='echo'){r(16,4,16,3,L);r(22,4,4,4,p.G);r(20,5,8,1,p.G);}if(k==='kestrel'){poly([[15,5],[18,1],[29,2],[34,6],[30,9],[25,5],[19,8]],p.C);r(31,7,3,6,p.X);}if(k==='wisp'){r(16,5,2,9,p.C);r(30,5,2,9,p.C);r(18,3,12,2,p.G);}}
+ else{plate(heavy?14:16,3,heavy?20:16,15,p.A);r(heavy?16:18,8,heavy?16:12,5,K);r(heavy?17:19,9,heavy?14:10,2,p.V);r(heavy?17:19,9,heavy?6:4,1,p.H);r(21,14,6,2,p.C);if(k==='glitch'){r(30,7,4,5,K);r(31,8,2,2,p.G);r(32,3,1,5,p.X);}if(k==='vex'){r(22,1,4,5,p.C);r(23,1,2,4,p.G);}if(heavy){r(13,6,3,9,p.C);r(32,6,3,9,p.C);}}
+ // Class weapons and distinctive silhouettes, not recolors.
+ if(k==='vex'){poly([[39,3],[42,1],[44,5],[37,29],[34,32],[31,30]],K);poly([[40,4],[42,4],[36,27],[34,29],[33,28]],p.W);poly([[41,5],[42,5],[35,27],[34,27]],p.G);r(30,29,11,3,K);r(31,29,9,1,p.W);r(34,32,3,5,p.X);}
+ if(k==='kestrel'){plate(4,22,11,6,p.W);r(4,24,2,2,p.V);r(10,27,4,5,p.X);plate(34,23,12,7,p.W);r(44,25,2,2,p.G);r(35,29,4,5,p.X);}
+ if(k==='nova'||k==='echo'||k==='wisp'){r(40,11,4,32,K);r(41,12,2,30,p.W);r(41,29,2,7,p.X);if(k==='nova'){poly([[42,1],[47,7],[42,14],[37,7]],K);poly([[42,3],[45,7],[42,12],[39,7]],p.V);r(41,5,2,4,p.H);}if(k==='echo'){plate(36,3,12,10,p.A);r(40,4,3,8,p.G);r(37,7,10,2,p.G);}if(k==='wisp'){poly([[42,1],[47,5],[47,12],[42,16],[37,12],[37,5]],K);poly([[42,3],[45,6],[45,11],[42,14],[39,11],[39,6]],p.V);r(41,6,2,5,p.H);}}
+ if(k==='rampart'){poly([[1,15],[13,12],[19,16],[18,32],[10,39],[2,33]],K);poly([[3,16],[13,14],[17,17],[16,31],[10,36],[4,32]],p.A);poly([[6,18],[12,16],[14,19],[13,30],[10,33],[7,30]],p.C);r(9,20,3,10,p.G);r(7,23,7,3,p.G);r(42,5,3,35,K);r(43,6,1,32,p.W);poly([[43,0],[47,8],[43,12],[40,8]],p.G);}
+ if(k==='glitch'){poly([[8,26],[36,21],[46,21],[46,25],[28,28],[11,32],[6,30]],K);poly([[9,27],[36,23],[45,22],[45,24],[28,26],[11,30]],p.W);r(31,20,9,2,p.X);r(33,18,5,2,K);r(35,18,2,1,p.G);r(18,29,5,5,p.X);}
+ if(k==='sable'){poly([[7,20],[11,25],[8,38],[4,42],[4,35]],K);poly([[7,24],[9,26],[6,38],[5,38]],p.G);poly([[39,21],[44,28],[42,39],[37,43],[38,34]],K);poly([[40,26],[42,28],[40,38],[39,39]],p.V);}
+ if(k==='onyx'){plate(1,23,14,15,p.C);plate(33,23,14,15,p.C);for(var j=0;j<3;j++){r(3+j*4,26,3,7,p.A);r(35+j*4,26,3,7,p.A);r(3+j*4,25,2,2,p.G);r(35+j*4,25,2,2,p.G);}r(20,19,8,6,K);r(22,20,4,4,p.G);r(23,20,2,2,p.H);}
+ if(merc){ // Distinct mercenary field mask, identification stripe and insignia.
+ r(17,8,14,7,K);r(18,9,12,3,p.X);r(19,10,10,1,p.V);r(20,13,8,2,p.C);r(16,6,3,2,p.W);r(29,6,3,2,p.W);r(20,24,8,2,p.W);r(23,23,2,4,p.G);}
+ return true;
+}
+
 function getSpr(spr, pal) {
   var key = spr + '|' + pal;
   if (sprCache[key]) return sprCache[key];
@@ -2203,6 +2270,7 @@ function getSpr(spr, pal) {
   cnv.width = TILE * SC; cnv.height = TILE * SC;
   var c = cnv.getContext('2d');
   var rows = Object.prototype.hasOwnProperty.call(SPR,spr)?SPR[spr]:SPR.grunt, p = paletteOf(pal);
+  if(highDetailClass(c,p,spr)){if(Object.keys(sprCache).length>=192)sprCache={};sprCache[key]=cnv;return cnv;}
   var light={},dark={},glint={};
   Object.keys(p).forEach(function(k){light[k]=tintPart(p[k],.26);dark[k]=tintPart(p[k],-.29);glint[k]=tintPart(p[k],.58);});
   function at(x,y){return rows[y]&&rows[y][x]||'.';}
@@ -3066,7 +3134,7 @@ function unitFromWire(r) {
   for (var k in r.st) u.stats[k] = r.st[k];
   for (var g in (r.gr || {})) u.grow[g] = r.gr[g];
   u.stats.hp = r.mx;
-  return u;
+  return updateClassIdentity(u);
 }
 function netState() {
   return {
