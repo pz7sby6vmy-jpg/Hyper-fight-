@@ -1480,106 +1480,95 @@ function moveUnit(u, path, cb) {
   S.movers.push({ u: u, path: path, i: 0, t: 0, fx: u.x, fy: u.y, duration:Math.max(.065,Math.min(.125,.86/path.length)), cb: function () { S.busy--; if (cb) cb(); } });
 }
 
-/* ================= AI ================= */
-function aiScore(u, tile, t) {
-  var save = { x: u.x, y: u.y };
-  u.x = tile.x; u.y = tile.y;
-  var f = forecast(u, t);
-  var hits = (f.dbl ? 2 : 1);
-  var expect = Math.min(t.chp, f.dmg * hits) * (f.hit / 100);
-  var sc = expect * 3;
-  if (expect >= t.chp) sc += 60;
-  /* machines learn to hunt the medic, but not from the very first skirmish */
-  if (t.wpn && t.wpn.heal) sc += Math.min(12, 2 + S.chapter * 0.8);
-  if (canCounter(t, u)) {
-    var fc = forecast(t, u);
-    sc -= Math.min(u.chp, fc.dmg * (fc.dbl ? 2 : 1)) * (fc.hit / 100) * 1.6;
-    if (fc.dmg * (fc.dbl ? 2 : 1) >= u.chp) sc -= 45;
-  }
-  var tt = ter(tile.x, tile.y);
-  sc += tt.def * 2 + tt.avo * 0.1;
-  if (tt.burn) sc -= 14;
-  u.x = save.x; u.y = save.y;
-  return sc;
+/* ================= TACTICAL AI =================
+   Plan from public board state only; no RNG, hidden information, or extra actions. */
+function aiMedic(u){return !!u.wpn.heal||u.traits.indexOf('repair')>=0;}
+function aiProfile(u){
+  if(u.autonomous)return {risk:1.25,focus:1.1,cover:1.15,kill:1.15};
+  return ({story:{risk:.35,focus:.35,cover:.65,kill:.65},normal:{risk:.7,focus:.75,cover:1,kill:1},hard:{risk:.95,focus:1.2,cover:1.2,kill:1.25},nightmare:{risk:1.1,focus:1.45,cover:1.3,kill:1.5}})[validDifficulty(S.difficulty)];
 }
-
-function aiAct(u, done) {
-  if (u.chp <= 0) { done(); return; }
-  if(u.jammed){u.jammed=false;u.acted=true;say(u.name+' lost its action to sabotage.');done();return;}
-  var reach = reachable(u);
-  var enemies = foesOf(u.side);
-  var isHealer = !!u.wpn.heal || u.traits.indexOf('repair')>=0;
-
-  /* healer logic first */
-  if (isHealer) {
-    var hurt = allies(u.side).filter(function (a) { return a.id !== u.id && a.chp < a.stats.hp * 0.75; })
-      .sort(function (a, b) { return (a.chp / a.stats.hp) - (b.chp / b.stats.hp); });
-    for(var hi=0;hi<hurt.length;hi++) {
-      var tgt = hurt[hi], bestT = null, bestD = 1e9;
-      for (var k in reach) {
-        var p = k.split(','), ox = +p[0], oy = +p[1];
-        var d = Math.abs(ox - tgt.x) + Math.abs(oy - tgt.y);
-        if (d >= u.wpn.rmin && d <= wRange(u)) {
-          if (d < bestD) { bestD = d; bestT = { x: ox, y: oy }; }
-        }
-      }
-      if (bestT) {
-        moveUnit(u, pathTo(u, bestT.x, bestT.y), function () { doHeal(u, tgt); u.acted = true; done(); });
-        return;
-      }
-    }
+/* Enumerate miss, hit and crit branches in actual combat order. Shields absorb
+   one successful damaging strike. Class-triggered heals/splash remain estimates. */
+function aiExchange(a,d){
+  var fa=forecast(a,d),counter=canCounter(d,a),fd=counter?forecast(d,a):null;
+  var steps=[{f:fa,a:true}];if(counter){steps.push({f:fd,a:false});if(fd.dbl)steps.push({f:fd,a:false});}if(fa.dbl)steps.push({f:fa,a:true});
+  var out={damage:0,loss:0,kill:0,death:0};
+  function visit(i,p,ah,dh,as,ds){
+    if(p<1e-9)return;
+    if(i===steps.length||ah<=0||dh<=0){out.damage+=p*(d.chp-dh);out.loss+=p*(a.chp-ah);if(dh<=0)out.kill+=p;if(ah<=0)out.death+=p;return;}
+    var s=steps[i],f=s.f,h=f.hit/100,c=f.crit/100;
+    visit(i+1,p*(1-h),ah,dh,as,ds);
+    function hit(mult,prob){var damage=f.dmg*mult;if(s.a)visit(i+1,p*prob,ah,Math.max(0,dh-Math.max(0,damage-ds)),as,damage>0?0:ds);else visit(i+1,p*prob,Math.max(0,ah-Math.max(0,damage-as)),dh,damage>0?0:as,ds);}
+    hit(1,h*(1-c));hit(3,h*c);
   }
-
-  if(u.autonomous&&u.wpn.heal){var mates=allies('ply').filter(function(a){return a!==u&&!a.autonomous;});if(mates.length){var target=mates.sort(function(a,b){return dist(u,a)-dist(u,b);})[0],bestPos=null,bs=Infinity;Object.keys(reach).forEach(function(k){var xy=k.split(',').map(Number),tile={x:xy[0],y:xy[1]},d=Math.max(0,dist(tile,target)-wRange(u)),danger=enemies.reduce(function(t,e){return t+(dist(tile,e)<=wRange(e)+e.mov?1:0);},0),score=d*5+danger*2+(ter(tile.x,tile.y).burn?20:0);if(score<bs){bs=score;bestPos=tile;}});if(bestPos){moveUnit(u,pathTo(u,bestPos.x,bestPos.y),function(){u.acted=true;done();});return;}}}
-  /* best attack */
-  var best = null;
-  for (var kk in reach) {
-    var pp = kk.split(','), tx = +pp[0], ty = +pp[1];
-    for (var i = 0; i < enemies.length; i++) {
-      var e = enemies[i];
-      var dd = Math.abs(tx - e.x) + Math.abs(ty - e.y);
-      if (dd < u.wpn.rmin || dd > wRange(u)) continue;
-      if (u.wpn.heal) continue;
-      var sc = aiScore(u, { x: tx, y: ty }, e);
-      if (!best || sc > best.sc) best = { sc: sc, x: tx, y: ty, e: e };
-    }
+  visit(0,1,a.chp,d.chp,a.shieldHP||0,d.shieldHP||0);return out;
+}
+/* Threat coverage uses legal movement and actual min/max weapon range, not
+   a Manhattan movement-radius guess. Rebuilt after each AI action. */
+function aiThreats(u,enemies){
+  var map={};enemies.forEach(function(e){if(e.wpn.heal||e.jammed)return;var tiles=attackTiles(e,reachable(e,true));Object.keys(tiles).forEach(function(k){(map[k]||(map[k]=[])).push(e);});});return map;
+}
+/* Reverse weighted distance to valid attack/heal tiles, respecting walls,
+   enemy blockers and terrain costs. Friendly squares may be traversed. */
+function aiGoalField(u,target){
+  var best={},q=[],r=wRange(u),min=u.wpn.rmin;
+  for(var y=0;y<MAPH;y++)for(var x=0;x<MAPW;x++){
+    var n=Math.abs(x-target.x)+Math.abs(y-target.y),occ=unitAt(x,y);if(n<min||n>r||ter(x,y).block||occ&&occ!==u)continue;
+    var k=x+','+y;best[k]=0;q.push({x:x,y:y,c:0});
   }
-  function engage() {
-    moveUnit(u, pathTo(u, best.x, best.y), function () {
-      if (best.e.chp > 0 && u.chp > 0) doCombat(u, best.e);
-      actionComplete(u); done();
+  while(q.length){q.sort(function(a,b){return a.c-b.c;});var p=q.shift();if(best[p.x+','+p.y]!==p.c)continue;
+    [[1,0],[-1,0],[0,1],[0,-1]].forEach(function(d){var x=p.x+d[0],y=p.y+d[1];if(!inBounds(x,y)||ter(x,y).block)return;var occ=unitAt(x,y);if(occ&&occ.side!==u.side)return;var k=x+','+y,c=p.c+ter(p.x,p.y).cost;if(best[k]===undefined||c<best[k]){best[k]=c;q.push({x:x,y:y,c:c});}});
+  }return best;
+}
+function aiPlan(u){
+  var reach=reachable(u),enemies=foesOf(u.side),mates=allies(u.side).filter(function(a){return a!==u;}),profile=aiProfile(u),medic=aiMedic(u),threats=aiThreats(u,enemies),origin={x:u.x,y:u.y},start=origin.x+','+origin.y;
+  var danger={},positions=Object.keys(reach).map(function(k){var p=k.split(',');return {x:+p[0],y:+p[1],k:k,c:reach[k]};}),best=null,advance=null,urgentAdvance=null;
+  function evaluate(tile,fn){var x=u.x,y=u.y;u.x=tile.x;u.y=tile.y;try{return fn();}finally{u.x=x;u.y=y;}}
+  function hazard(tile,excluded,kill){return evaluate(tile,function(){var list=danger[tile.k];if(!list){list=(threats[tile.k]||[]).map(function(e){var f=forecast(e,u),value=f.dmg*(f.hit/100)*(1+2*f.crit/100)*(f.dbl?2:1);return {e:e,value:value};});danger[tile.k]=list;}
+    var total=0;list.forEach(function(t){total+=t.value*(t.e===excluded?1-(kill||0):1);});return total;});}
+  function position(tile,excluded,kill){var t=ter(tile.x,tile.y),risk=hazard(tile,excluded,kill),low=1-u.chp/u.stats.hp;
+    var score=profile.cover*(t.def*1.7+t.avo*.12)+Math.min(u.stats.hp-u.chp,u.stats.hp*(t.heal||0))*1.3-(t.burn?Math.max(8,u.stats.hp*t.burn*2.5):0);
+    score-=profile.risk*(medic?1.25:.7)*(risk*.65+Math.max(0,risk-u.chp*.55)*(.6+low));
+    return score-tile.c*.12;
+  }
+  function offer(kind,tile,target,score){if(!best||score>best.score)best={kind:kind,x:tile.x,y:tile.y,target:target,score:score};}
+  positions.forEach(function(tile){evaluate(tile,function(){
+    if(medic)mates.forEach(function(t){if(t.chp>=t.stats.hp||!canReachTarget(u,t))return;var amt=Math.min(healPower(u),t.stats.hp-t.chp,u.side==='foe'?Math.ceil(t.stats.hp*.25):Infinity);var urgency=1-t.chp/t.stats.hp,pressure=(threats[t.x+','+t.y]||[]).length;var value=amt*(1.8+urgency*1.7)+Math.min(pressure,3)*urgency*4+(t.boss?5:0)+(u.autonomous&&!t.autonomous?4:0);if(amt>=2||urgency>.25)offer('heal',tile,t,value+position(tile));});
+    if(!u.wpn.heal)enemies.forEach(function(t){if(!canReachTarget(u,t))return;var e=aiExchange(u,t),focus=(1-t.chp/t.stats.hp)*7+(aiMedic(t)?7:0)+(u.autonomous&&S.obj==='boss'&&t.boss?16:0);var value=e.damage*2.6+e.kill*(25+Math.min(30,t.stats.hp*.45))*profile.kill+focus*profile.focus*Math.min(1,e.damage/3);
+      value-=e.loss*(u.autonomous?2.5:1.5)*profile.risk+e.death*(u.autonomous?95:40)*profile.risk;
+      if(hasSkill(u,'nova'))value+=allies(t.side).filter(function(a){return a!==t&&dist(a,t)===1;}).length*e.damage*.45;
+      if(t.traits.indexOf('volatile')>=0&&dist(u,t)===1)value-=e.kill*8;
+      if(wRange(u)>1&&!canCounter(t,u))value+=3;
+      offer('attack',tile,t,value+position(tile,t,e.kill));
     });
-  }
-  /* machines trade willingly, and grow less patient as the fight drags on.
-     without this a wounded enemy would decline every attack and freeze the map. */
-  if (best && best.sc > (-30 - S.turn * 6)) { engage(); return; }
-
-  /* guard behaviour: stay unless someone is close */
-  var nearest = null, nd = 1e9;
-  for (var j = 0; j < enemies.length; j++) { var d2 = dist(u, enemies[j]); if (d2 < nd) { nd = d2; nearest = enemies[j]; } }
-  if (!nearest) { u.acted = true; done(); return; }
-  /* commanders hold position early, then come for you: no endless standoffs */
-  if (u.ai === 'guard' && nd > 5 && S.turn < 8) { u.acted = true; done(); return; }
-
-  /* approach along real path cost, so walls are routed around, not into */
-  var fld = distField(nearest.x, nearest.y);
-  var pick = null, pd = 1e9;
-  for (var k3 in reach) {
-    var p3 = k3.split(','), ax = +p3[0], ay = +p3[1];
-    var d3 = fld[k3];
-    if (d3 === undefined) d3 = Math.abs(ax - nearest.x) + Math.abs(ay - nearest.y) + 50;
-    var t3 = ter(ax, ay);
-    var pen = (t3.burn ? 4 : 0) - t3.def * 0.3;
-    if (d3 + pen < pd) { pd = d3 + pen; pick = { x: ax, y: ay }; }
-  }
-  if (pick && (pick.x !== u.x || pick.y !== u.y)) {
-    moveUnit(u, pathTo(u, pick.x, pick.y), function () { u.acted = true; done(); });
-    return;
-  }
-  /* nowhere better to stand: if anything is in reach, swing at it */
-  if (best) { engage(); return; }
-  u.acted = true; done();
+  });});
+  /* Prefer staying in support range of the team instead of pursuing enemies
+     with a non-damaging staff. Engineers can fight when healing isn't useful. */
+  var goals=(u.wpn.heal?mates:enemies).map(function(t){var f=aiGoalField(u,t),priority=0;if(u.wpn.heal){priority=(1-t.chp/t.stats.hp)*5+(u.autonomous&&!t.autonomous?2:0);}else{priority=(1-t.chp/t.stats.hp)*2*profile.focus+(aiMedic(t)?1.5*profile.focus:0)+(u.autonomous&&S.obj==='boss'&&t.boss?4:0);}return {field:f,priority:priority};});
+  positions.forEach(function(tile){var cost=Infinity;goals.forEach(function(g){if(g.field[tile.k]!==undefined)cost=Math.min(cost,g.field[tile.k]-g.priority);});if(!Number.isFinite(cost))return;var current=Infinity;goals.forEach(function(g){if(g.field[start]!==undefined)current=Math.min(current,g.field[start]-g.priority);});var progress=Number.isFinite(current)?current-cost:0;
+    var score=position(tile)+progress*(u.wpn.heal?2:3.5)-cost*.15;
+    if(!u.wpn.heal&&u.side==='foe'&&S.turn>=8)score+=progress*2;
+    if(!advance||score>advance.score)advance={kind:'move',x:tile.x,y:tile.y,score:score};
+    if(progress>0&&(!urgentAdvance||progress>urgentAdvance.progress||progress===urgentAdvance.progress&&score>urgentAdvance.score))urgentAdvance={kind:'move',x:tile.x,y:tile.y,score:score,progress:progress};
+  });
+  var nearest=enemies.reduce(function(n,e){return Math.min(n,dist(u,e));},Infinity);
+  if(u.ai==='guard'&&nearest>5&&S.turn<8&&!best)return {kind:'wait',x:u.x,y:u.y,score:0};
+  if(best){var reluctant=u.autonomous?8:Math.max(0,12-S.turn*2);if(!advance||best.score>=advance.score-reluctant||(!u.autonomous&&S.turn>=8))return best;}
+  if(!best&&!u.wpn.heal&&u.side==='foe'&&urgentAdvance&&(S.turn>=8||S.obj==='hold')&&advance&&advance.x===u.x&&advance.y===u.y)return urgentAdvance;
+  return advance||best||{kind:'wait',x:u.x,y:u.y,score:0};
 }
+function aiAct(u,done){
+  if(u.chp<=0||u.acted){done();return;}
+  if(u.jammed){u.jammed=false;u.acted=true;say(u.name+' lost its action to sabotage.');done();return;}
+  var plan=aiPlan(u),path=pathTo(u,plan.x,plan.y);
+  moveUnit(u,path,function(){var t=plan.target;if(u.chp>0&&t&&t.chp>0&&canReachTarget(u,t)){
+    if(plan.kind==='heal'&&t.side===u.side&&aiMedic(u))doHeal(u,t);
+    if(plan.kind==='attack'&&t.side!==u.side&&!u.wpn.heal)doCombat(u,t);
+  }actionComplete(u);done();});
+}
+/* Support and ranged units can open an engagement before melee units occupy
+   firing lanes; later actions replan from the updated board. */
+function aiOrder(list){return list.slice().sort(function(a,b){function rank(u){var injured=allies(u.side).some(function(t){return t!==u&&t.chp<t.stats.hp*.6&&dist(u,t)<=u.mov+wRange(u);});return (aiMedic(u)&&injured?20:0)+(u.wpn.heal?-5:0)+wRange(u)*2+(u.boss?1:0);}return rank(b)-rank(a)||a.id-b.id;});}
 
 /* ================= CHAPTER SETUP ================= */
 var OBJS = {
@@ -1782,7 +1771,7 @@ function endPlayerPhase() {
   if(S.busy||S.screen!=='map'||S.phase!=='player')return;
   if(replayOpen()){schedule(endPlayerPhase,150);return;}
   S.phase='ally';S.sel=null;S.mode='idle';S.reach=null;S.atkTiles=null;
-  var queue=allies('ply').filter(function(u){return u.autonomous;}),i=0;
+  var queue=aiOrder(allies('ply').filter(function(u){return u.autonomous;})),i=0;
   if(queue.length){S.banner='AI ALLY PHASE';S.bannerT=.9;netSync();refreshUI();}
   function next(){if(checkEnd())return;while(i<queue.length&&queue[i].chp<=0)i++;if(i>=queue.length){startEnemyPhase();return;}var u=queue[i++];function done(){netSync();if(checkEnd())return;if(!u.acted&&u.chp>0){aiAct(u,function(){u.acted=true;schedule(next,110);});}else schedule(next,110);}aiAct(u,done);}
   next();
@@ -1794,7 +1783,7 @@ function startEnemyPhase() {
   phaseStart('foe');
   if (checkEnd()) return;
   S.banner = 'ENEMY PHASE'; S.bannerT = 0.9;
-  var queue = allies('foe').slice().sort(function (a, b) { return (b.boss ? 1 : 0) - (a.boss ? 1 : 0); });
+  var queue = aiOrder(allies('foe'));
   var qi = 0;
   function step() {
     if (S.screen !== 'map') return;
@@ -4287,7 +4276,7 @@ if (typeof window !== 'undefined' && !HEADLESS) {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
 }
 if (typeof window !== 'undefined') {
-  window.__GAME = { DIFFICULTIES:DIFFICULTIES, difficulty:difficulty, boardRead:boardRead, recordRun:recordRun, renderCodex:renderCodex, renderLeaderboard:renderLeaderboard, recruitStock:recruitStock, SPR:SPR, S: S, newRun: newRun, aiAct: aiAct, endPlayerPhase: endPlayerPhase, allies: allies,
+  window.__GAME = { DIFFICULTIES:DIFFICULTIES, difficulty:difficulty, boardRead:boardRead, recordRun:recordRun, renderCodex:renderCodex, renderLeaderboard:renderLeaderboard, recruitStock:recruitStock, SPR:SPR, S: S, newRun: newRun, aiAct: aiAct, aiPlan:aiPlan, aiExchange:aiExchange, aiGoalField:aiGoalField, endPlayerPhase: endPlayerPhase, allies: allies,
     routeAction:routeAction, routeChoices:routeChoices, recruitParticipants:recruitParticipants, recruitEligible:recruitEligible, makeRecruit:makeRecruit, recruitProfile:recruitProfile, recruitCost:recruitCost, replayUnit:replayUnit, routeItem:routeItem, itemRarity:itemRarity, saveGame:saveGame, loadGame:loadGame, routeRender:routeRender, takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
     foeLevel: foeLevel, foeCount: foeCount, foePool:foePool, pickFoe:pickFoe, spawnReinforcements:spawnReinforcements, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
     doCombat: doCombat, doHeal: doHeal, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
