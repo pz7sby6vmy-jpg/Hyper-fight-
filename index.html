@@ -800,7 +800,7 @@ var ROSTER = [
   { key: 'vex', name: 'KAEL', cls: 'ARC VANGUARD', promo: 'ARC CAPTAIN', spr: 'vanguard', pal: 'vex', mov: 5, wpn: 'blade',
     base: { hp: 20, str: 11, mag: 0, skl: 9, def: 7, res: 3, spd: 7, lck: 3 },
     grow: { hp: 65, str: 65, mag: 0, skl: 50, def: 35, res: 20, spd: 45, lck: 20 },
-    bio: 'Reliable frontline finisher; builds damage against wounded targets.' },
+    bio: 'Reliable frontline finisher; +10% raw damage and stronger attacks against wounded targets.' },
   { key: 'kestrel', name: 'RYN', cls: 'JET SKIRMISHER', promo: 'GHOST RUNNER', spr: 'skirmisher', pal: 'kestrel', mov: 6, wpn: 'smg',
     base: { hp: 16, str: 9, mag: 0, skl: 10, def: 4, res: 3, spd: 14, lck: 4 },
     grow: { hp: 45, str: 50, mag: 0, skl: 55, def: 20, res: 20, spd: 80, lck: 30 },
@@ -808,7 +808,7 @@ var ROSTER = [
   { key: 'nova', name: 'LYRA', cls: 'PLASMA CHANNELER', promo: 'FLUX SCHOLAR', spr: 'techno', pal: 'nova', mov: 5, wpn: 'tech',
     base: { hp: 16, str: 0, mag: 14, skl: 9, def: 3, res: 9, spd: 6, lck: 3 },
     grow: { hp: 45, str: 0, mag: 75, skl: 45, def: 15, res: 50, spd: 45, lck: 25 },
-    bio: 'Area damage specialist with powerful magical attacks.' },
+    bio: 'Area damage specialist with powerful magical attacks and 10% raw physical damage reduction.' },
   { key: 'rampart', name: 'BRAX', cls: 'BASTION SENTINEL', promo: 'BULWARK PRIME', spr: 'heavy', pal: 'rampart', mov: 4, wpn: 'lance',
     base: { hp: 23, str: 5, mag: 0, skl: 6, def: 16, res: 5, spd: 3, lck: 2 },
     grow: { hp: 75, str: 25, mag: 0, skl: 35, def: 85, res: 40, spd: 25, lck: 15 },
@@ -816,7 +816,7 @@ var ROSTER = [
   { key: 'echo', name: 'MIRA', cls: 'NANO SURGEON', promo: 'CELL WEAVER', spr: 'medic', pal: 'echo', mov: 5, wpn: 'staff',
     base: { hp: 18, str: 0, mag: 12, skl: 7, def: 5, res: 10, spd: 5, lck: 3 },
     grow: { hp: 65, str: 0, mag: 70, skl: 35, def: 30, res: 65, spd: 20, lck: 15 },
-    bio: 'High-output healer who protects nearby wounded allies.' }
+    bio: 'High-output healer who protects wounded allies and can attack with her mend drone.' }
 ];
 
 /* later recruits, same 60 / 300 budget */
@@ -897,10 +897,10 @@ var BOSSES = [
 var TRAITS = {
   shield:    { name: 'SHIELDED',   desc: '-3 damage taken' },
   overclock: { name: 'OVERCLOCK',  desc: '+3 SPD, +10 avoid' },
-  regen:     { name: 'REGEN',      desc: 'heals 15% each phase' },
+  regen:     { name: 'REGEN',      desc: 'heals 6% each phase' },
   volatile:  { name: 'VOLATILE',   desc: 'explodes on death' },
   marksman:  { name: 'MARKSMAN',   desc: '+15 hit, +1 range' },
-  repair: {name:'FIELD REPAIR',desc:'Repairs injured allies instead of attacking; heals up to 25% max HP'},
+  repair: {name:'FIELD REPAIR',desc:'Repairs injured allies instead of attacking; heals up to 35% max HP'},
   pierce: {name:'PHASE PIERCE',desc:'Ignores 25% of the target’s defence or resistance'},
   frenzy: {name:'FRENZY',desc:'+25% damage when at or below half HP'}
 };
@@ -980,8 +980,8 @@ var CLASS_PATHS={
  onyx:[['REACTOR TITAN','BREACH HAMMER','CORE LEVIATHAN','FUSION ENGINE'],['def','str'],['str','skl']],
  wisp:[['AURA ENGINEER','SHIELD TECH','HALO ARCHITECT','AEGIS NEXUS'],['mag','spd'],['res','def']]
 };
-var CLASS_SKILLS={"vex": ["FINISHER", "Deal 40% more damage to enemies at or below half HP; recover 10% max HP on a kill."], "kestrel": ["RUN AND GUN", "+10 avoid; once per turn, an initiated kill grants another action."], "nova": ["PLASMA BURST", "Opening hit splashes 40% of dealt damage to adjacent hostiles."], "rampart": ["ARMOUR ENGINE", "Add 40% of DEF to all attack damage; take 2 less damage before critical multipliers."], "echo": ["TRAUMA RESPONSE", "+4 repair power; once per battle heal a nearby ally below 30% HP for 40% of max HP after a nonlethal hit."], "glitch": ["TARGET LOCK", "+12 hit; first successful hit each turn jams a non-boss enemy."], "sable": ["VOID CUT", "+10 critical chance, plus 15 more when flanking; ignore 2 RES."], "onyx": ["FURY ENGINE", "+1 range; +2 attack, plus 35% of STR below half HP."], "wisp": ["WARD LINK", "Healing grants a 5-point shield; can counterattack with a repair weapon."]};
-var PROMO_SKILLS={"ARC CAPTAIN": ["Battle Hunger", "+3 damage; recover an extra 5% max HP per kill.", {"attack": 3, "killHeal": 0.05}], "EDGE STRIKER": ["Precision Guard", "+15 hit and +10 avoid.", {"hit": 15, "avoid": 10}], "WAR MARSHAL": ["Death Sentence", "+25 percentage points finisher damage; +3 damage.", {"execute": 0.25, "attack": 3}], "PHASE BLADE": ["Perfect Edge", "+15 crit; doubles with a 2 SPD lead instead of 4.", {"crit": 15, "double": 2}], "GHOST RUNNER": ["Ghost Step", "+15 avoid; +2 effective SPD.", {"avoid": 15, "speed": 2}], "BLITZ RAIDER": ["Rapid Fire", "+3 damage; +10 hit.", {"attack": 3, "hit": 10}], "NIGHT VELOCITY": ["Silent Finish", "+15 crit and 10% max HP recovered per kill.", {"crit": 15, "killHeal": 0.1}], "HYPER STRIKER": ["Velocity", "+3 effective SPD; +1 attack range.", {"speed": 3, "range": 1}], "FLUX SCHOLAR": ["Piercing Code", "Ignore 4 more RES; +10 hit.", {"pierce": 4, "hit": 10}], "SOLAR CASTER": ["Wildfire", "Splash increases by 25 percentage points.", {"splash": 0.25}], "QUANTUM SAGE": ["Predictive Field", "+15 avoid; +4 damage reduction before critical multipliers.", {"avoid": 15, "guard": 4}], "SUPERNOVA": ["Supernova", "+4 damage; splash increases by 20 percentage points.", {"attack": 4, "splash": 0.2}], "BULWARK PRIME": ["Fortress", "Reduce incoming base damage by 3; +10 avoid.", {"guard": 3, "avoid": 10}], "KINETIC GUARD": ["Spiked Armour", "Add another 20% of DEF to damage.", {"defScale": 0.2}], "FORTRESS PRIME": ["Living Fortress", "Reduce incoming base damage by another 4; recover 8% max HP each player phase.", {"guard": 4, "regen": 0.08}], "ATLAS ENGINE": ["Siege Fist", "Add another 20% of DEF to damage; +10 hit.", {"defScale": 0.2, "hit": 10}], "CELL WEAVER": ["Intensive Care", "+7 healing; +2 healing range.", {"heal": 7, "range": 2}], "FIELD SURGEON": ["Combat Triage", "+3 damage; +3 healing; can counterattack.", {"attack": 3, "heal": 3, "counter": 1}], "GENESIS MEDIC": ["Life Infusion", "Repairs grant an 8-point shield; +6 healing.", {"shield": 8, "heal": 6}], "RESCUE DIRECTOR": ["Critical Care", "Emergency heal can reach 4 tiles; +20 percentage points max HP restored.", {"emergencyRange": 2, "emergency": 0.2}], "HORIZON SNIPER": ["Extended Barrel", "+1 attack range and +10 crit.", {"range": 1, "crit": 10}], "SIGNAL HUNTER": ["Signal Pierce", "Ignore 3 DEF; +10 hit.", {"pierce": 3, "hit": 10}], "ZERO POINT": ["Perfect Aim", "+20 hit; +15 crit.", {"hit": 20, "crit": 15}], "SPECTRUM REAPER": ["Circuit Breaker", "+4 damage against jammed targets; ignore 3 more DEF.", {"jamDamage": 4, "pierce": 3}], "NULL WRAITH": ["Resistance Shred", "Ignore 4 additional RES.", {"pierce": 4}], "SHADOW STRIKE": ["Blood Hex", "+10 crit; recover 10% max HP per kill.", {"crit": 10, "killHeal": 0.1}], "VOID EMPRESS": ["Null Field", "Reduce incoming base damage by 3; +4 damage.", {"guard": 3, "attack": 4}], "ECLIPSE BLADE": ["Phase Strike", "+15 avoid; +3 effective SPD.", {"avoid": 15, "speed": 3}], "REACTOR TITAN": ["Unbreakable", "Reduce incoming base damage by 3; recover 5% max HP each player phase.", {"guard": 3, "regen": 0.05}], "BREACH HAMMER": ["Battering Ram", "Ignore 4 DEF; +2 damage.", {"pierce": 4, "attack": 2}], "CORE LEVIATHAN": ["Last Stand", "+25 percentage points STR scaling while wounded; +3 damage reduction before critical multipliers.", {"fury": 0.25, "guard": 3}], "FUSION ENGINE": ["Heavy Barrage", "+1 attack range; +4 damage.", {"range": 1, "attack": 4}], "AURA ENGINEER": ["Radiant Repair", "+6 healing; +1 range.", {"heal": 6, "range": 1}], "SHIELD TECH": ["Shield Craft", "+5 shield strength; reduce own incoming base damage by 2.", {"shield": 5, "guard": 2}], "HALO ARCHITECT": ["Renewal", "+7 healing; recover 8% max HP each player phase.", {"heal": 7, "regen": 0.08}], "AEGIS NEXUS": ["Barrier Matrix", "+7 shield strength; +2 healing.", {"shield": 7, "heal": 2}]};
+var CLASS_SKILLS={"vex": ["FINISHER", "Deal 40% more damage to enemies at or below half HP; recover 10% max HP on a kill."], "kestrel": ["RUN AND GUN", "+10 avoid; once per turn, an initiated kill grants another action."], "nova": ["PLASMA BURST", "Opening hit splashes 40% of dealt damage to adjacent hostiles."], "rampart": ["ARMOUR ENGINE", "Add 40% of DEF to all attack damage; take 2 less damage before critical multipliers."], "echo": ["TRAUMA RESPONSE", "+4 repair power; once per battle heal a nearby ally below 30% HP for 30% of max HP after a nonlethal hit."], "glitch": ["TARGET LOCK", "+12 hit; first successful hit each turn jams a non-boss enemy."], "sable": ["VOID CUT", "+10 critical chance, plus 15 more when flanking; ignore 2 RES."], "onyx": ["FURY ENGINE", "+1 range; +2 attack, plus 35% of STR below half HP."], "wisp": ["WARD LINK", "Healing grants a 5-point shield; can counterattack with a repair weapon."]};
+var PROMO_SKILLS={"ARC CAPTAIN": ["Battle Hunger", "+3 damage; recover an extra 5% max HP per kill.", {"attack": 3, "killHeal": 0.05}], "EDGE STRIKER": ["Precision Guard", "+15 hit and +10 avoid.", {"hit": 15, "avoid": 10}], "WAR MARSHAL": ["Death Sentence", "+25 percentage points finisher damage; +3 damage.", {"execute": 0.25, "attack": 3}], "PHASE BLADE": ["Perfect Edge", "+15 crit; reduces the SPD lead needed for a follow-up by 2.", {"crit": 15, "double": 2}], "GHOST RUNNER": ["Ghost Step", "+15 avoid; +2 effective SPD.", {"avoid": 15, "speed": 2}], "BLITZ RAIDER": ["Rapid Fire", "+3 damage; +10 hit.", {"attack": 3, "hit": 10}], "NIGHT VELOCITY": ["Silent Finish", "+15 crit and 10% max HP recovered per kill.", {"crit": 15, "killHeal": 0.1}], "HYPER STRIKER": ["Velocity", "+3 effective SPD; +1 attack range.", {"speed": 3, "range": 1}], "FLUX SCHOLAR": ["Piercing Code", "Ignore 4 more RES; +10 hit.", {"pierce": 4, "hit": 10}], "SOLAR CASTER": ["Wildfire", "Splash increases by 25 percentage points.", {"splash": 0.25}], "QUANTUM SAGE": ["Predictive Field", "+15 avoid; +4 damage reduction before critical multipliers.", {"avoid": 15, "guard": 4}], "SUPERNOVA": ["Supernova", "+4 damage; splash increases by 20 percentage points.", {"attack": 4, "splash": 0.2}], "BULWARK PRIME": ["Fortress", "Reduce incoming base damage by 3; +10 avoid.", {"guard": 3, "avoid": 10}], "KINETIC GUARD": ["Spiked Armour", "Add another 20% of DEF to damage.", {"defScale": 0.2}], "FORTRESS PRIME": ["Living Fortress", "Reduce incoming base damage by another 4; recover 8% max HP each player phase.", {"guard": 4, "regen": 0.08}], "ATLAS ENGINE": ["Siege Fist", "Add another 20% of DEF to damage; +10 hit.", {"defScale": 0.2, "hit": 10}], "CELL WEAVER": ["Intensive Care", "+7 healing; +2 healing range.", {"heal": 7, "range": 2}], "FIELD SURGEON": ["Combat Triage", "+3 damage; +3 healing; can counterattack.", {"attack": 3, "heal": 3, "counter": 1}], "GENESIS MEDIC": ["Life Infusion", "Repairs grant an 8-point shield; +6 healing.", {"shield": 8, "heal": 6}], "RESCUE DIRECTOR": ["Critical Care", "Emergency heal can reach 4 tiles; restores 45% max HP.", {"emergencyRange": 2, "emergency": 0.15}], "HORIZON SNIPER": ["Extended Barrel", "+1 attack range and +10 crit.", {"range": 1, "crit": 10}], "SIGNAL HUNTER": ["Signal Pierce", "Ignore 3 DEF; +10 hit.", {"pierce": 3, "hit": 10}], "ZERO POINT": ["Perfect Aim", "+20 hit; +15 crit.", {"hit": 20, "crit": 15}], "SPECTRUM REAPER": ["Circuit Breaker", "+4 damage against jammed targets; ignore 3 more DEF.", {"jamDamage": 4, "pierce": 3}], "NULL WRAITH": ["Resistance Shred", "Ignore 4 additional RES.", {"pierce": 4}], "SHADOW STRIKE": ["Blood Hex", "+10 crit; recover 10% max HP per kill.", {"crit": 10, "killHeal": 0.1}], "VOID EMPRESS": ["Null Field", "Reduce incoming base damage by 3; +4 damage.", {"guard": 3, "attack": 4}], "ECLIPSE BLADE": ["Phase Strike", "+15 avoid; +3 effective SPD.", {"avoid": 15, "speed": 3}], "REACTOR TITAN": ["Unbreakable", "Reduce incoming base damage by 3; recover 5% max HP each player phase.", {"guard": 3, "regen": 0.05}], "BREACH HAMMER": ["Battering Ram", "Ignore 4 DEF; +2 damage.", {"pierce": 4, "attack": 2}], "CORE LEVIATHAN": ["Last Stand", "+25 percentage points STR scaling while wounded; +3 damage reduction before critical multipliers.", {"fury": 0.25, "guard": 3}], "FUSION ENGINE": ["Heavy Barrage", "+1 attack range; +4 damage.", {"range": 1, "attack": 4}], "AURA ENGINEER": ["Radiant Repair", "+6 healing; +1 range.", {"heal": 6, "range": 1}], "SHIELD TECH": ["Shield Craft", "+5 shield strength; reduce own incoming base damage by 2.", {"shield": 5, "guard": 2}], "HALO ARCHITECT": ["Renewal", "+7 healing; recover 8% max HP each player phase.", {"heal": 7, "regen": 0.08}], "AEGIS NEXUS": ["Barrier Matrix", "+7 shield strength; +2 healing.", {"shield": 7, "heal": 2}]};
 var CLASS_RENAMES={"BLADE COMMANDER": "ARC VANGUARD", "WARLORD": "ARC CAPTAIN", "DUELIST": "EDGE STRIKER", "OVERLORD": "WAR MARSHAL", "BLADEMASTER": "PHASE BLADE", "GUN RUNNER": "JET SKIRMISHER", "PHANTOM": "GHOST RUNNER", "RAIDER": "BLITZ RAIDER", "NIGHTSTALKER": "NIGHT VELOCITY", "STORMRUNNER": "HYPER STRIKER", "PLASMA ARTILLERIST": "PLASMA CHANNELER", "ARCHIVIST": "FLUX SCHOLAR", "PYROMANCER": "SOLAR CASTER", "ORACLE": "QUANTUM SAGE", "STARBREAKER": "SUPERNOVA", "AEGIS KNIGHT": "BASTION SENTINEL", "CITADEL": "BULWARK PRIME", "IRONCLAD": "KINETIC GUARD", "BASTION": "FORTRESS PRIME", "DREADNOUGHT": "ATLAS ENGINE", "TRAUMA SPECIALIST": "NANO SURGEON", "LIFEWARDEN": "CELL WEAVER", "COMBAT MEDIC": "FIELD SURGEON", "LIFEBINDER": "GENESIS MEDIC", "TRIAGE COMMANDER": "RESCUE DIRECTOR", "RAIL OPERATIVE": "RAIL MARKSMAN", "LONGSHOT": "HORIZON SNIPER", "DISRUPTOR": "SIGNAL HUNTER", "DEADEYE": "ZERO POINT", "SIGNAL REAPER": "SPECTRUM REAPER", "VOID ASSASSIN": "PHASE STALKER", "NULLMANCER": "NULL WRAITH", "HEX ASSASSIN": "SHADOW STRIKE", "VOID SOVEREIGN": "VOID EMPRESS", "NIGHT HEX": "ECLIPSE BLADE", "SIEGE BERSERKER": "REACTOR BRAWLER", "JUGGERNAUT": "REACTOR TITAN", "SIEGEBREAKER": "BREACH HAMMER", "COLOSSUS": "CORE LEVIATHAN", "WAR ENGINE": "FUSION ENGINE", "WARD WEAVER": "AEGIS TECHNICIAN", "SERAPH": "AURA ENGINEER", "WARDEN": "SHIELD TECH", "ARCHANGEL": "HALO ARCHITECT", "AEGIS PRIME": "AEGIS NEXUS"};
 function currentClass(n){return CLASS_RENAMES[n]||n;}
 function updateClassIdentity(u){if(u.side!=="ply")return u;u.cls=currentClass(u.cls);u.path=(u.path||[]).map(currentClass);if(u.promo)u.promo=currentClass(u.promo);return u;}
@@ -1011,7 +1011,7 @@ function restoreCareer(u,p){
 }
 function actionComplete(u){u.acted=!u.extraAction;u.extraAction=false;}
 function flanking(a,d){return allies(a.side).some(function(u){return u!==a&&u.x===2*d.x-a.x&&u.y===2*d.y-a.y&&dist(u,d)===1;});}
-function emergencyHeal(t){if(t.side!=='ply'||t.chp<=0||t.chp>t.stats.hp*0.3)return;var e=allies('ply').filter(function(u){return hasSkill(u,'echo')&&!u.emergencyUsed&&dist(u,t)<=2+perk(u,"emergencyRange");})[0];if(!e)return;e.emergencyUsed=true;var amt=Math.min(t.stats.hp-t.chp,Math.ceil(t.stats.hp*(.4+perk(e,"emergency"))));t.chp+=amt;fxText(t,'+'+amt,'#54f0c8');say(e.name+' activated Emergency Protocol.');}
+function emergencyHeal(t){if(t.side!=='ply'||t.chp<=0||t.chp>t.stats.hp*0.3)return;var e=allies('ply').filter(function(u){return hasSkill(u,'echo')&&!u.emergencyUsed&&dist(u,t)<=2+perk(u,"emergencyRange");})[0];if(!e)return;e.emergencyUsed=true;var amt=Math.min(t.stats.hp-t.chp,Math.max(1,Math.floor(t.stats.hp*Math.min(.45,.30+perk(e,"emergency")))));t.chp+=amt;fxText(t,'+'+amt,'#54f0c8');say(e.name+' activated Emergency Protocol.');}
 /* ================= UNIT BUILD ================= */
 function mkUnit(def, side, lvl, opt) {
   opt = opt || {};
@@ -1226,6 +1226,14 @@ function avoidOf(u) {
   var t = ter(u.x, u.y);
   return spdOf(u) * 2 + u.stats.lck + perk(u,"avoid") + (hasSkill(u,"kestrel")?10:0) + t.avo + (shrineBonus(u,'focus')?10:0) + (u.traits.indexOf('overclock') >= 0 ? 10 : 0);
 }
+/* Shared combat curve: retain stat/weapon advantages while bounding extreme
+   matchups, for both sides and all difficulty levels. Values use MAX HP. */
+function hpBound(hp,fraction){return Math.max(1,Math.floor(hp*fraction));}
+function balancedDamage(raw,hp){
+ var low=hpBound(hp,.08),knee=hp*.30;
+ var adjusted=raw>knee?knee+(raw-knee)*.40:raw;
+ return clamp(Math.round(adjusted),low,hpBound(hp,.48));
+}
 function forecast(a, d) {
   var w = a.wpn, mag = w.mag;
   var atk = (mag ? a.stats.mag : a.stats.str) + w.mt + (hasSkill(a,'onyx')?2+(a.chp<=a.stats.hp/2?Math.floor(a.stats.str*(.35+perk(a,'fury'))):0):0) + perk(a,'attack') + (d.jammed?perk(a,'jamDamage'):0) + (shrineBonus(a,'power')?2:0);
@@ -1238,16 +1246,24 @@ function forecast(a, d) {
   if(a.traits.indexOf('frenzy')>=0&&a.chp<=a.stats.hp/2)dmg=Math.floor(dmg*1.25);
   if(hasSkill(a,'vex')&&d.chp<=d.stats.hp/2)dmg=Math.floor(dmg*(1.4+perk(a,'execute')));
   if(hasSkill(a,'rampart'))dmg+=Math.floor(a.stats.def*(.4+perk(a,'defScale')));
-  dmg=Math.max(0,dmg-perk(d,'guard')-(hasSkill(d,'rampart')?2:0));
+  if(hasSkill(a,'vex'))dmg=Math.round(dmg*1.10);
+  if(a.side==='ply'&&a.tier)dmg=Math.round(dmg*(1+.04*a.tier));
+  if(hasSkill(d,'nova')&&!mag)dmg=Math.round(dmg*.90);
+  dmg=balancedDamage(Math.max(0,dmg-perk(d,'guard')-(hasSkill(d,'rampart')?2:0)),d.stats.hp);
   /* accuracy from a compressed skill-vs-evasion gap, so the curve stays sane
      forever instead of saturating at 100 / decaying to nothing */
   var off = a.stats.skl * 2 + Math.floor(a.stats.lck / 2);
   var gap = off - avoidOf(d);
   var comp = Math.round(42 * gap / (Math.abs(gap) + 26));
-  var hit = clamp(w.hit + comp + tri.hit + perk(a,"hit") + (hasSkill(a,"glitch")?12:0) + (shrineBonus(a,'focus')?15:0) + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 5, 100);
-  var crit = clamp(w.crit + Math.floor(a.stats.skl / 2) - d.stats.lck + (hasSkill(a,'sable')?10+(flanking(a,d)?15:0):0) + perk(a,'crit'), 0, a.side==='foe'?(a.boss?35:25):60);
-  var dbl = spdOf(a) >= spdOf(d) + Math.max(1,4-perk(a,"double"));
-  return { dmg: dmg, hit: Math.round(hit), crit: Math.round(crit), dbl: dbl, tri: tri };
+  var hit = clamp(w.hit + comp + tri.hit + perk(a,"hit") + (hasSkill(a,"glitch")?12:0) + (shrineBonus(a,'focus')?15:0) + (a.traits.indexOf('marksman') >= 0 ? 15 : 0), 25, 95);
+  var critGap=a.stats.skl/2-d.stats.lck;
+  var critSkill=Math.round(24*critGap/(Math.abs(critGap)+24));
+  var crit=clamp(w.crit+critSkill+(hasSkill(a,'sable')?10+(flanking(a,d)?15:0):0)+perk(a,'crit'),0,35);
+  var dbl=spdOf(a)>=spdOf(d)+Math.max(1,4+Math.floor(spdOf(d)*.08)-perk(a,"double"));
+  var follow=Math.max(1,Math.round(dmg*.65));
+  var critical=Math.min(hpBound(d.stats.hp,.65),Math.max(dmg,Math.round(dmg*1.65)));
+  var followCrit=Math.min(hpBound(d.stats.hp,.34),Math.max(follow,Math.round(follow*1.65)));
+  return {dmg:dmg,hit:Math.round(hit),crit:Math.round(crit),dbl:dbl,tri:tri,follow:follow,critical:critical,followCrit:followCrit};
 }
 function canCounter(d, a) {
   if (d.chp <= 0) return false;
@@ -1256,12 +1272,12 @@ function canCounter(d, a) {
   return dd >= d.wpn.rmin && dd <= wRange(d);
 }
 
-function strike(a, d) {
+function strike(a, d, followup) {
   var before=d.chp;
   var f = forecast(a, d);
   if (rnd() * 100 >= f.hit) { fxText(d, 'MISS', '#9fb0c4'); replayStrike(a,d,before,{hit:false});return { hit: false }; }
   var crit = rnd() * 100 < f.crit;
-  var dmg = crit ? f.dmg * 3 : f.dmg;
+  var dmg=followup?(crit?f.followCrit:f.follow):(crit?f.critical:f.dmg);
   if(d.shieldHP&&dmg>0){dmg=Math.max(0,dmg-d.shieldHP);d.shieldHP=0;}
   d.chp = Math.max(0, d.chp - dmg);
   d.flash = 1;
@@ -1297,7 +1313,7 @@ function resolveCombat(a, d) {
   var fa = forecast(a, d);
   var r = strike(a, d);
   expA += r.hit ? 10 : 2;
-  if(hasSkill(a,'nova')&&r.hit&&r.dmg>0){allies(d.side).slice().forEach(function(t){if(t!==d&&t.chp>0&&dist(t,d)===1){var splash=Math.max(1,Math.floor(r.dmg*(.4+perk(a,"splash"))));t.chp=Math.max(0,t.chp-splash);fxText(t,splash,'#b38aff');if(!t.chp){onDeath(t,a);combatExp(a,t,0,1);}}});}
+  if(hasSkill(a,'nova')&&r.hit&&r.dmg>0){allies(d.side).slice().forEach(function(t){if(t!==d&&t.chp>0&&dist(t,d)===1){var splash=Math.min(hpBound(t.stats.hp,.25),Math.max(1,Math.floor(r.dmg*(.4+perk(a,"splash")))));t.chp=Math.max(0,t.chp-splash);fxText(t,splash,'#b38aff');if(!t.chp){onDeath(t,a);combatExp(a,t,0,1);}}});}
   if (d.chp <= 0) { killsA++; }
   else {
     if (canCounter(d, a)) {
@@ -1306,12 +1322,12 @@ function resolveCombat(a, d) {
       if (a.chp <= 0) { killsD++; onDeath(a, d); return finishCombat(a, d, expA, killsA, expD, killsD); }
       var fd = forecast(d, a);
       if (fd.dbl && a.chp > 0) {
-        var r4 = strike(d, a); expD += r4.hit ? 8 : 2;
+        var r4 = strike(d, a, true); expD += r4.hit ? 8 : 2;
         if (a.chp <= 0) { killsD++; onDeath(a, d); return finishCombat(a, d, expA, killsA, expD, killsD); }
       }
     }
     if (fa.dbl && d.chp > 0 && a.chp > 0) {
-      var r3 = strike(a, d);
+      var r3 = strike(a, d, true);
       expA += r3.hit ? 8 : 2;
       if (d.chp <= 0) killsA++;
     }
@@ -1390,7 +1406,7 @@ function onDeath(u, killer) {
     for (var i = 0; i < 4; i++) {
       var t = unitAt(u.x + d[i][0], u.y + d[i][1]);
       if (t && t.chp > 0) {
-        var dmg = 6 + Math.floor(S.chapter / 2);
+        var dmg = Math.min(hpBound(t.stats.hp,.25),6 + Math.floor(S.chapter / 2));
         t.chp = Math.max(0, t.chp - dmg); fxText(t, dmg, '#ff8a3a');
         if (t.chp <= 0) onDeath(t, u);
       }
@@ -1455,18 +1471,22 @@ function fxHeal(u) { fxPush({ k: 'heal', x: u.x, y: u.y, t: 0, dur: 0.6 }); }
 /* ================= ACTIONS ================= */
 function healPower(u) { return u.stats.mag + 8 + u.wpn.plus * 2 + (hasSkill(u,"echo")?4:0) + perk(u,"heal"); }
 
+function healAmount(a,t){
+ var hp=t.stats.hp,raw=healPower(a),knee=hp*.25;
+ return Math.max(0,Math.min(t.stats.hp-t.chp,hpBound(hp,.35),Math.round(raw>knee?knee+(raw-knee)*.5:raw)));
+}
 function doHeal(a, t) {
-  var amt = Math.min(healPower(a), t.stats.hp - t.chp, a.side==='foe'?Math.max(1,Math.ceil(t.stats.hp*.25)):Infinity);
+  var amt=healAmount(a,t);
   t.chp += amt;
-  var shield=(hasSkill(a,'wisp')?5:0)+perk(a,'shield');if(shield)t.shieldHP=Math.max(t.shieldHP||0,shield);
+  var shield=(hasSkill(a,'wisp')?5:0)+perk(a,'shield');if(shield)t.shieldHP=Math.max(t.shieldHP||0,Math.min(shield,hpBound(t.stats.hp,.25)));
   fxText(t, '+' + amt, '#54f0c8'); fxHeal(t);
   say(a.name + ' repaired ' + t.name + ' for ' + amt + '.');
-  if(a.side==='ply')grantExp(a, Math.max(20, 26 + Math.floor(amt / 2)));
+  if(a.side==='ply'&&amt>0)grantExp(a,Math.min(45,26+Math.floor(amt/2)));
 }
 function useKit(u) {
   if (S.kits <= 0) return;
   S.kits--;
-  var amt = Math.min(20, u.stats.hp - u.chp);
+  var amt=Math.min(u.stats.hp-u.chp,hpBound(u.stats.hp,.5),Math.max(20,Math.floor(u.stats.hp*.30)));
   u.chp += amt; fxText(u, '+' + amt, '#54f0c8'); fxHeal(u);
   say(u.name + ' used a repair kit (+' + amt + ').');
 }
@@ -1483,6 +1503,7 @@ function moveUnit(u, path, cb) {
 /* ================= TACTICAL AI =================
    Plan from public board state only; no RNG, hidden information, or extra actions. */
 function aiMedic(u){return !!u.wpn.heal||u.traits.indexOf('repair')>=0;}
+function aiCanAttack(u){return !u.wpn.heal||hasSkill(u,'echo');}
 function aiProfile(u){
   if(u.autonomous)return {risk:1.25,focus:1.1,cover:1.15,kill:1.15};
   return ({story:{risk:.35,focus:.35,cover:.65,kill:.65},normal:{risk:.7,focus:.75,cover:1,kill:1},hard:{risk:.95,focus:1.2,cover:1.2,kill:1.25},nightmare:{risk:1.1,focus:1.45,cover:1.3,kill:1.5}})[validDifficulty(S.difficulty)];
@@ -1491,22 +1512,22 @@ function aiProfile(u){
    one successful damaging strike. Class-triggered heals/splash remain estimates. */
 function aiExchange(a,d){
   var fa=forecast(a,d),counter=canCounter(d,a),fd=counter?forecast(d,a):null;
-  var steps=[{f:fa,a:true}];if(counter){steps.push({f:fd,a:false});if(fd.dbl)steps.push({f:fd,a:false});}if(fa.dbl)steps.push({f:fa,a:true});
+  var steps=[{f:fa,a:true}];if(counter){steps.push({f:fd,a:false});if(fd.dbl)steps.push({f:fd,a:false,follow:true});}if(fa.dbl)steps.push({f:fa,a:true,follow:true});
   var out={damage:0,loss:0,kill:0,death:0};
   function visit(i,p,ah,dh,as,ds){
     if(p<1e-9)return;
     if(i===steps.length||ah<=0||dh<=0){out.damage+=p*(d.chp-dh);out.loss+=p*(a.chp-ah);if(dh<=0)out.kill+=p;if(ah<=0)out.death+=p;return;}
     var s=steps[i],f=s.f,h=f.hit/100,c=f.crit/100;
     visit(i+1,p*(1-h),ah,dh,as,ds);
-    function hit(mult,prob){var damage=f.dmg*mult;if(s.a)visit(i+1,p*prob,ah,Math.max(0,dh-Math.max(0,damage-ds)),as,damage>0?0:ds);else visit(i+1,p*prob,Math.max(0,ah-Math.max(0,damage-as)),dh,damage>0?0:as,ds);}
-    hit(1,h*(1-c));hit(3,h*c);
+    function hit(damage,prob){if(s.a)visit(i+1,p*prob,ah,Math.max(0,dh-Math.max(0,damage-ds)),as,damage>0?0:ds);else visit(i+1,p*prob,Math.max(0,ah-Math.max(0,damage-as)),dh,damage>0?0:as,ds);}
+    hit(s.follow?f.follow:f.dmg,h*(1-c));hit(s.follow?f.followCrit:f.critical,h*c);
   }
   visit(0,1,a.chp,d.chp,a.shieldHP||0,d.shieldHP||0);return out;
 }
 /* Threat coverage uses legal movement and actual min/max weapon range, not
    a Manhattan movement-radius guess. Rebuilt after each AI action. */
 function aiThreats(u,enemies){
-  var map={};enemies.forEach(function(e){if(e.wpn.heal||e.jammed)return;var tiles=attackTiles(e,reachable(e,true));Object.keys(tiles).forEach(function(k){(map[k]||(map[k]=[])).push(e);});});return map;
+  var map={};enemies.forEach(function(e){if(!aiCanAttack(e)||e.jammed)return;var tiles=attackTiles(e,reachable(e,true));Object.keys(tiles).forEach(function(k){(map[k]||(map[k]=[])).push(e);});});return map;
 }
 /* Reverse weighted distance to valid attack/heal tiles, respecting walls,
    enemy blockers and terrain costs. Friendly squares may be traversed. */
@@ -1524,7 +1545,7 @@ function aiPlan(u){
   var reach=reachable(u),enemies=foesOf(u.side),mates=allies(u.side).filter(function(a){return a!==u;}),profile=aiProfile(u),medic=aiMedic(u),threats=aiThreats(u,enemies),origin={x:u.x,y:u.y},start=origin.x+','+origin.y;
   var danger={},positions=Object.keys(reach).map(function(k){var p=k.split(',');return {x:+p[0],y:+p[1],k:k,c:reach[k]};}),best=null,advance=null,urgentAdvance=null;
   function evaluate(tile,fn){var x=u.x,y=u.y;u.x=tile.x;u.y=tile.y;try{return fn();}finally{u.x=x;u.y=y;}}
-  function hazard(tile,excluded,kill){return evaluate(tile,function(){var list=danger[tile.k];if(!list){list=(threats[tile.k]||[]).map(function(e){var f=forecast(e,u),value=f.dmg*(f.hit/100)*(1+2*f.crit/100)*(f.dbl?2:1);return {e:e,value:value};});danger[tile.k]=list;}
+  function hazard(tile,excluded,kill){return evaluate(tile,function(){var list=danger[tile.k];if(!list){list=(threats[tile.k]||[]).map(function(e){var f=forecast(e,u),value=(f.hit/100)*((1-f.crit/100)*(f.dmg+(f.dbl?f.follow:0))+(f.crit/100)*(f.critical+(f.dbl?f.followCrit:0)));return {e:e,value:value};});danger[tile.k]=list;}
     var total=0;list.forEach(function(t){total+=t.value*(t.e===excluded?1-(kill||0):1);});return total;});}
   function position(tile,excluded,kill){var t=ter(tile.x,tile.y),risk=hazard(tile,excluded,kill),low=1-u.chp/u.stats.hp;
     var score=profile.cover*(t.def*1.7+t.avo*.12)+Math.min(u.stats.hp-u.chp,u.stats.hp*(t.heal||0))*1.3-(t.burn?Math.max(8,u.stats.hp*t.burn*2.5):0);
@@ -1533,8 +1554,8 @@ function aiPlan(u){
   }
   function offer(kind,tile,target,score){if(!best||score>best.score)best={kind:kind,x:tile.x,y:tile.y,target:target,score:score};}
   positions.forEach(function(tile){evaluate(tile,function(){
-    if(medic)mates.forEach(function(t){if(t.chp>=t.stats.hp||!canReachTarget(u,t))return;var amt=Math.min(healPower(u),t.stats.hp-t.chp,u.side==='foe'?Math.ceil(t.stats.hp*.25):Infinity);var urgency=1-t.chp/t.stats.hp,pressure=(threats[t.x+','+t.y]||[]).length;var value=amt*(1.8+urgency*1.7)+Math.min(pressure,3)*urgency*4+(t.boss?5:0)+(u.autonomous&&!t.autonomous?4:0);if(amt>=2||urgency>.25)offer('heal',tile,t,value+position(tile));});
-    if(!u.wpn.heal)enemies.forEach(function(t){if(!canReachTarget(u,t))return;var e=aiExchange(u,t),focus=(1-t.chp/t.stats.hp)*7+(aiMedic(t)?7:0)+(u.autonomous&&S.obj==='boss'&&t.boss?16:0);var value=e.damage*2.6+e.kill*(25+Math.min(30,t.stats.hp*.45))*profile.kill+focus*profile.focus*Math.min(1,e.damage/3);
+    if(medic)mates.forEach(function(t){if(t.chp>=t.stats.hp||!canReachTarget(u,t))return;var amt=healAmount(u,t);var urgency=1-t.chp/t.stats.hp,pressure=(threats[t.x+','+t.y]||[]).length;var value=amt*(1.8+urgency*1.7)+Math.min(pressure,3)*urgency*4+(t.boss?5:0)+(u.autonomous&&!t.autonomous?4:0);if(amt>=2||urgency>.25)offer('heal',tile,t,value+position(tile));});
+    if(aiCanAttack(u))enemies.forEach(function(t){if(!canReachTarget(u,t))return;var e=aiExchange(u,t),focus=(1-t.chp/t.stats.hp)*7+(aiMedic(t)?7:0)+(u.autonomous&&S.obj==='boss'&&t.boss?16:0);var value=e.damage*2.6+e.kill*(25+Math.min(30,t.stats.hp*.45))*profile.kill+focus*profile.focus*Math.min(1,e.damage/3);
       value-=e.loss*(u.autonomous?2.5:1.5)*profile.risk+e.death*(u.autonomous?95:40)*profile.risk;
       if(hasSkill(u,'nova'))value+=allies(t.side).filter(function(a){return a!==t&&dist(a,t)===1;}).length*e.damage*.45;
       if(t.traits.indexOf('volatile')>=0&&dist(u,t)===1)value-=e.kill*8;
@@ -1544,7 +1565,7 @@ function aiPlan(u){
   });});
   /* Prefer staying in support range of the team instead of pursuing enemies
      with a non-damaging staff. Engineers can fight when healing isn't useful. */
-  var goals=(u.wpn.heal?mates:enemies).map(function(t){var f=aiGoalField(u,t),priority=0;if(u.wpn.heal){priority=(1-t.chp/t.stats.hp)*5+(u.autonomous&&!t.autonomous?2:0);}else{priority=(1-t.chp/t.stats.hp)*2*profile.focus+(aiMedic(t)?1.5*profile.focus:0)+(u.autonomous&&S.obj==='boss'&&t.boss?4:0);}return {field:f,priority:priority};});
+  var goals=(u.wpn.heal&&mates.some(function(t){return t.chp<t.stats.hp;})?mates:aiCanAttack(u)?enemies:mates).map(function(t){var f=aiGoalField(u,t),priority=0;if(u.wpn.heal){priority=(1-t.chp/t.stats.hp)*5+(u.autonomous&&!t.autonomous?2:0);}else{priority=(1-t.chp/t.stats.hp)*2*profile.focus+(aiMedic(t)?1.5*profile.focus:0)+(u.autonomous&&S.obj==='boss'&&t.boss?4:0);}return {field:f,priority:priority};});
   positions.forEach(function(tile){var cost=Infinity;goals.forEach(function(g){if(g.field[tile.k]!==undefined)cost=Math.min(cost,g.field[tile.k]-g.priority);});if(!Number.isFinite(cost))return;var current=Infinity;goals.forEach(function(g){if(g.field[start]!==undefined)current=Math.min(current,g.field[start]-g.priority);});var progress=Number.isFinite(current)?current-cost:0;
     var score=position(tile)+progress*(u.wpn.heal?2:3.5)-cost*.15;
     if(!u.wpn.heal&&u.side==='foe'&&S.turn>=8)score+=progress*2;
@@ -1563,7 +1584,7 @@ function aiAct(u,done){
   var plan=aiPlan(u),path=pathTo(u,plan.x,plan.y);
   moveUnit(u,path,function(){var t=plan.target;if(u.chp>0&&t&&t.chp>0&&canReachTarget(u,t)){
     if(plan.kind==='heal'&&t.side===u.side&&aiMedic(u))doHeal(u,t);
-    if(plan.kind==='attack'&&t.side!==u.side&&!u.wpn.heal)doCombat(u,t);
+    if(plan.kind==='attack'&&t.side!==u.side&&aiCanAttack(u))doCombat(u,t);
   }actionComplete(u);done();});
 }
 /* Support and ranged units can open an engagement before melee units occupy
@@ -1583,17 +1604,17 @@ var DIFFICULTIES={story:{name:'STORY',stats:.86,count:.82,marks:.75,heal:.85,kit
 function validDifficulty(k){return Object.prototype.hasOwnProperty.call(DIFFICULTIES,k)?k:'normal';}
 function difficulty(){return DIFFICULTIES[validDifficulty(S.difficulty)];}
 function beginRecord(mode,n){S.difficulty=validDifficulty(S.nextDifficulty);S.runId=Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,10);S.recordMode=mode;S.recordSize=n;S.recordName=mode==='solo'?(S.units[0]&&S.units[0].name||'COMMANDER'):(NET.name||'CO-OP SQUAD');S.kits=difficulty().kits;}
-function foeLevel(ch) { var sq=startingSquadSize();return Math.min(MAXLVL,1+Math.floor((ch-1)*(sq<=2?.85:1.12))); }
+function foeLevel(ch) { var sq=startingSquadSize();return Math.min(MAXLVL,1+Math.floor((ch-1)*(sq<=2?.85:1.12)*(ch<=5?1:.75+1.25/ch))); }
 /* After the level cap, marks accelerate gradually to keep up with promotions. */
-function foeMark(ch) { var sq=startingSquadSize(), start=sq<=2?23:18;var base=Math.max(0,Math.floor((ch-start)/(sq<=2?4:3))+(ch>=start?1:0));var late=sq===1?Math.floor(Math.max(0,ch-45)/8):Math.floor(Math.max(0,ch-24)/(sq===2?3:2));return Math.floor((base+late+ (sq>=3?Math.floor(Math.max(0,ch-20)/5):0))*difficulty().marks); }
+function foeMark(ch) { var sq=startingSquadSize(), start=sq<=2?23:18;var base=Math.max(0,Math.floor((ch-start)/(sq<=2?4:3))+(ch>=start?1:0));var late=sq===1?Math.floor(Math.max(0,ch-45)/8):Math.floor(Math.max(0,ch-24)/(sq===2?3:2));return Math.floor((base+late+ (sq>=3?Math.floor(Math.max(0,ch-20)/5):0))*difficulty().marks*.75); }
 function startingSquadSize() {return Math.max(1,Math.min(16,Math.floor(Number(S.squadSize)||1)));}
 function foeCount(ch,squadSize) {
   var sq=squadSize===undefined?startingSquadSize():Math.max(1,Math.min(16,Math.floor(Number(squadSize)||1)));
   var early=Math.min(9,Math.max(0,Math.floor((ch-1)*.5))),late=Math.floor(Math.max(0,ch-22)/8);
-  var raw=(sq<=2?sq:sq+1)+(sq>=6?Math.floor(sq/4):0)+Math.round(early*(sq<=2?.22+.10*sq:.42+.14*sq))+Math.min(sq+2,late)+ (sq>=3?Math.floor(Math.max(0,ch-15)/5):0);return Math.max(1,Math.min(30,Math.round(raw*difficulty().count)));
+  var raw=(sq<=2?sq:sq+1)+(sq>=6?Math.floor(sq/4):0)+Math.round(early*(sq<=2?.22+.10*sq:.42+.14*sq))+Math.min(sq+2,late)+ (sq>=3?Math.floor(Math.max(0,ch-15)/5):0);return Math.max(1,Math.min(30,Math.round((sq+Math.max(0,raw-sq)*.80)*difficulty().count)));
 }
-function reinforcementCount(ch) {var sq=startingSquadSize();return Math.max(1,Math.min(10,Math.round((1+Math.floor((sq-1)/2)+Math.floor(ch/(sq<=2?15:10)))*difficulty().count)));}
-function wpnPlus(ch) {return Math.min(14,Math.floor((ch-1)/3));}
+function reinforcementCount(ch) {var sq=startingSquadSize();return Math.max(1,Math.min(10,Math.round((1+(Math.floor((sq-1)/2)+Math.floor(ch/(sq<=2?15:10)))*.80)*difficulty().count)));}
+function wpnPlus(ch) {return Math.min(14,Math.floor((ch-1)/(ch<=5?3:4)));}
 function traitChance(ch) {return ch<9?0:Math.min(.55,(ch-8)*.045);}
 function foePool(ch) {return Object.keys(FOES).filter(function(k){return FOES[k].from<=ch;});}
 /* Weighted random encounter composition; keep support and elite counts bounded.
@@ -1660,7 +1681,7 @@ function startChapter() {
   /* foes */
   var pool = foePool(ch), lvl = foeLevel(ch), n = foeCount(ch), plus = wpnPlus(ch), tc = traitChance(ch);
   var mark = foeMark(ch);
-  if (S.obj === 'boss') n = Math.max(0, n - 1); /* commander occupies one slot in the threat budget */
+  if (S.obj === 'boss') n = Math.max(0, Math.round((n - 1)*.80)); /* commander occupies one slot in the threat budget */
   var pickedFoes=[];
   function spawnFoe(def, isBoss, lv) {
     var f = mkUnit(def, 'foe', lv, { plus: plus, boss: isBoss, mark: mark > 0 ? mark + (isBoss ? 1 : 0) : 0,
@@ -1748,7 +1769,7 @@ function phaseStart(side) {
     }
     if(u.chp>0&&side==='ply'&&perk(u,'regen')){var ph=Math.min(u.stats.hp-u.chp,Math.ceil(u.stats.hp*perk(u,'regen')));u.chp+=ph;if(ph)fxText(u,'+'+ph,'#54f0c8');}
     if (u.chp > 0 && u.traits.indexOf('regen') >= 0) {
-      var r = Math.max(1, Math.round(u.stats.hp * 0.15));
+      var r = Math.max(1, Math.round(u.stats.hp * 0.06));
       u.chp = Math.min(u.stats.hp, u.chp + r); fxText(u, '+' + r, '#8affd8');
     }
   }
@@ -2056,7 +2077,7 @@ function rollRewards() {
       pool.push({ k: 'stat', t: 'OVERDRIVE CHIP', d: o.name + ': +2 ' + STATN[sko], id: o.id, s: sko, amt: 2 });
     }
   }
-  pool.push({ k: 'kits', t: 'SUPPLY DROP', d: '+3 repair kits (heal 20 each)' });
+  pool.push({ k: 'kits', t: 'SUPPLY DROP', d: '+3 repair kits (heal up to 50% HP; scale with max HP)' });
   if (S.dead.length && live.length < SQUAD_CAP) {
     var f = S.dead[S.dead.length - 1];
     pool.push({ k: 'revive', t: 'RESURRECTION', d: 'Reactivate ' + f.name + ' at half HP' });
@@ -3452,13 +3473,13 @@ function forecastCard(a, d) {
   function side(u, f, label) {
     if (!f) return '<div class="fcol"><b>' + esc(u.name) + '</b><span class="no">no counter</span></div>';
     return '<div class="fcol"><b>' + esc(u.name) + '</b>' +
-      '<div class="frow"><i>DMG</i><s>' + f.dmg + (f.dbl ? ' x2' : '') + '</s></div>' +
+      '<div class="frow"><i>DMG</i><s>' + f.dmg + (f.dbl ? ' + ' + f.follow : '') + '</s></div>' +
       '<div class="frow"><i>HIT</i><s>' + f.hit + '%</s></div>' +
-      '<div class="frow"><i>CRIT</i><s>' + f.crit + '%</s></div>' +
+      '<div class="frow"><i>CRIT</i><s>' + f.crit + '%</s></div>' + '<div class="frow"><i>CRIT DMG</i><s>'+f.critical+(f.dbl?' + '+f.followCrit:'')+'</s></div>' +
       '<div class="frow"><i>HP</i><s>' + u.chp + '</s></div>' + (u.shieldHP?'<div class="frow"><i>SHIELD</i><s>'+u.shieldHP+' next hit</s></div>':'')+'</div>';
   }
   var tri = fa.tri.dmg > 0 ? '<span class="adv">ADVANTAGE</span>' : fa.tri.dmg < 0 ? '<span class="dis">DISADVANTAGE</span>' : '';
-  var lethal = fa.dmg * (fa.dbl ? 2 : 1) >= d.chp ? '<span class="adv">LETHAL</span>' : '';
+  var lethal = fa.dmg+(fa.dbl?fa.follow:0)>=(d.chp+(d.shieldHP||0)) ? '<span class="adv">POTENTIAL KO</span>' : '';
   return '<div class="fcast">' + side(a, fa) + '<div class="fvs">VS ' + tri + lethal + '</div>' + side(d, fd) + '</div>';
 }
 
@@ -3633,9 +3654,9 @@ function terInfo(u) {
   return t.name + (t.def ? ' +' + t.def + ' DEF' : '') + (t.avo ? ' +' + t.avo + ' AVO' : '');
 }
 function healCard(a, t) {
-  var amt = Math.min(healPower(a), t.stats.hp - t.chp);
+  var amt=healAmount(a,t);
   return '<div class="fcast"><div class="fcol"><b>' + esc(a.name) + '</b>' +
-    '<div class="frow"><i>REPAIR</i><s>' + healPower(a) + '</s></div></div>' +
+    '<div class="frow"><i>REPAIR</i><s>' + amt + '</s></div></div>' +
     '<div class="fvs">-&gt;</div><div class="fcol"><b>' + esc(t.name) + '</b>' +
     '<div class="frow"><i>HP</i><s>' + t.chp + ' -&gt; ' + (t.chp + amt) + '</s></div></div></div>';
 }
@@ -3902,7 +3923,7 @@ function renderHelp() {
     '<h2>HOW TO PLAY</h2>' +
     '<ul class="help">' +
     '<li><b>Turns.</b> Tap an operative on the battlefield, then a highlighted tile to move, or tap the same operative again to act in place. Each operative can move once per turn, up to its MOV allowance including terrain costs. Choosing a destination commits movement immediately; switching units or earning a bonus action does not refund it. Attack, repair or wait afterward. Movement resets next turn. The bottom squad bar is optional. End your turn or use every action.</li>' +
-    '<li><b>Combat.</b> Physical attacks hit DEF, hex code hits RES. SPD four or more above the target attacks twice. SKL drives hit and crit; SPD and LCK drive dodge.</li>' +
+    '<li><b>Combat.</b> Physical attacks hit DEF, hex code hits RES. A sufficient SPD lead grants a reduced-strength follow-up (65% damage; threshold grows slowly with target SPD). Both sides use the same damage curve: ordinary hits max 48% max HP, critical hits max 65%, and follow-up crits max 34%. Hits are 25–95%, crits max 35%. Repair actions restore up to 35% max HP. SKL drives hit and crit; SPD and LCK drive dodge.</li>' +
     '<li><b>Triangle.</b> Blade beats Rail, Rail beats Lance, Lance beats Blade: plus or minus 15 hit and 1 damage. Tech is neutral.</li>' +
     '<li><b>Terrain.</b> Barricades and data daises give DEF and avoid. Repair nodes heal. Plasma vents burn. Bulkheads block.</li>' +
     '<li><b>Growth.</b> Each level, every stat rolls its growth percentage. 300% total means about three stat points a level.</li>' +
@@ -4279,7 +4300,7 @@ if (typeof window !== 'undefined') {
   window.__GAME = { DIFFICULTIES:DIFFICULTIES, difficulty:difficulty, boardRead:boardRead, recordRun:recordRun, renderCodex:renderCodex, renderLeaderboard:renderLeaderboard, recruitStock:recruitStock, SPR:SPR, S: S, newRun: newRun, aiAct: aiAct, aiPlan:aiPlan, aiExchange:aiExchange, aiGoalField:aiGoalField, endPlayerPhase: endPlayerPhase, allies: allies,
     routeAction:routeAction, routeChoices:routeChoices, recruitParticipants:recruitParticipants, recruitEligible:recruitEligible, makeRecruit:makeRecruit, recruitProfile:recruitProfile, recruitCost:recruitCost, replayUnit:replayUnit, routeItem:routeItem, itemRarity:itemRarity, saveGame:saveGame, loadGame:loadGame, routeRender:routeRender, takeReward: takeReward, startChapter: startChapter, forecast: forecast, reachable: reachable, ROSTER: ROSTER,
     foeLevel: foeLevel, foeCount: foeCount, foePool:foePool, pickFoe:pickFoe, spawnReinforcements:spawnReinforcements, mkUnit: mkUnit, FOES: FOES, checkEnd: checkEnd,
-    doCombat: doCombat, doHeal: doHeal, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
+    doCombat: doCombat, doHeal: doHeal, strike:strike, healAmount:healAmount, forecastCard:forecastCard, healCard:healCard, balancedDamage:balancedDamage, pathTo: pathTo, moveUnit: moveUnit, attackTiles: attackTiles,
     canReachTarget: canReachTarget, wRange: wRange, dist: dist, ter: ter, foesOf: foesOf,
     healableFrom: healableFrom, useKit: useKit, wpnPlus: wpnPlus, inBounds: inBounds,
     refreshUI: refreshUI, finishAct:finishAct, canEndTurn:canEndTurn, actionsRemaining:actionsRemaining, selectUnit: selectUnit, squadKeys: squadKeys, applyLooks: applyLooks,
