@@ -430,8 +430,8 @@ body{--cy:#24645e;--gr:#276c58;--am:#936519;--tx:#223c39;--dim:#647773;--line:#c
 </div>
 <div id="overlay"></div>
 <script>(function(){
-/* 50 layouts: 10 per terrain, generated and connectivity-checked offline */
-var LAYOUTS = [
+/* Legacy boards retained for exact saves made before the map redesign. */
+var LEGACY_LAYOUTS = [
   /* FOUNDRY */ [
     ['.o............','..,#########..','.,ooo#...#....','...^^#.^...,..','...,,#...#....','.....#######..','.,o...^..#....','.,...#.#####..','..+.###.####..','..............'],
     ['...^..,..o....','...#.######...','............o.','....#####.#...','.,...,=...#...','..........#.o.','...######.##..','...^,.o...#...','...####.####..','.....+o...,^..'],
@@ -493,6 +493,12 @@ var LAYOUTS = [
     ['..,#.+....=...','.oo##..#^.#...','....,#.#.##...','.......##.#...','..#....#.o#^..','.,##..##....,.','...#####..#.,.','.....#........','...o,,#o.oo...','....^..o.#,...'],
   ],
 ];
+
+
+/* 50 individually planned tactical boards; fixed geometry, shuffled within each theme. */
+var MAP_REVISION=2;
+var LAYOUTS = [[["...,,,,,,,,...","...+###.##....","....###^##....","...o..o.......","......=.......",".......=......","........o.o...","....##^.###...","....##..##+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","...##^#####...",".......o......","....o.=.......",".......=.o....","......o.......","...#####^##...","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","..............","...o.#^##.....",".....#=.#o....","....o#.=#.....",".....##^#.o...","..............","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","....##....+...","....##^.......","....##o.......","....##=...o...","...o...=##....",".......o##....",".......^##....","...+....##....","...,,,,,,,,..."],["...,,,,,,,,...","...+..##......",".....^##......","....o.##......","...##.=.o.....",".....o.=.##...","......##.o....","......##^.....","......##..+...","...,,,,,,,,..."],["...,,,,,,,,...","...###....+...","...#^.........","...#o.........",".....=##o.....",".....o##=.....",".........o#...",".........^#...","...+....###...","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","....o.........","...###=.###...",".......^.o....","....o.^.......","...###.=###...",".........o....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...",".....#....+...","....^#........",".....#o..o....",".....#.=#.....",".....#=.#.....","....o..o#.....","........#^....","...+....#.....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","...##.^..##...","...##o..o.....","......=.......",".......=......",".....o..o##...","...##..^.##...","..........+...","...,,,,,,,,..."],["...,,,,,,,,...",".....^#...+...","......#.......","....o.#.......",".......=o##...","...##o=.......",".......#.o....",".......#......","...+...#^.....","...,,,,,,,,..."]],[["...,,,,,,,,...","...+#....#....","....#....#....","....#....#....","...o..=.o.....",".....o.=..o...","....#....#....","....#....#....","....#....#+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","...####.......","....o.#.......","......#=o.....",".....o=#......",".......#.o....",".......####...","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+.#........",".....#........",".....#o.......","....o.=.###...","...###.=.o....",".......o#.....","........#.....","........#.+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","....##..##....","....##o.##....","...o..=.......",".......=..o...","....##.o##....","....##..##....","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+..#.......",".....o#.......","...####.......","....o..=......","......=..o....",".......####...",".......#o.....",".......#..+...","...,,,,,,,,..."],["...,,,,,,,,...","....#.....+...","....#.........","....#.##..o...","....#o=..#....","....#..=o#....","...o..##.#....",".........#....","...+.....#....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........",".....#..#.....","...o.#=.#.....","......##.o....","....o.##......",".....#.=#.o...",".....#..#.....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","...###....+...",".....#........",".....#o.......",".....#.=.o....","....o.=.#.....",".......o#.....","........#.....","...+....###...","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","...########...","....o.........",".....o=.###...","...###.=o.....",".........o....","...########...","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...",".....####.....",".....#...o....","...o.#=.......",".......=#.o...","....o...#.....",".....####.....","...+..........","...,,,,,,,,..."]],[["...,,,,,,,,...","...+######....","..............","....o.##......","......=.o.....",".....o.=......","......##.o....","..............","....######+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","....o.........","...########...",".....o=.......",".......=o.....","...########...",".........o....","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+..........",".....####.....","...o.####.....","......=..o....","....o..=......",".....####.o...",".....####.....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","....#.....+...","....#.##......","....#o........","....#.=...o...","...o...=.#....","........o#....","......##.#....","...+.....#....","...,,,,,,,,..."],["...,,,,,,,,...","...+..##......","...##.........","...##o..o.....","...##.=.......",".......=.##...",".....o..o##...",".........##...","......##..+...","...,,,,,,,,..."],["...,,,,,,,,...",".....##...+...",".....##.......",".....##..##...","....o..o=.....",".....=o..o....","...##..##.....",".......##.....","...+...##.....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","...###..###...","....o.=.......","......##o.....",".....o##......",".......=.o....","...###..###...","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","....#.....+...","....#.....o...","....#o...#....","....#.=..#....","....#..=.#....","....#...o#....","...o.....#....","...+.....#....","...,,,,,,,,..."],["...,,,,,,,,...","...+.####.....",".....####.....","....o.........","...##.=.o.....",".....o.=.##...",".........o....",".....####.....",".....####.+...","...,,,,,,,,..."],["...,,,,,,,,...","......##..+...","....o.##......","......##......","......##......",".....o==o.....","......##......","......##.o....","...+..##......","...,,,,,,,,..."]],[["...,,,,,,,,...","...+..........","....#^o.......","....##........","...o..=.o.....",".....o.=..o...","........##....",".......o^#....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","...##.^.......",".....##.o.....","....o.=.......",".......=.o....",".....o.##.....",".......^.##...","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","...###..###...","......=.......","....o..^o.....",".....o^..o....",".......=......","...###..###...","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","....#.....+...","....#^........","....###.......","...o..=.o.....",".....o.=..o...",".......###....","........^#....","...+.....#....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","....o.........","...###.o......",".....#=.#^....","....^#.=#.....","......o.###...",".........o....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","....#.##......","....#o..^.....","....#.=...o...","...o...=.#....",".....^..o#....","......##.#....","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+##........",".....#........","....^#o.......",".....#.=.o....","....o.=.#.....",".......o#^....","........#.....","........##+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...","....##........","...o..=.^o....",".....o##......","......##o.....","....o^.=..o...","........##....","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","...###^.......","...#..........","...#.o=..o....","....o..=o.#...","..........#...",".......^###...","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","....##....+...","....##........","....##..o.....","...o..==^.....",".....^##..o...",".....o..##....","........##....","...+....##....","...,,,,,,,,..."]],[["...,,,,,,,,...","...+##^.......",".....#........",".....#o.......",".....#.=.o....","....o.=.#.....",".......o#.....","........#.....",".......^##+...","...,,,,,,,,..."],["...,,,,,,,,...","..........+...",".....##^......","....o##.o.....","......=..##...","...##..=......",".....o.##o....","......^##.....","...+..........","...,,,,,,,,..."],["...,,,,,,,,...","...+##..##....","....##^.##....","..............","...o.o=.......",".......=o.o...","..............","....##.^##....","....##..##+...","...,,,,,,,,..."],["...,,,,,,,,...","....#.....+...","....#o........","....#.^.......","....###=..o...","...o..=###....",".......^.#....","........o#....","...+.....#....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","...##.^.##....","...##o=.......","......##..o...","...o..##......",".......=o##...","....##.^.##...","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","....^.....+...","...####.......","......#.o.....","....o=##......","......##=o....",".....o.#......",".......####...","...+.....^....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","....^.##......","...##.o.#.....","......=.#o....","....o#.=......",".....#.o.##...","......##.^....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...",".....###..+...",".....###^.....","....o###......","......=.o##...","...##o.=......","......###o....",".....^###.....","...+..###.....","...,,,,,,,,..."],["...,,,,,,,,...","...+..........","....##^.......",".....#o..##...","....o#=.......",".......=#o....","...##..o#.....",".......^##....","..........+...","...,,,,,,,,..."],["...,,,,,,,,...","......##..+...",".....^##......","...##.##......",".....o=..o....","....o..=o.....","......##.##...","......##^.....","...+..##......","...,,,,,,,,..."]]];
+var MAP_NAMES = [["FUSION CROSSROADS","TWIN ASSEMBLY LINES","REACTOR RING","ALLOY PRESS","THERMAL GANTRY","SMELTER CHAMBERS","CONVEYOR SWITCH","COOLING BYPASS","FORGE COURTYARD","PLASMA GATE"],["DATA STACK ATRIUM","CRYO DATABASE","NEURAL TERMINAL","MEMORY ARRAY","ENCRYPTED SECTOR","ARCHIVE LABYRINTH","SERVER CATHEDRAL","CIPHER BRIDGE","QUANTUM LIBRARY","BLACK BOX VAULT"],["THERMAL EXCHANGER","CRYO TRANSIT","COOLANT CORE","ZERO-K CHANNEL","STASIS VAULT","FROZEN INTERCHANGE","SUBZERO PIPEWORK","GLACIAL SWITCHBACK","CHILLER PLATFORM","ABSOLUTE ZERO"],["BIOSYNTH PLATFORM","GENOME RELAY","HYDROPONIC GRID","NEURAL ROOT ARRAY","BIOHAZARD CORRIDOR","SPORE CONSERVATORY","ROOT MAZE","POLLEN COURT","OVERGROWN LAB","CHIMERA NURSERY"],["BREACHED HULL","GRAVITY FRAME","DRONE HANGAR","SHATTERED DRIVE","ORBITAL DEBRIS","LIFEBOAT BAY","COLLAPSED MESS","ENGINE WRECK","COMMAND DECK","FINAL BULKHEAD"]];
 
 /* ECHELON ZERO - endless futuristic tactics  */
 'use strict';
@@ -1085,8 +1091,8 @@ function drawLayout(ti) {
   if (!S.bags[ti] || !S.bags[ti].length) S.bags[ti] = shuffled(LAYOUTS[ti].length);
   return S.bags[ti].pop();
 }
-function buildGrid(ti, li) {
-  var rows = LAYOUTS[ti][li], g = [], x, y;
+function buildGrid(ti, li, revision) {
+  var rows = (revision===1?LEGACY_LAYOUTS:LAYOUTS)[ti][li], g = [], x, y;
   for (y = 0; y < MAPH; y++) {
     g[y] = [];
     for (x = 0; x < MAPW; x++) g[y][x] = LCH[rows[y].charAt(x)] || 'floor';
@@ -1097,7 +1103,7 @@ function genMap(ch) {
   var ti = themeIdx(ch);
   var li = (S.resumeLayout !== null && S.resumeLayout !== undefined) ? S.resumeLayout : drawLayout(ti);
   S.resumeLayout = null;
-  S.layout = li; S.terrain = ti;
+  S.layout = li; S.terrain = ti; S.mapRevision=MAP_REVISION;
   return buildGrid(ti, li);
 }
 
@@ -1657,18 +1663,20 @@ function startChapter() {
   S.obj = ch % 5 === 0 ? 'boss' : (ch > 3 && RNG.chance(0.22) ? 'hold' : 'wipe');
   S.objTurns = Math.min(12, 4 + Math.floor(ch / 4));
   var th = themeOf(ch);
-  S.site = th.name + ' / ' + th.sites[S.layout % th.sites.length];
+  S.site = th.name + ' / ' + MAP_NAMES[S.terrain][S.layout];
   S.reinforce = [];
 
   /* keep survivors, clear foes */
   S.units = S.units.filter(function (u) { return u.side === 'ply' && u.chp > 0; });
   S.squadSize=Math.max(S.squadSize||1,S.units.length);
   var used = {};
-  /* player spawn: left edge, reachable column */
+  /* Stable deployment formation on the three clear approach columns. */
   var slots = [];
-  for (var y = 0; y < MAPH; y++) for (var x = 0; x < 3; x++) if (!ter(x, y).block) slots.push({ x: x, y: y });
+  var rowOrder=[4,5,3,6,2,7,1,8,0,9];
+  [1,2,0].forEach(function(x){rowOrder.forEach(function(y){if(!ter(x,y).block&&!ter(x,y).burn)slots.push({x:x,y:y});});});
+  S.units.forEach(function(u){u.x=-1;u.y=-1;});
   for (var i = 0; i < S.units.length; i++) {
-    var sp = slots[(i * 3 + 1) % slots.length];
+    var sp = slots[i % slots.length];
     var pos = placeNear(sp.x, sp.y, used);
     var u = S.units[i];
     u.x = pos.x; u.y = pos.y; u.px = pos.x; u.py = pos.y; u.acted = false; u.moved=false; u.flash = 0; u.quickTurn=0;u.sabotageTurn=0;u.extraAction=false;u.emergencyUsed=false;u.shieldHP=0;u.jammed=false;
@@ -1690,18 +1698,20 @@ function startChapter() {
     /* early on the machines hold their ground, so there is room to learn to bait
        and pick fights. from chapter four they come for you. */
     if (!isBoss && ch <= 3) f.ai = 'guard';
-    /* find a spot on the far side that the squad can actually reach */
-    for (var t = 0; t < 400; t++) {
-      var sx = RNG.range(Math.floor(MAPW * 0.45), MAPW - 1), sy = RNG.range(0, MAPH - 1);
-      var k = sx + ',' + sy;
-      if (used[k] || ter(sx, sy).block || !open[k] || unitAt(sx, sy)) continue;
-      used[k] = 1; f.x = sx; f.y = sy; f.px = sx; f.py = sy;
-      S.units.push(f); return f;
+    /* Spread defenders over the safe far-side deployment zone. */
+    var preferred=[];
+    for(var sy=0;sy<MAPH;sy++)for(var sx=MAPW-4;sx<MAPW;sx++){
+      var k=sx+','+sy;
+      if(!used[k]&&!ter(sx,sy).block&&!ter(sx,sy).burn&&open[k]&&!unitAt(sx,sy))preferred.push({x:sx,y:sy,k:k});
+    }
+    if(preferred.length){
+      if(isBoss)preferred.sort(function(a,b){return b.x-a.x||Math.abs(a.y-4.5)-Math.abs(b.y-4.5);});
+      var pp=preferred[isBoss?0:RNG.int(preferred.length)];used[pp.k]=1;f.x=f.px=pp.x;f.y=f.py=pp.y;S.units.push(f);return f;
     }
     /* Crowded boards: use any reachable free tile, farthest from the squad first. */
     var free = Object.keys(open).map(function (k) {
       var a = k.split(','); return { x: +a[0], y: +a[1], k: k };
-    }).filter(function (p) { return !used[p.k] && !ter(p.x, p.y).block && !unitAt(p.x, p.y); });
+    }).filter(function (p) { return !used[p.k] && !ter(p.x, p.y).block && !ter(p.x,p.y).burn && !unitAt(p.x, p.y); });
     free.sort(function (a, b) { return b.x - a.x || Math.abs(a.y - MAPH / 2) - Math.abs(b.y - MAPH / 2); });
     if (!free.length) return null;
     var p = free[0]; used[p.k] = 1;
@@ -2181,7 +2191,7 @@ function safeSavePoint(){return (S.screen==='clear'||(S.screen==='map'&&S.phase=
 function saveGame(){
   if(!safeSavePoint())return false;
   try{
-    var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','best','dead','uid','squadSize','bags','layout','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
+    var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','best','dead','uid','squadSize','bags','layout','mapRevision','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
     var data={v:4,rng:RNG.s,units:S.units.filter(function(u){return u.chp>0;}),local:NET.local&&netOnline()?{players:NET.localPlayers,active:NET.localActive}:null};
     fields.forEach(function(k){data[k]=S[k];});
     localStorage.setItem('echelon_run',JSON.stringify(data));saveBest();return true;
@@ -2189,9 +2199,9 @@ function saveGame(){
 }
 function resumeExact(d){
   if(!Array.isArray(d.units)||!d.units.some(function(u){return u.side==='ply'&&u.chp>0;})||['map','clear'].indexOf(d.screen)<0||!LAYOUTS[d.terrain]||!LAYOUTS[d.terrain][d.layout]||(d.screen==='map'&&d.phase!=='player'))return false;
-  resetLooks();runEpoch++; var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
+  resetLooks();runEpoch++; var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','mapRevision','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
   fields.forEach(function(k){S[k]=d[k];});S.difficulty=validDifficulty(S.difficulty);S.nextDifficulty=S.difficulty;S.runId=S.runId||Date.now().toString(36)+"-legacy";S.recordMode=S.recordMode||(d.local?"local co-op":"solo");S.recordSize=S.recordSize||S.squadSize;S.best=Math.max(S.best||1,d.best||1);S.reinforce=S.reinforce||[];S.log=S.log||[];S.levelups=S.levelups||[];
-  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){updateClassIdentity(u);u.moved=!!u.moved;u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.grid=buildGrid(S.terrain,S.layout);RNG.s=d.rng||1;
+  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){updateClassIdentity(u);u.moved=!!u.moved;u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.mapRevision=d.mapRevision===MAP_REVISION?MAP_REVISION:1;S.grid=buildGrid(S.terrain,S.layout,S.mapRevision);RNG.s=d.rng||1;
   S.sel=null;S.inspect=null;S.tileInfo=null;S.target=null;S.mode='idle';S.reach=null;S.atkTiles=null;S.origin=null;S.fx=[];S.movers=[];S.busy=0;S.gameover=false;S.resumeLayout=null;S.bannerT=0;S.shake=0;S.saveError='';S.invOpen=false;bgCanvas=null;
   NET.local=!!d.local;NET.phase=d.local?'match':'idle';NET.host=!!d.local;NET.started=!!d.local;NET.pending=false;NET.localPlayers=d.local?d.local.players:[];NET.localActive=d.local?d.local.active:0;NET.ownerColors=null;
   if(S.danger)computeDanger();if(S.screen==='map')requestNextUnit();return true;
@@ -2227,7 +2237,7 @@ function loadGame() {
     }
     if (!S.units.length) return false;
     S.levelups = d.levelups||[];
-    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.grid=buildGrid(d.terrain,d.layout);S.site=d.site;S.obj=d.obj;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
+    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.mapRevision=1;S.grid=buildGrid(d.terrain,d.layout,1);S.site=d.site;S.obj=d.obj;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
     return true;
   } catch (e) { return false; }
 }
@@ -3202,7 +3212,7 @@ function unitFromWire(r) {
 function netState() {
   return {
     host: NET.id, difficulty:validDifficulty(S.difficulty), ownerColors: NET.ownerColors, recruitOwners:S.recruitOwners, replay:S.combatReplay, ch: S.chapter, site: S.site, ob: S.obj, ot: S.objTurns,
-    tn: S.turn, ph: S.phase, t: S.terrain, l: S.layout, kt: S.kits,
+    tn: S.turn, ph: S.phase, t: S.terrain, l: S.layout, mapRevision:S.mapRevision||1, kt: S.kits,
     gold:S.gold, route:S.route, shrine:S.shrine, sc: S.screen, rw: S.rewards, lu: S.levelups, dd: S.dead,
     sq: S.squadSize, lg: S.log.slice(0, 6),
     u: S.units.filter(function (x) { return x.chp > 0; }).map(wireUnit)
@@ -3239,8 +3249,9 @@ function applyNetState(d) {
   var inspectedId = S.screen === 'map' && d.sc === 'map' && S.chapter === d.ch && S.inspect ? S.inspect.id : null;
   var prev = {}, i;
   for (i = 0; i < S.units.length; i++) prev[S.units[i].id] = { hp: S.units[i].chp, x: S.units[i].x, y: S.units[i].y };
-  if (S.terrain !== d.t || S.layout !== d.l || !S.grid) {
-    S.terrain = d.t; S.layout = d.l; S.grid = buildGrid(d.t, d.l);
+  var revision=d.mapRevision===MAP_REVISION?MAP_REVISION:1;
+  if (S.terrain !== d.t || S.layout !== d.l || S.mapRevision!==revision || !S.grid) {
+    S.terrain = d.t; S.layout = d.l; S.mapRevision=revision; S.grid = buildGrid(d.t, d.l, revision);bgCanvas=null;
   }
   var seen = {}, list = [];
   for (i = 0; i < d.u.length; i++) {
@@ -4314,7 +4325,7 @@ if (typeof window !== 'undefined') {
     activeOwner: activeOwner, ownerName: ownerName, buildSquad: buildSquad, rosterStrip: rosterStrip,
     ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS, paletteOf:paletteOf, paletteId:paletteId, lookOf:lookOf, getSpr:getSpr, evolvedSprite:evolvedSprite, netLooks:netLooks, wireUnit:wireUnit, unitFromWire:unitFromWire,
     resetLooks:resetLooks, PROMO_GROWTH:PROMO_GROWTH, promoteUnit:promoteUnit, promotionOptions:promotionOptions, canPromote:canPromote, careerLevel:careerLevel, grantExp:grantExp, CLASS_SKILLS:CLASS_SKILLS, PROMO_SKILLS:PROMO_SKILLS, promotionSkills:promotionSkills, perk:perk, healPower:healPower, CLASS_PATHS:CLASS_PATHS, MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
-    LAYOUTS: LAYOUTS, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
+    LAYOUTS: LAYOUTS, LEGACY_LAYOUTS:LEGACY_LAYOUTS, MAP_NAMES:MAP_NAMES, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
     cvRef: function () { return cv; },
     renderInto: function (target) {
       var oc = cv, octx = ctx;
