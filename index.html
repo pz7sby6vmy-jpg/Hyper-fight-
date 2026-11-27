@@ -411,6 +411,8 @@ body{--cy:#24645e;--gr:#276c58;--am:#936519;--tx:#223c39;--dim:#647773;--line:#c
 .sqtop canvas{width:72px;height:72px}.codex-card h3 canvas{width:64px;height:64px;flex-shrink:0}.side-unit-head canvas{image-rendering:pixelated}.obox .promo-growth{color:#276c58!important}
 @media(max-width:480px){.sqtop canvas{width:58px;height:58px}.codex-card h3 canvas{width:52px;height:52px}}
 
+
+.promo-preview{width:64px!important;height:64px!important;image-rendering:pixelated;float:left;margin:0 10px 4px 0;flex:none;background:#19352e;border:1px solid #81978b;border-radius:5px}.codex-sub:after,.lvs .rew:after{content:"";display:block;clear:both}
 </style>
 </head>
 <body>
@@ -421,7 +423,7 @@ body{--cy:#24645e;--gr:#276c58;--am:#936519;--tx:#223c39;--dim:#647773;--line:#c
     <nav class="battle-nav" aria-label="Battle navigation"><span class="brand">HYPER FIGHTS</span><span id="battle-main-menu"></span><button class="current" disabled>Battlefield</button><button data-act="codex">Field codex</button><button data-act="leaderboard">Leaderboard</button><span class="nav-spacer"></span><span id="battle-nav-save"></span></nav><div id="hud"></div>
     <div id="owner-legend"></div>
     <div class="battle-layout"><div class="battle-main">
-      <div class="map-toolbar"><b>TACTICAL MAP</b><div class="map-tools"><button class="mini" data-act="mapzoom" data-v="out" aria-label="Zoom out">−</button><button class="mini" data-act="mapzoom" data-v="fit">Fit</button><button class="mini" data-act="mapzoom" data-v="in" aria-label="Zoom in">+</button><span class="zoom-label" id="map-zoom-label">Fit</span><span id="map-turn-control"></span></div></div><div id="cvwrap"><canvas id="cv"></canvas></div>
+      <div class="map-toolbar"><b>TACTICAL MAP</b><div class="map-tools"><button class="mini" data-act="mapzoom" data-v="out" aria-label="Zoom out">−</button><button class="mini" data-act="mapzoom" data-v="fit">Fit</button><button class="mini" data-act="mapzoom" data-v="in" aria-label="Zoom in">+</button><span class="zoom-label" id="map-zoom-label">Fit</span><span id="map-turn-control"></span></div></div><div id="cvwrap"><canvas id="cv" aria-label="Tactical battlefield. Tap your character, then a highlighted tile to move."></canvas></div>
       <div id="panel"></div><div id="battle-summary" class="battle-summary"></div><div id="roster"></div><details class="battle-log"><summary>Combat log</summary><div id="battle-log-lines"></div></details>
     </div><aside id="inventory-sheet" aria-label="Squad item sheet"></aside></div>
   </div>
@@ -1021,7 +1023,7 @@ function mkUnit(def, side, lvl, opt) {
     id: S.uid++, key: def.key || def.name, name: look.name, cls: def.cls || def.name,
     promo: def.promo || null, spr: look.spr, pal: look.pal, side: side, mark: opt.mark || 0,
     mov: def.mov, lvl: 1, exp: 0, tier:0, careerBase:0, path:[], x: 0, y: 0, px: 0, py: 0,
-    stats: {}, grow: {}, bio: def.bio || '', acted: false, promoted: false,
+    stats: {}, grow: {}, bio: def.bio || '', acted: false, moved:false, promoted: false,
     wpn: mkWpn(def.wpn, opt.plus || 0), traits: side==='foe'?(def.innate||[]).slice():[], boss: !!opt.boss,
     ai: def.ai || 'hunt', flash: 0
   };
@@ -1113,9 +1115,10 @@ function openTiles(fromX, fromY) {
 }
 
 /* ================= PATHFINDING ================= */
-function reachable(u) {
+function reachable(u,ignoreSpent) {
   var best = {}, start = u.x + ',' + u.y;
   best[start] = 0;
+  if(u.moved&&!ignoreSpent)return best;
   var frontier = [{ x: u.x, y: u.y, c: 0 }];
   while (frontier.length) {
     frontier.sort(function (a, b) { return a.c - b.c; });
@@ -1144,12 +1147,16 @@ function reachable(u) {
 }
 
 function pathTo(u, tx, ty) {
+  if(u.moved)return tx===u.x&&ty===u.y?[]:null;
+  if(!inBounds(tx,ty)||ter(tx,ty).block)return null;
+  var occupant=unitAt(tx,ty);if(occupant&&occupant!==u)return null;
   var prev = {}, best = {}, start = u.x + ',' + u.y;
   best[start] = 0;
   var frontier = [{ x: u.x, y: u.y, c: 0 }];
   while (frontier.length) {
     frontier.sort(function (a, b) { return a.c - b.c; });
     var n = frontier.shift();
+    if(n.c!==best[n.x+','+n.y])continue;
     if (n.x === tx && n.y === ty) break;
     var d = [[0, -1], [1, 0], [0, 1], [-1, 0]];
     for (var i = 0; i < 4; i++) {
@@ -1267,7 +1274,7 @@ function strike(a, d) {
 }
 
 var replayCapture=null,replaySerial=0,replaySeen='',replayTimer=null;
-function replayUnit(u){return {id:u.id,name:u.name,cls:u.cls,pal:u.pal,spr:u.spr,hp:u.chp,max:u.stats.hp,side:u.side,color:unitHpColor(u,u.chp/u.stats.hp,true)};}
+function replayUnit(u){return {id:u.id,name:u.name,cls:u.cls,pal:u.pal,spr:evolvedSprite(u),hp:u.chp,max:u.stats.hp,side:u.side,color:unitHpColor(u,u.chp/u.stats.hp,true)};}
 function replayStrike(a,d,before,r){if(!replayCapture)return;replayCapture.events.push({from:a.id,to:d.id,before:before,after:d.chp,hit:r.hit,crit:!!r.crit,dmg:r.dmg||0});}
 function replayOpen(){return !HEADLESS&&typeof document!=='undefined'&&!!document.getElementById('combat-replay');}
 function closeReplay(){if(replayTimer){clearTimeout(replayTimer);replayTimer=null;}var el=document.getElementById('combat-replay');if(el){el.remove();refreshUI();}}
@@ -1465,11 +1472,12 @@ function useKit(u) {
 }
 
 function moveUnit(u, path, cb) {
-  if (!path || !path.length) { if (cb) cb(); return; }
+  if (u.moved || !path || !path.length) { if (cb) cb(); return; }
+  u.moved=true;
   var last = path[path.length - 1];
   if (HEADLESS) { u.x = last.x; u.y = last.y; u.px = last.x; u.py = last.y; if (cb) cb(); return; }
   S.busy++;
-  S.movers.push({ u: u, path: path, i: 0, t: 0, fx: u.x, fy: u.y, cb: function () { S.busy--; if (cb) cb(); } });
+  S.movers.push({ u: u, path: path, i: 0, t: 0, fx: u.x, fy: u.y, duration:Math.max(.065,Math.min(.125,.86/path.length)), cb: function () { S.busy--; if (cb) cb(); } });
 }
 
 /* ================= AI ================= */
@@ -1653,7 +1661,7 @@ function startChapter() {
     var sp = slots[(i * 3 + 1) % slots.length];
     var pos = placeNear(sp.x, sp.y, used);
     var u = S.units[i];
-    u.x = pos.x; u.y = pos.y; u.px = pos.x; u.py = pos.y; u.acted = false; u.flash = 0; u.quickTurn=0;u.sabotageTurn=0;u.extraAction=false;u.emergencyUsed=false;u.shieldHP=0;u.jammed=false;
+    u.x = pos.x; u.y = pos.y; u.px = pos.x; u.py = pos.y; u.acted = false; u.moved=false; u.flash = 0; u.quickTurn=0;u.sabotageTurn=0;u.extraAction=false;u.emergencyUsed=false;u.shieldHP=0;u.jammed=false;
     if(u.autonomous&&u.lvl>=MAXLVL&&canPromote(u))promoteUnit(u,RNG.int(2));
     if (ch > 1) u.chp = Math.min(u.stats.hp, u.chp + Math.ceil(u.stats.hp * Math.min(.95,difficulty().heal+(startingSquadSize()===1?.12:startingSquadSize()===2?.05:0))));
   }
@@ -1709,7 +1717,7 @@ function startChapter() {
   S.banner = 'CHAPTER ' + ch; S.bannerT = 1.6;
   say('--- CHAPTER ' + ch + ': ' + S.site + ' / ' + OBJS[S.obj].name + ' ---');
   if (NET.local) { NET.localActive = 0; S.handoff = localOwners().length > 1; }
-  saveGame();
+  S.origin=null;S.reach=null;S.atkTiles=null;S.target=null;S.moveTrace=null;S.tileInfo=null;requestNextUnit();saveGame();
   netSync();
 }
 
@@ -1738,7 +1746,7 @@ function spawnReinforcements(n) {
 function phaseStart(side) {
   var list = allies(side);
   for (var i = 0; i < list.length; i++) {
-    var u = list[i]; u.acted = false;
+    var u = list[i]; u.acted = false; u.moved=false;
     var t = ter(u.x, u.y);
     if (t.heal && u.chp < u.stats.hp) {
       var h = Math.max(1, Math.round(u.stats.hp * t.heal));
@@ -1810,9 +1818,9 @@ function endFoePhase() {
   }
   phaseStart('ply');
   if (checkEnd()) return;
-  S.banner = 'PLAYER PHASE'; S.bannerT = 0.9;
+  S.banner = 'PLAYER PHASE'; S.bannerT = 0.9;S.inspect=null;S.tileInfo=null;S.moveTrace=null;
   if (NET.local) { NET.localActive = 0; if (localOwners().length > 1) S.handoff = true; }
-  saveGame();
+  requestNextUnit();saveGame();
   netSync();
   if (typeof refreshUI === 'function') refreshUI();
 }
@@ -1987,7 +1995,7 @@ function routeAction(cmd,arg,id,rev,ch,who){
 }
 function shrineBonus(u,kind){return u.side==='ply'&&S.shrine&&S.shrine.ch===S.chapter&&S.shrine.kind===kind;}
 function routeBtn(cmd,arg,id,label,disabled){return '<button class="rew" data-act="route" data-cmd="'+cmd+'" data-v="'+arg+'" data-id="'+(id||0)+'"'+(disabled?' disabled':'')+'>'+label+'</button>';}
-function promotionPanel(){var live=allies('ply').filter(function(u){return !u.autonomous&&canPromote(u);});if(!live.length)return '';var h='<div class="lvs"><b style="color:var(--am)">PROMOTIONS AVAILABLE</b><span class="hint">Optional at Lv 15–20. Keep every stat, reset to Lv 1. Each promotion adds 100 percentage points to growth. Promote before choosing a route or later in this rest stop.</span>';live.forEach(function(u){var own=!netOnline()||NET.local||isMine(u);h+='<div class="lv"><b>'+esc(u.name)+'</b><span>LV '+u.lvl+' · TIER '+((u.tier||0)+1)+' / 3</span></div>';promotionOptions(u).forEach(function(o,i){h+=routeBtn('promote',i,u.id,'<b>'+esc(o.name)+'</b><span>+4 HP · +2 '+STATN[o.stats[0]]+' · +2 '+STATN[o.stats[1]]+' · +1 MOV</span><span class="promo-growth">+100% TOTAL GROWTH · '+growthBonusLabel(o.growth)+'</span>'+(o.skill?'<span style="color:var(--gr)">'+esc(o.skill[0])+' — '+esc(o.skill[1])+'</span>':''),!own);});});return h+'</div>';}
+function promotionPanel(){var live=allies('ply').filter(function(u){return !u.autonomous&&canPromote(u);});if(!live.length)return '';var h='<div class="lvs"><b style="color:var(--am)">PROMOTIONS AVAILABLE</b><span class="hint">Optional at Lv 15–20. Keep every stat, reset to Lv 1. Each promotion adds 100 percentage points to growth. Promote before choosing a route or later in this rest stop.</span>';live.forEach(function(u){var own=!netOnline()||NET.local||isMine(u);h+='<div class="lv"><b>'+esc(u.name)+'</b><span>LV '+u.lvl+' · TIER '+((u.tier||0)+1)+' / 3</span></div>';promotionOptions(u).forEach(function(o,i){h+=routeBtn('promote',i,u.id,'<canvas class="tspr promo-preview" data-spr="'+esc(evolvedSprite(u,o.name))+'" data-pal="'+esc(u.pal)+'"></canvas><b>'+esc(o.name)+'</b><span>+4 HP · +2 '+STATN[o.stats[0]]+' · +2 '+STATN[o.stats[1]]+' · +1 MOV</span><span class="promo-growth">+100% TOTAL GROWTH · '+growthBonusLabel(o.growth)+'</span>'+(o.skill?'<span style="color:var(--gr)">'+esc(o.skill[0])+' — '+esc(o.skill[1])+'</span>':''),!own);});});return h+'</div>';}
 function routeRender(){var r=S.route;if(!r)return '';var h=promotionPanel()+'<div class="route-wallet"><b>◈ '+S.gold+' GOLD</b><span>VICTORY +'+r.earn+' GOLD</span></div>';
   if(r.stage==='choose'){
     h+='<p class="osub">Choose one of two routes. The other path closes. Medical Stations are rare (10% of maps). Mercenary Relay appears only when a player has a free recruit slot.</p><div class="route-map"><div class="route-start">✓ CHAPTER '+S.chapter+' CLEARED</div><div class="route-branch"></div><div class="route-choices">';
@@ -2159,7 +2167,7 @@ function newRun(keys) {
 }
 
 /* ================= SAVE ================= */
-function safeSavePoint(){return (S.screen==='clear'||(S.screen==='map'&&S.phase==='player'&&!S.busy&&(S.mode==='idle'||S.mode==='move')))&&(!netOnline()||NET.local);}
+function safeSavePoint(){return (S.screen==='clear'||(S.screen==='map'&&S.phase==='player'&&!S.busy&&['idle','move','act','target','healt'].indexOf(S.mode)>=0))&&(!netOnline()||NET.local);}
 function saveGame(){
   if(!safeSavePoint())return false;
   try{
@@ -2173,10 +2181,10 @@ function resumeExact(d){
   if(!Array.isArray(d.units)||!d.units.some(function(u){return u.side==='ply'&&u.chp>0;})||['map','clear'].indexOf(d.screen)<0||!LAYOUTS[d.terrain]||!LAYOUTS[d.terrain][d.layout]||(d.screen==='map'&&d.phase!=='player'))return false;
   resetLooks();runEpoch++; var fields=['chapter','turn','phase','obj','objTurns','bossId','reinforce','kits','dead','uid','squadSize','bags','layout','gold','route','shrine','screen','levelups','terrain','site','rewards','log','danger','handoff','recruitOwners','difficulty','runId','recordMode','recordSize','recordName'];
   fields.forEach(function(k){S[k]=d[k];});S.difficulty=validDifficulty(S.difficulty);S.nextDifficulty=S.difficulty;S.runId=S.runId||Date.now().toString(36)+"-legacy";S.recordMode=S.recordMode||(d.local?"local co-op":"solo");S.recordSize=S.recordSize||S.squadSize;S.best=Math.max(S.best||1,d.best||1);S.reinforce=S.reinforce||[];S.log=S.log||[];S.levelups=S.levelups||[];
-  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){updateClassIdentity(u);u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.grid=buildGrid(S.terrain,S.layout);RNG.s=d.rng||1;
+  S.combatReplay=null;S.units=d.units;S.units.forEach(function(u){updateClassIdentity(u);u.moved=!!u.moved;u.px=u.x;u.py=u.y;u.flash=0;});S.uid=Math.max(S.uid||1,Math.max.apply(null,S.units.map(function(u){return u.id;}))+1);S.grid=buildGrid(S.terrain,S.layout);RNG.s=d.rng||1;
   S.sel=null;S.inspect=null;S.tileInfo=null;S.target=null;S.mode='idle';S.reach=null;S.atkTiles=null;S.origin=null;S.fx=[];S.movers=[];S.busy=0;S.gameover=false;S.resumeLayout=null;S.bannerT=0;S.shake=0;S.saveError='';S.invOpen=false;bgCanvas=null;
   NET.local=!!d.local;NET.phase=d.local?'match':'idle';NET.host=!!d.local;NET.started=!!d.local;NET.pending=false;NET.localPlayers=d.local?d.local.players:[];NET.localActive=d.local?d.local.active:0;NET.ownerColors=null;
-  if(S.danger)computeDanger();return true;
+  if(S.danger)computeDanger();if(S.screen==='map')requestNextUnit();return true;
 }
 function saveBest() { try { localStorage.setItem('echelon_best', String(S.best)); } catch (e) { } }
 function loadBest() { try { var b = localStorage.getItem('echelon_best'); if (b) S.best = parseInt(b, 10) || 1; } catch (e) { } }
@@ -2263,6 +2271,40 @@ function highDetailClass(c,p,spr){
  return true;
 }
 
+/* Promotion artwork is derived from the class identity, never stored over the chosen chassis. */
+function evolvedSprite(u,cls){
+ var path=CLASS_PATHS[u.key],idx=path?path[0].indexOf(currentClass(cls||u.cls)):-1;
+ return u.spr&&idx>=0&&(u.side==='ply'||!u.side)?u.spr+'~'+u.key+'~'+idx:u.spr;
+}
+function promotionArt(c,p,k,i){
+ var master=i>=2,alt=i%2,ink=p.K,metal=master?'#e8c67a':tintPart(p.A,.45),shade=tintPart(p.C,-.28),energy=alt?p.V:p.G,white=tintPart(energy,.65);
+ function r(x,y,w,h,col){c.fillStyle=col;c.fillRect(x,y,w,h);}
+ function plate(x,y,w,h){r(x+1,y,w-2,h,ink);r(x,y+1,w,h-2,ink);r(x+1,y+1,w-2,h-2,metal);r(x+2,y+2,w-4,h-4,shade);r(x+2,y+1,w-4,1,white);}
+ function beam(x,y,dx,dy,n){for(var j=0;j<n;j++){r(x+dx*j,y+dy*j,3,3,ink);r(x+dx*j+1,y+dy*j+1,2,2,energy);}}
+ // Mantle/boosters behind the original customized body.
+ c.save();c.globalCompositeOperation='destination-over';
+ if(master){for(var j=0;j<8;j++){var w=3+j; r(9-j/2|0,17+j*3,w,3,shade);r(38-w+j/2|0,17+j*3,w,3,shade);}r(7,19,3,15,metal);r(38,19,3,15,metal);}
+ else {r(8,17,5,12,shade);r(35,17,5,12,shade);}
+ c.restore();
+ // Branch-specific shoulder and helmet silhouettes, master gold trim and rank badges.
+ var x=alt?11:8,w=master?10:8;
+ plate(x,17,w,master?10:7);plate(48-x-w,17,w,master?10:7);
+ if(alt){r(18,5,3,4,metal);r(27,5,3,4,metal);r(19,5,1,2,energy);r(28,5,1,2,energy);}
+ else{r(20,3,8,3,ink);r(21,2,6,3,metal);r(23,2,2,3,energy);}
+ if(master){r(17,2,2,5,metal);r(29,2,2,5,metal);r(20,30,8,2,metal);r(21,31,6,2,energy);plate(15,35,6,6);plate(27,35,6,6);}
+ r(21,19,6,6,ink);r(22,20,4,4,energy);r(23,20,2,2,white);r(21,26,2,2,metal);if(master)r(25,26,2,2,metal);
+ // Each weapon family gains a distinct branch attachment, with a second-stage extension.
+ switch(k){
+ case 'vex': if(alt){beam(39,4,-1,2,13);beam(5,23,0,-1,13);r(3,23,7,3,metal);}else{beam(42,1,-1,2,15);r(31,27,13,4,metal);if(master)beam(39,3,0,1,18);}break;
+ case 'kestrel': plate(2,alt?21:24,master?15:12,7);plate(33,alt?24:21,master?15:13,7);r(2,25,3,2,energy);r(43,25,4,2,energy);if(alt){r(6,33,4,7,energy);r(38,33,4,7,energy);}else{r(5,19,8,2,metal);r(35,19,8,2,metal);}break;
+ case 'nova': case 'echo': case 'wisp': {var cx=41,cy=alt?7:6;plate(39,13,5,master?27:23);if(alt){for(var a=0;a<4;a++){r(cx-5+a,cy-4+a,3,3,energy);r(cx+2-a,cy+4-a,3,3,white);}r(cx-1,cy-4,3,12,metal);}else{plate(35,cy-4,13,13);r(39,cy-2,5,9,energy);r(37,cy+1,9,3,white);}if(master){r(34,cy-3,2,10,energy);r(46,cy-3,2,10,energy);r(40,36,3,5,white);}if(k==='echo'){r(11,25,7,3,white);r(13,23,3,7,white);}if(k==='wisp'){plate(2,21,9,14);r(5,24,3,8,energy);}if(k==='nova'){r(16,11,2,5,energy);r(30,11,2,5,energy);}break;}
+ case 'rampart': if(alt){plate(1,22,13,16);r(2,24,4,10,energy);r(40,5,5,30,metal);r(39,3,7,7,energy);}else{plate(1,14,master?17:14,25);r(4,17,4,18,energy);r(8,22,5,4,white);beam(43,1,0,1,31);}break;
+ case 'glitch': plate(8,24,master?38:35,6);r(10,26,32,2,energy);r(alt?23:31,19,8,4,metal);r(alt?25:33,20,4,2,white);if(master){r(43,23,5,8,metal);r(46,25,2,3,energy);}if(alt)r(20,30,4,5,energy);break;
+ case 'sable': beam(4,39,alt?0:1,-1,15);beam(41,39,alt?0:-1,-1,15);r(3,28,7,3,metal);r(38,28,7,3,metal);if(master){beam(6,21,0,-1,12);beam(40,21,0,-1,12);}break;
+ case 'onyx': plate(0,23,master?17:15,17);plate(master?31:33,23,master?17:15,17);for(var a=0;a<3;a++){r(2+a*4,alt?20:26,3,alt?8:10,energy);r(35+a*4,alt?20:26,3,alt?8:10,energy);}if(master){r(3,37,10,3,metal);r(35,37,10,3,metal);}break;
+ }
+}
+
 function getSpr(spr, pal) {
   var key = spr + '|' + pal;
   if (sprCache[key]) return sprCache[key];
@@ -2270,6 +2312,8 @@ function getSpr(spr, pal) {
   cnv.width = TILE * SC; cnv.height = TILE * SC;
   var c = cnv.getContext('2d');
   var rows = Object.prototype.hasOwnProperty.call(SPR,spr)?SPR[spr]:SPR.grunt, p = paletteOf(pal);
+  var evolution=/^([a-z0-9_]+)~(vex|kestrel|nova|rampart|echo|glitch|sable|onyx|wisp)~([0-3])$/.exec(spr);
+  if(evolution){c.drawImage(getSpr(evolution[1],pal),0,0);promotionArt(c,p,evolution[2],Number(evolution[3]));if(Object.keys(sprCache).length>=192)sprCache={};sprCache[key]=cnv;return cnv;}
   if(highDetailClass(c,p,spr)){if(Object.keys(sprCache).length>=192)sprCache={};sprCache[key]=cnv;return cnv;}
   var light={},dark={},glint={};
   Object.keys(p).forEach(function(k){light[k]=tintPart(p[k],.26);dark[k]=tintPart(p[k],-.29);glint[k]=tintPart(p[k],.58);});
@@ -2439,7 +2483,7 @@ function computeDanger() {
   var foes = allies('foe');
   for (var i = 0; i < foes.length; i++) {
     var f = foes[i];
-    var r = reachable(f);
+    var r = reachable(f,true);
     r[f.x + ',' + f.y] = 0;
     var at = attackTiles(f, r);
     for (var k in at) tiles[k] = 1;
@@ -2461,7 +2505,7 @@ function update(dt) {
   /* movers */
   for (var i = S.movers.length - 1; i >= 0; i--) {
     var m = S.movers[i];
-    m.t += dt / 0.09;
+    m.t += dt / (m.duration||.09);
     while (m.t >= 1 && m.i < m.path.length) {
       m.fx = m.path[m.i].x; m.fy = m.path[m.i].y; m.i++; m.t -= 1;
     }
@@ -2472,8 +2516,9 @@ function update(dt) {
       continue;
     }
     var nx = m.path[m.i];
-    m.u.px = m.fx + (nx.x - m.fx) * m.t;
-    m.u.py = m.fy + (nx.y - m.fy) * m.t;
+    var ease=m.t*m.t*(3-2*m.t);
+    m.u.px = m.fx + (nx.x - m.fx) * ease;
+    m.u.py = m.fy + (nx.y - m.fy) * ease;
   }
   for (var j = S.fx.length - 1; j >= 0; j--) { S.fx[j].t += dt; if (S.fx[j].t > S.fx[j].dur) S.fx.splice(j, 1); }
   for (var k = 0; k < S.units.length; k++) if (S.units[k].flash > 0) S.units[k].flash -= dt * 4;
@@ -2502,7 +2547,7 @@ function draw() {
   /* move + attack range */
   if (S.sel && S.reach && (S.mode === 'move')) {
     ctx.fillStyle = 'rgba(80,160,255,0.26)';
-    for (k in S.reach) { p = k.split(','); ctx.fillRect(+p[0] * TP, +p[1] * TP, TP, TP); }
+    for (k in S.reach) { p = k.split(','); ctx.fillRect(+p[0] * TP, +p[1] * TP, TP, TP); ctx.strokeStyle='rgba(125,218,255,.48)';ctx.lineWidth=1;ctx.strokeRect(+p[0]*TP+1,+p[1]*TP+1,TP-2,TP-2); }
     ctx.fillStyle = 'rgba(255,90,90,0.16)';
     for (k in S.atkTiles) { if (S.reach[k] !== undefined) continue; p = k.split(','); ctx.fillRect(+p[0] * TP, +p[1] * TP, TP, TP); }
   }
@@ -2516,6 +2561,14 @@ function draw() {
       var tx = w.x + dx, ty = w.y + dy;
       if (inBounds(tx, ty)) ctx.fillRect(tx * TP, ty * TP, TP, TP);
     }
+  }
+  /* Route trace: hover on desktop; chosen path remains visible during travel. */
+  if(S.sel&&S.moveTrace&&S.moveTrace.length&&(S.mode==='move'||S.mode==='moving'||S.mode==='act')){
+    var trace=S.moveTrace,from=S.origin||S.sel,end=trace[trace.length-1];ctx.save();
+    ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo((from.x+.5)*TP,(from.y+.5)*TP);
+    trace.forEach(function(t){ctx.lineTo((t.x+.5)*TP,(t.y+.5)*TP);});ctx.strokeStyle='rgba(7,24,35,.85)';ctx.lineWidth=7;ctx.stroke();ctx.strokeStyle='#8ceaff';ctx.lineWidth=3;ctx.setLineDash([7,5]);ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle='#d2f8ff';ctx.lineWidth=3;ctx.strokeRect(end.x*TP+5,end.y*TP+5,TP-10,TP-10);
+    ctx.fillStyle='#102b3a';ctx.fillRect(end.x*TP+TP-22,end.y*TP+3,19,17);ctx.fillStyle='#d2f8ff';ctx.font='bold 12px sans-serif';ctx.textAlign='center';ctx.fillText(String(S.reach&&S.reach[end.x+','+end.y]||0),end.x*TP+TP-12,end.y*TP+16);ctx.restore();
   }
   /* selected highlight */
   if (S.sel) {
@@ -2540,7 +2593,7 @@ function draw() {
       : (ally ? 'rgba(84,240,200,0.6)' : (u.boss ? 'rgba(255,224,102,0.9)' : 'rgba(255,90,90,0.7)'));
     ctx.lineWidth = 2;
     ctx.beginPath(); ctx.ellipse(ux + TP / 2, uy + TP - 7, TP * 0.32, TP * 0.14, 0, 0, 6.3); ctx.stroke();
-    var img = getSpr(u.spr, u.pal);
+    var img = getSpr(evolvedSprite(u), u.pal);
     ctx.save();
     if (u.acted && ally) ctx.globalAlpha = 0.55;
     ctx.drawImage(img, Math.round(ux), Math.round(uy - 2));
@@ -3119,16 +3172,16 @@ function netStartRun() {
 
 /* ---------------- wire format ---------------- */
 function wireUnit(u) {
-  return { i: u.id, k: u.key, s: u.side, o: u.owner || '', ar:!!u.autonomous, x: u.x, y: u.y,
+  return { i: u.id, k: u.key, s: u.side, o: u.owner || '', ar:!!u.autonomous, x:u.x, y:u.y,
     it:u.items||[], fl:u.forgeLv||0, hp: u.chp, mx: u.stats.hp, st: u.stats, gr: u.grow, lv: u.lvl, ex: u.exp || 0, ov: u.over || 0,
-    cl: u.cls, w: u.wpn.id, wp: u.wpn.plus || 0, a: u.acted ? 1 : 0,
+    cl: u.cls, w: u.wpn.id, wp: u.wpn.plus || 0, a: u.acted ? 1 : 0, ms:u.moved?1:0,
     n: u.name, p: u.pal, sp: u.spr, mv: u.mov, tr: u.traits || [],
     ai:u.ai, bs: u.boss ? 1 : 0, mk: u.mark || 0, pm: u.promoted ? 1 : 0, tier:u.tier||0,cb:u.careerBase||0,path:u.path||[],qt:u.quickTurn||0,stn:u.sabotageTurn||0,eu:!!u.emergencyUsed,sh:u.shieldHP||0,jm:!!u.jammed };
 }
 function unitFromWire(r) {
   var u = { id: r.i, key: r.k, side: r.s, owner: r.o || '', autonomous:!!r.ar, x: r.x, y: r.y, px: r.x, py: r.y,
     items:r.it||[], forgeLv:r.fl||0, chp: r.hp, stats: {}, grow: {}, lvl: r.lv, exp: r.ex || 0, over: r.ov || 0, cls: r.cl,
-    acted: !!r.a, name: cleanName(r.n)||'OPERATIVE', pal: validPal(r.p)?r.p:(r.s==='ply'?'vex':'foe'), spr: Object.prototype.hasOwnProperty.call(SPR,r.sp)?r.sp:'grunt', mov: r.mv,
+    acted: !!r.a, moved:!!r.ms, name: cleanName(r.n)||'OPERATIVE', pal: validPal(r.p)?r.p:(r.s==='ply'?'vex':'foe'), spr: Object.prototype.hasOwnProperty.call(SPR,r.sp)?r.sp:'grunt', mov: r.mv,
     traits: r.tr || [], boss: !!r.bs, mark: r.mk || 0, promoted: !!r.pm, tier:r.tier||0,careerBase:r.cb||0,path:r.path||[],quickTurn:r.qt||0,sabotageTurn:r.stn||0,emergencyUsed:!!r.eu,shieldHP:r.sh||0,jammed:!!r.jm,
     flash: 0, wpn: mkWpn(r.w, r.wp || 0), ai: r.ai==='guard'?'guard':'hunt', promo: null };
   for (var k in r.st) u.stats[k] = r.st[k];
@@ -3160,8 +3213,13 @@ function onNetState(msg) {
   NET.lastHeard = Date.now();
   applyNetState(d);
 }
+var lastNetSnapshot='';
 function applyNetState(d) {
-  var wasMatch=NET.phase==='match';
+  var wasMatch=NET.phase==='match',wasPending=NET.pending,oldTurn=S.turn,oldChapter=S.chapter,oldPhase=S.phase,oldSel=S.sel&&S.sel.id;
+  var signature=JSON.stringify(d);if(wasMatch&&!wasPending&&signature===lastNetSnapshot)return;lastNetSnapshot=signature;
+  var nextAfter=NET.moveAfter||oldSel;NET.moveAfter=null;
+  /* A newer authoritative board supersedes any local preview animation. */
+  if(S.movers.length){S.movers=[];S.busy=0;}
   if (d.ownerColors) NET.ownerColors = readOwnerColors(d.ownerColors);
   if (NET.phase === 'lobby' || NET.phase === 'joining') {
     S.skinKey=null;
@@ -3197,9 +3255,10 @@ function applyNetState(d) {
   S.screen = d.sc || 'map';
   S.gameover = (S.screen === 'over');
   NET.pending = false;
-  S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null;
-  if (typeof refreshUI === 'function') refreshUI();
+  deselect(true);
   if(d.replay){if(wasMatch)showReplay(d.replay);else replaySeen=d.replay.id;}
+  if(S.screen==='map'&&S.phase==='player'&&(wasPending||!wasMatch||oldTurn!==S.turn||oldChapter!==S.chapter||oldPhase!==S.phase||oldSel)){if(wasPending||oldTurn!==S.turn||oldChapter!==S.chapter||oldPhase!==S.phase){S.inspect=null;S.tileInfo=null;}requestNextUnit(wasPending?nextAfter:oldSel);}
+  if (typeof refreshUI === 'function') refreshUI();
 }
 
 /* ---------------- intents ---------------- */
@@ -3248,20 +3307,33 @@ function netApply(intent, who) {
     else if(!actionsRemaining())endPlayerPhase();
     netSync();refreshUI();return;
   }
-  if (intent.t !== 'act') return;
+  if (intent.t !== 'act' && intent.t !== 'move') return;
+  if((intent.ch!==undefined&&intent.ch!==S.chapter)||(intent.turn!==undefined&&intent.turn!==S.turn)){netSync();return;}
+  if(NET.local&&String(who)!==String(activeOwner()))return;
+  if(S.sel&&S.origin&&String(who)!==String(activeOwner()))cancelPendingMove();
 
   var u = null, i;
   for (i = 0; i < S.units.length; i++) if (S.units[i].id === intent.uid) u = S.units[i];
   if (!u || u.chp <= 0 || u.side !== 'ply' || u.autonomous || u.acted) { netSync(); return; }
   if (String(u.owner || '') !== String(who)) { netSync(); return; }
 
+  if(intent.t==='move'){
+    if(u.moved||!Number.isInteger(intent.x)||!Number.isInteger(intent.y)){netSync();return;}
+    var path=pathTo(u,intent.x,intent.y);if(!path||!path.length){netSync();return;}
+    var own=String(who)===String(activeOwner());
+    if(own){S.mode='moving';S.moveTrace=path;}
+    moveUnit(u,path,function(){if(own){deselect(true);selectUnit(u,true);}if(S.danger)computeDanger();if(NET.local)saveGame();netSync();refreshUI();});
+    refreshUI();return;
+  }
   var tx = u.x, ty = u.y;
   if (intent.x !== undefined && intent.y !== undefined) {
     var reach = reachable(u);
     reach[u.x + ',' + u.y] = 0;
     if (reach[intent.x + ',' + intent.y] === undefined) { netSync(); return; }
+    if(!Number.isInteger(intent.x)||!Number.isInteger(intent.y)){netSync();return;}
     tx = intent.x; ty = intent.y;
   }
+  if(tx!==u.x||ty!==u.y)u.moved=true;
   u.x = tx; u.y = ty; u.px = tx; u.py = ty;
 
   if (intent.a === 'attack' || intent.a === 'repair') {
@@ -3284,6 +3356,7 @@ function netApply(intent, who) {
       if (!localAdvance()) localEndRound();
     }
   }
+  if(S.screen==='map'&&S.phase==='player'&&!S.handoff&&String(who)===String(activeOwner())){deselect(true);requestNextUnit(u.id);}
   if(NET.local)saveGame();
   netSync();
   if (typeof refreshUI === 'function') refreshUI();
@@ -3321,7 +3394,7 @@ function localAdvance() {
   return false;
 }
 function netHandoffDone() {
-  S.handoff = false;
+  S.handoff = false;S.inspect=null;S.tileInfo=null;requestNextUnit();
   S.banner = ownerName(activeOwner()); S.bannerT = 1.1;
   if (typeof refreshUI === 'function') refreshUI();
 }
@@ -3343,7 +3416,7 @@ function netTick() {
   if (!netOnline() || NET.local) return;
   var now = Date.now();
   if (NET.host) {
-    if (now - NET.lastSend > 2500) netSync();
+    if (!S.busy && now - NET.lastSend > 2500) netSync();
   } else if (now - NET.lastHeard > 5000) {
     NET.lastHeard = now;
     netEmit('act', { t: 'resync', from: NET.id });
@@ -3416,11 +3489,12 @@ function inventorySheet(){
 }
 var battleSideTab='stats', mapZoom=0;
 function sideUnit(){return S.sel||S.inspect||allies('ply').find(function(u){return isMine(u);})||allies('ply')[0]||null;}
-function portraitTag(u){return '<canvas class="tspr" data-spr="'+esc(u.spr)+'" data-pal="'+esc(u.pal)+'" aria-hidden="true"></canvas>';}
+function portraitTag(u){return '<canvas class="tspr" data-spr="'+esc(evolvedSprite(u))+'" data-pal="'+esc(u.pal)+'" aria-hidden="true"></canvas>';}
 function battleSidebar(){var u=sideUnit(),tabs='<div class="side-tabs"><button data-act="sidetab" data-v="stats" class="'+(battleSideTab==='stats'?'active':'')+'">Stats</button><button data-act="sidetab" data-v="items" class="'+(battleSideTab==='items'?'active':'')+'">Inventory</button><button class="close-side" data-act="inventory">Close</button></div>';if(battleSideTab==='items')return tabs+inventorySheet();if(!u)return tabs+'<p class="side-note">Select an operative.</p>';var n={hp:'HP',str:'Strength',mag:'Magic',spd:'Speed',skl:'Skill',lck:'Luck',def:'Defense',res:'Resistance'},h=tabs+'<div class="side-unit-head">'+portraitTag(u)+'<div><small>'+ (u.side==='foe'?'HOSTILE':u.autonomous?'AI OPERATIVE':'OPERATIVE')+'</small><h3>'+esc(u.name)+'</h3><p>'+esc(u.cls)+' · Lv '+u.lvl+'</p></div></div><div class="side-meter"><span>HP</span>'+bar(u.chp/u.stats.hp,unitHpColor(u,u.chp/u.stats.hp,false))+'<b>'+u.chp+' / '+u.stats.hp+'</b></div>';if(u.side==='ply')h+='<div class="side-meter"><span>XP</span>'+bar((u.exp||0)/100,'#5b8b83')+'<b>'+ (u.exp||0)+' / 100</b></div>';h+='<div class="side-stat-title">Stats &amp; growth</div><table class="side-table"><thead><tr><th>Stat</th><th>Value</th><th>Class*</th><th>Items</th><th>Growth</th></tr></thead><tbody>';['hp','str','mag','spd','skl','lck','def','res'].forEach(function(k){var total=u.grow[k]||0,item=(u.items||[]).filter(function(it){return it.s===k;}).reduce(function(a,it){return a+it.bonus;},0);h+='<tr><td>'+n[k]+'</td><td>'+u.stats[k]+'</td><td>'+(total-item)+'%</td><td>'+(item?'+'+item+'%':'—')+'</td><td>'+total+'%</td></tr>';});h+='</tbody></table><p class="side-note">*Class includes promotion and forge bonuses. Each 100% guarantees +1 stat per level; the remainder is the chance of another point.</p><div class="side-detail"><b>Weapon</b> '+esc(wpnLabel(u.wpn))+' · Might '+u.wpn.mt+'<br>Move '+u.mov+' · Range '+u.wpn.rmin+'–'+wRange(u)+'</div>';if(u.side==='ply'){h+='<div class="side-detail">Tier '+((u.tier||0)+1)+'/3 · Career Lv '+careerLevel(u)+' · Forge '+(u.forgeLv||0)+'/3'+(canPromote(u)?'<br>Promotion available at the next route stop.':'')+'</div>';var sk=CLASS_SKILLS[u.key];if(sk)h+='<div class="side-skill"><strong>'+esc(sk[0])+'</strong>'+esc(sk[1])+'</div>';promotionSkills(u).forEach(function(p){h+='<div class="side-skill"><strong>'+esc(p[0])+'</strong>'+esc(p[1])+'</div>';});}else (u.traits||[]).forEach(function(t){if(TRAITS[t])h+='<div class="side-skill"><strong>'+esc(TRAITS[t].name)+'</strong>'+esc(TRAITS[t].desc)+'</div>';});return h;}
 function updateMapZoom(){var wrap=$('cvwrap'), label=$('map-zoom-label');if(!wrap)return;wrap.classList.toggle('zoomed',mapZoom!==0);if(mapZoom===0)wrap.style.removeProperty('--map-width');else wrap.style.setProperty('--map-width',mapZoom+'%');label.textContent=mapZoom?mapZoom+'%':'Fit';}
 function updateBattleExtras(){var u=sideUnit(),h=u?'<b>'+esc(u.name)+'</b><span>HP '+u.chp+'/'+u.stats.hp+'</span>'+['str','mag','spd','skl','lck','def','res'].map(function(k){return '<span>'+STATN[k]+' '+u.stats[k]+'</span>';}).join('')+'<span>MOV '+u.mov+'</span><span>RNG '+u.wpn.rmin+'–'+wRange(u)+'</span>':'Select an operative';$('battle-summary').innerHTML=h;$('battle-log-lines').innerHTML=(S.log||[]).map(function(x){return '<div>'+esc(x)+'</div>';}).join('')||'No engagements yet.';$('battle-nav-save').innerHTML=saveQuitControls();$('battle-main-menu').innerHTML=mainMenuControl();$('map-turn-control').innerHTML=netEndButton();updateMapZoom();}
 function refreshUI() {
+  applyAutoSelection();
   if (HEADLESS) return;
   var hud = $('hud'), panel = $('panel'), roster = $('roster');
   if (!hud) return;
@@ -3483,7 +3557,8 @@ function refreshUI() {
       (u.wpn.heal ? (heals.length ? '<button data-act="repair">REPAIR (' + heals.length + ')</button>' : '<button disabled>NO ALLY</button>') : '') +
       (S.kits > 0 && u.chp < u.stats.hp ? '<button data-act="kit">KIT x' + S.kits + '</button>' : '') +
       '<button data-act="wait">WAIT</button>' +
-      '<button class="ghost" data-act="cancel">CANCEL</button>' +
+      (u.moved?'<span class="pill">MOVE USED · 0/' + u.mov + ' MP</span>':'<button class="ghost" data-act="choosemove">CHOOSE MOVE</button>') +
+      '<button class="ghost" data-act="cancel">DESELECT</button>' +
       '</div>' + unitCard(u);
   } else if ((S.mode === 'target' || S.mode === 'healt') && S.sel) {
     if (S.target) {
@@ -3495,7 +3570,7 @@ function refreshUI() {
         '<div class="acts"><button class="ghost" data-act="back">BACK</button></div>';
     }
   } else if (S.mode === 'move' && S.sel) {
-    h = '<div class="hint">Tap a blue tile to move, or tap ' + esc(S.sel.name) + ' again to act in place.</div>' + unitCard(S.sel);
+    h = '<div class="hint">'+esc(S.sel.name)+' · '+S.sel.mov+' movement points · one move per turn. Tap a blue tile to commit your move (unused points are forfeited), or tap the unit again to act in place.</div>' + '<div class="acts"><button data-act="stay">ACT IN PLACE</button><button class="ghost" data-act="cancel">CANCEL</button></div>'+unitCard(S.sel);
   } else if (S.tileInfo) {
     h = terCard(S.tileInfo.x, S.tileInfo.y) +
       '<div class="acts"><button class="ghost" data-act="cleartile">CLOSE</button></div>';
@@ -3503,7 +3578,7 @@ function refreshUI() {
     h = unitCard(S.inspect, S.inspect.side === 'foe' ? '<div class="urow small dim">' + esc(terInfo(S.inspect)) + '</div>' : '') +
       '<div class="acts"><button class="ghost" data-act="clearinspect">CLOSE</button></div>';
   } else {
-    h = '<div class="hint">Tap one of your units to move. ' + (S.kits ? S.kits + ' repair kits left.' : 'No repair kits left.') + '</div>';
+    h = '<div class="hint">Tap a character directly on the battlefield, then a blue tile to move. ' + (S.kits ? S.kits + ' repair kits left.' : 'No repair kits left.') + '</div>';
   }
   panel.innerHTML = h;
 
@@ -3516,7 +3591,7 @@ function rosterStrip() {
   for (var i = 0; i < ps.length; i++) {
     var p = ps[i], fr = p.chp / p.stats.hp;
     rh += '<button class="rchip' + (p.acted ? ' done' : '') + (S.sel === p ? ' on' : '') + '" data-act="focus" data-id="' + p.id + '">' +
-      portraitTag(p) + '<span class="rnm"' + (onlineOwnerHP(p) ? ' style="color:' + ownerHpInfo(p.owner).color + '"' : '') + '>' + esc(p.name)+(p.autonomous?' · AI':'') + '</span>' +
+      portraitTag(p) + '<span class="rnm"' + (onlineOwnerHP(p) ? ' style="color:' + ownerHpInfo(p.owner).color + '"' : '') + '>' + esc(p.name)+(p.autonomous?' · AI':p.moved&&!p.acted?' · MOVED':'') + '</span>' +
       '<span class="rlv">L' + p.lvl + '</span>' + bar(fr, unitHpColor(p, fr, false)) + '</button>';
   }
   return rh;
@@ -3531,7 +3606,7 @@ function squadOwners() {
   }
   return out;
 }
-function canEndTurn(){return S.screen==='map'&&canAct()&&(S.mode==='idle'||S.mode==='move')&&(!netOnline()||localHasMoves(activeOwner()));}
+function canEndTurn(){return S.screen==='map'&&canAct()&&(S.mode==='idle'||S.mode==='move'||S.mode==='act')&&(!netOnline()||localHasMoves(activeOwner()));}
 function netEndButton() {
   var disabled=!canEndTurn();
   return '<button id="map-end-turn" class="mini" data-act="end"'+(disabled?' disabled':'')+'>End Turn</button>';
@@ -3826,7 +3901,7 @@ function codexCard(title,body){return '<article class="codex-card"><h3>'+title+'
 function codexStats(d){return '<div class="codex-stats">'+STATK.map(function(k){return '<div><small>'+STATN[k]+'</small><b>'+d.base[k]+'</b><em>'+d.grow[k]+'%</em></div>';}).join('')+'</div>';}
 function renderCodex(){var tabs={classes:'Classes',promotions:'Promotions',enemies:'Enemies',equipment:'Equipment',locations:'Locations',rules:'Rules'},tab=Object.prototype.hasOwnProperty.call(tabs,S.codexTab)?S.codexTab:'classes',h='';
  if(tab==='classes')ALLCHARS.forEach(function(c){h+=codexCard('<canvas class="tspr" data-spr="'+c.spr+'" data-pal="'+c.pal+'"></canvas>'+esc(c.name)+' · '+esc(c.cls),'<p>'+esc(c.bio)+'</p><p>Weapon: '+WPN[c.wpn].name+' · MOV '+c.mov+'</p>'+codexStats(c));});
- if(tab==='promotions')ALLCHARS.forEach(function(c){var paths=CLASS_PATHS[c.key][0];h+=codexCard(esc(c.cls),paths.map(function(n,i){var skill=PROMO_SKILLS[n],growth=PROMO_GROWTH[n];return '<div class="codex-sub"><b>TIER '+(i<2?2:3)+' · '+esc(n)+'</b><p>'+esc(skill?skill[0]+' — '+skill[1]:'')+'</p><p>'+esc(growth?growthBonusLabel(promoGrowth(n)):'')+'</p></div>';}).join(''));});
+ if(tab==='promotions')ALLCHARS.forEach(function(c){var paths=CLASS_PATHS[c.key][0];h+=codexCard(esc(c.cls),paths.map(function(n,i){var skill=PROMO_SKILLS[n],growth=PROMO_GROWTH[n];return '<div class="codex-sub"><canvas class="tspr promo-preview" data-spr="'+esc(evolvedSprite(c,n))+'" data-pal="'+esc(c.pal)+'"></canvas><b>TIER '+(i<2?2:3)+' · '+esc(n)+'</b><p>'+esc(skill?skill[0]+' — '+skill[1]:'')+'</p><p>'+esc(growth?growthBonusLabel(promoGrowth(n)):'')+'</p></div>';}).join(''));});
  if(tab==='enemies'){Object.values(FOES).sort(function(a,b){return a.from-b.from;}).forEach(function(f){h+=codexCard('<canvas class="tspr" data-spr="'+f.spr+'" data-pal="'+f.pal+'"></canvas>'+esc(f.name),'<p>Unlocks battle '+f.from+' · '+WPN[f.wpn].name+' · MOV '+f.mov+'</p>'+codexStats(f)+'<p>'+ (f.innate||[]).map(function(k){return esc(TRAITS[k].name+': '+TRAITS[k].desc);}).join(' · ')+'</p>');});BOSSES.forEach(function(f,i){h+=codexCard('<canvas class="tspr" data-spr="'+f.spr+'" data-pal="'+f.pal+'"></canvas>'+esc(f.name),'<p>Boss pool unlock: battle '+(5+i*5)+' · '+WPN[f.wpn].name+'</p>'+codexStats(f));});Object.values(TRAITS).forEach(function(t){h+=codexCard(t.name,'<p>'+esc(t.desc)+'</p>');});}
  if(tab==='equipment'){Object.values(WPN).forEach(function(w){h+=codexCard(w.name,'<p>Might '+w.mt+' · Hit '+w.hit+' · Crit '+w.crit+' · Range '+w.rmin+'–'+w.rmax+' · '+(w.heal?'Repair / magic':w.mag?'Magic':'Physical')+'</p>');});ROUTE_ITEMS.forEach(function(n,i){h+=codexCard(n+' · '+STATN[STATK[i]],ITEM_RARITIES.map(function(t){return '<p style="color:'+t.color+'">'+esc(t.prefix+' '+n)+' · +'+t.bonus+'% growth · '+t.chance+'% rarity roll · '+modulePrice(t.bonus)+' gold</p>';}).join(''));});h+=codexCard('Nanoforge','<p>Three upgrades per weapon: +1 might and +3% each stat growth per upgrade. Costs 35 / 55 / 75 gold.</p>');}
  if(tab==='locations'){Object.keys(ROUTES).forEach(function(k){h+=codexCard(ROUTES[k].name,'<img class="codex-art" src="'+NPC_ART[k].art+'" alt=""><p>'+esc(ROUTE_SCENES[k].speaker)+'</p><p>'+esc(ROUTES[k].desc)+'</p>');});THEMES.forEach(function(t){h+=codexCard(t.name,'<p>'+esc(t.sites.join(' · '))+'</p>');});Object.values(TER).forEach(function(t){h+=codexCard(t.name,'<p>Movement cost '+t.cost+' · DEF '+t.def+' · Avoid '+t.avo+(t.heal?' · Heals '+Math.round(t.heal*100)+'% HP':'')+(t.burn?' · Burns '+Math.round(t.burn*100)+'% HP':'')+(t.block?' · Blocks movement':'')+'</p>');});}
@@ -3837,7 +3912,7 @@ function renderHelp() {
   $('overlay').innerHTML = '<div class="obox">' +
     '<h2>HOW TO PLAY</h2>' +
     '<ul class="help">' +
-    '<li><b>Turns.</b> Move each operative once, then END TURN. The enemy moves, then you go again.</li>' +
+    '<li><b>Turns.</b> Tap an operative on the battlefield, then a highlighted tile to move, or tap the same operative again to act in place. Each operative can move once per turn, up to its MOV allowance including terrain costs. Choosing a destination commits movement immediately; switching units or earning a bonus action does not refund it. Attack, repair or wait afterward. Movement resets next turn. The bottom squad bar is optional. End your turn or use every action.</li>' +
     '<li><b>Combat.</b> Physical attacks hit DEF, hex code hits RES. SPD four or more above the target attacks twice. SKL drives hit and crit; SPD and LCK drive dodge.</li>' +
     '<li><b>Triangle.</b> Blade beats Rail, Rail beats Lance, Lance beats Blade: plus or minus 15 hit and 1 damage. Tech is neutral.</li>' +
     '<li><b>Terrain.</b> Barricades and data daises give DEF and avoid. Repair nodes heal. Plasma vents burn. Bulkheads block.</li>' +
@@ -3876,7 +3951,7 @@ function renderClear() {
         (l.gains.promo ? '<span class="promo">PROMOTED: ' + esc(l.gains.promo) + '</span>' : '') + '</div>';
     }).join('') + '</div>';
   }
-  if(S.route){$('overlay').innerHTML=h+routeRender()+'</div>';return;}
+  if(S.route){$('overlay').innerHTML=h+routeRender()+'</div>';paintPortraits($('overlay'));return;}
   h += '<p class="osub">Pick one upgrade. Next chapter is harder.</p><div class="rews">';
   (S.rewards || []).forEach(function (r, i) {
     h += '<button class="rew" data-act="reward" data-i="' + i + '"><b>' + esc(r.t) + '</b><span>' + esc(r.d) + '</span></button>';
@@ -3896,16 +3971,29 @@ function renderOver() {
 }
 
 /* ================= INPUT ================= */
-function selectUnit(u) {
+/* Movement is committed when a destination is chosen. Deselecting only
+   clears the interface; it never refunds movement or changes position. */
+function cancelPendingMove() {
+  S.sel=null;S.origin=null;S.target=null;S.reach=null;S.atkTiles=null;S.moveTrace=null;S.mode='idle';
+}
+function selectUnit(u,quiet) {
+  if (!u || u.chp<=0 || S.busy || replayOpen() || S.screen!=='map') return;
   S.tileInfo = null;
-  if (u.acted || !canAct() || !isMine(u)) { S.inspect = u; S.sel = null; S.mode = 'idle'; refreshUI(); return; }
-  S.sel = u; S.inspect = null; S.origin = { x: u.x, y: u.y };
+  if (S.sel && S.sel!==u) cancelPendingMove();
+  if (u.acted || !canAct() || !isMine(u)) { cancelPendingMove(); S.inspect=u; refreshUI(); return; }
+  if (S.sel===u && ['act','target','healt'].indexOf(S.mode)>=0) {S.mode='act';S.target=null;refreshUI();return;}
+  S.sel = u; S.inspect = null; S.moveTrace=null; S.hoverKey=null; S.origin = { x: u.x, y: u.y };
   S.reach = reachable(u); S.reach[u.x + ',' + u.y] = 0;
   S.atkTiles = attackTiles(u, S.reach);
-  S.mode = 'move';
-  refreshUI();
+  S.mode = u.moved?'act':'move'; S.target=null;
+  if(!quiet)refreshUI();
 }
-function deselect() { S.sel = null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null; refreshUI(); }
+function deselect(quiet) { S.sel = null; S.origin=null; S.mode = 'idle'; S.reach = null; S.atkTiles = null; S.target = null; S.moveTrace=null; if(!quiet)refreshUI(); }
+/* Keep the bonus-action unit selected; otherwise cycle through owned, unspent units. */
+var nextUnitRequest=null;
+function requestNextUnit(after){nextUnitRequest={epoch:runEpoch,ch:S.chapter,turn:S.turn,owner:activeOwner(),after:after||null};}
+function applyAutoSelection(){var r=nextUnitRequest;if(!r)return false;if(r.epoch!==runEpoch||r.ch!==S.chapter||r.turn!==S.turn||S.screen!=='map'||S.phase!=='player'||r.owner!==activeOwner()){nextUnitRequest=null;return false;}if(!canAct())return false;nextUnitRequest=null;if(S.sel||S.inspect||S.tileInfo)return false;var list=allies('ply').filter(isMine),idx=list.findIndex(function(u){return u.id===r.after;}),next=idx>=0&&!list[idx].acted?list[idx]:null;for(var j=1;!next&&j<=list.length;j++){var u=list[(idx+j)%list.length];if(!u.acted)next=u;}if(next){selectUnit(next,true);return true;}return false;}
+function submitMovedAction(u,action,target){var intent={t:'act',uid:u.id,x:u.x,y:u.y,a:action,ch:S.chapter,turn:S.turn};if(target)intent.tid=target.id;cancelPendingMove();if(!NET.host&&!NET.local)NET.moveAfter=u.id;netSubmit(intent);}
 
 var autoEndKey='';
 function actionsRemaining(){return allies('ply').some(function(p){return !p.autonomous&&!p.acted;});}
@@ -3916,51 +4004,47 @@ function queueAutoEnd(){
 }
 function finishAct(u) {
   actionComplete(u);
-  deselect();
+  deselect(true);
   if (netOnline()) { refreshUI(); return; }
   if (S.danger) computeDanger();
   if (checkEnd()) return;
   saveGame();
-  queueAutoEnd();
+  requestNextUnit(u.id);queueAutoEnd();
   refreshUI();
 }
 
 function onTile(tx, ty) {
-  if (S.screen !== 'map' || S.busy) return;
+  if (S.screen !== 'map' || S.busy || replayOpen() || !inBounds(tx,ty)) return;
+  var u=unitAt(tx,ty);
   if (!canAct()) {
-    var ou = unitAt(tx, ty);
-    if (ou) { S.inspect = ou; S.tileInfo = null; } else { S.inspect = null; S.tileInfo = { x: tx, y: ty }; }
-    refreshUI(); return;
+    if (u) { S.inspect=u; S.tileInfo=null; } else { S.inspect=null; S.tileInfo={x:tx,y:ty}; }
+    refreshUI();return;
   }
-  var u = unitAt(tx, ty);
-  if (S.mode === 'target') {
-    if (u && u.side !== S.sel.side && u.chp > 0 && canReachTarget(S.sel, u)) { S.target = u; refreshUI(); }
-    return;
-  }
-  if (S.mode === 'healt') {
-    if (u && u.side === S.sel.side && u.id !== S.sel.id && canReachTarget(S.sel, u)) { S.target = u; refreshUI(); }
-    return;
-  }
-  if (S.mode === 'act') return;
-  if (S.mode === 'move' && S.sel) {
-    if (u === S.sel) { S.mode = 'act'; refreshUI(); return; }
-    var key = tx + ',' + ty;
-    if (S.reach[key] !== undefined && !u) {
-      var path = pathTo(S.sel, tx, ty);
-      var sel = S.sel;
-      moveUnit(sel, path, function () { S.mode = 'act'; refreshUI(); });
-      S.mode = 'moving'; refreshUI();
-      return;
-    }
-    if (u && isMine(u)) { selectUnit(u); return; }
-    if (u && u.side === 'ply') { S.inspect = u; deselect(); S.inspect = u; refreshUI(); return; }
-    if (u) { S.inspect = u; deselect(); S.inspect = u; refreshUI(); return; }
-    deselect(); return;
-  }
+  /* Valid combat and repair targets take priority over switching units. */
+  if (S.mode==='target' && S.sel && u && u.side!==S.sel.side && canReachTarget(S.sel,u)) {S.target=u;refreshUI();return;}
+  if (S.mode==='healt' && S.sel && u && u.side===S.sel.side && u.id!==S.sel.id && canReachTarget(S.sel,u)) {S.target=u;refreshUI();return;}
+  if (S.mode==='moving') return;
   if (u) {
-    if (isMine(u)) { S.tileInfo = null; selectUnit(u); }
-    else { S.inspect = u; S.tileInfo = null; refreshUI(); }
-  } else { S.inspect = null; S.tileInfo = { x: tx, y: ty }; refreshUI(); }
+    if (u===S.sel) {S.mode='act';S.target=null;refreshUI();return;}
+    /* In target/action mode, tapping a friendly unit switches to it (or
+       inspects it if not controllable). Committed movement stays spent. */
+    if (u.side==='ply') {selectUnit(u);return;}
+    if (S.mode==='target'||S.mode==='healt'||S.mode==='act') return;
+    cancelPendingMove();S.inspect=u;S.tileInfo=null;refreshUI();return;
+  }
+  if (S.mode==='move' && S.sel && !S.sel.moved) {
+    var key=tx+','+ty;
+    if (S.reach && S.reach[key]!==undefined) {
+      var sel=S.sel,path=pathTo(sel,tx,ty);if(!path||!path.length)return;
+      if(netOnline()){if(!NET.host&&!NET.local)NET.moveAfter=sel.id;netSubmit({t:'move',uid:sel.id,x:tx,y:ty,ch:S.chapter,turn:S.turn});return;}
+      S.moveTrace=path;S.mode='moving';
+      moveUnit(sel,path,function(){S.mode='act';S.origin=null;S.reach=null;S.atkTiles=null;S.moveTrace=null;if(S.danger)computeDanger();saveGame();refreshUI();});
+      refreshUI();return;
+    }
+    if(S.mode==='act')return;
+    cancelPendingMove();
+  } else if (S.mode==='target'||S.mode==='healt') return;
+  S.inspect=null;S.tileInfo={x:tx,y:ty};refreshUI();
 }
 
 function doAction(act, el) {
@@ -4079,7 +4163,7 @@ function doAction(act, el) {
   if (S.screen !== 'map') return;
   if (act === 'end') {
     if(!canEndTurn())return;
-    deselect();
+    cancelPendingMove();
     if(netOnline()){netSubmit({t:'end'});return;}
     endPlayerPhase();refreshUI();return;
   }
@@ -4089,38 +4173,39 @@ function doAction(act, el) {
   if (act === 'focus') {
     var id = parseInt(el.getAttribute('data-id'), 10);
     var u = S.units.filter(function (x) { return x.id === id; })[0];
-    if (u) { if (u.acted) { S.inspect = u; S.sel = null; S.mode = 'idle'; refreshUI(); } else selectUnit(u); }
+    if (u) selectUnit(u);
     return;
   }
-  if (!S.sel) return;
+  if (!S.sel || !canAct() || S.sel.acted || !isMine(S.sel)) return;
   var s = S.sel;
+  if(act==='stay'&&S.mode==='move'){S.moveTrace=null;S.mode='act';refreshUI();return;}
+  if(act==='removement')return;
+  if(act==='choosemove'&&S.mode==='act'&&!s.moved){deselect(true);selectUnit(s);return;}
   if (act === 'attack') { S.mode = 'target'; S.target = null; var t = attackableFrom(s); if (t.length === 1) S.target = t[0]; refreshUI(); return; }
   if (act === 'repair') { S.mode = 'healt'; S.target = null; var hh = healableFrom(s); if (hh.length === 1) S.target = hh[0]; refreshUI(); return; }
   if (act === 'kit') {
-    if (netOnline()) { netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y, a: 'kit' }); deselect(); return; }
+    if (netOnline()) { submitMovedAction(s,'kit'); return; }
     useKit(s); finishAct(s); return;
   }
   if (act === 'wait') {
-    if (netOnline()) { netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y, a: 'wait' }); deselect(); return; }
+    if (netOnline()) { submitMovedAction(s,'wait'); return; }
     finishAct(s); return;
   }
   if (act === 'back') { S.mode = 'act'; S.target = null; refreshUI(); return; }
   if (act === 'cancel') {
-    if (S.origin) { s.x = S.origin.x; s.y = S.origin.y; s.px = s.x; s.py = s.y; }
+    cancelPendingMove();
     if (netOnline() && NET.host) netBroadcast();
-    deselect(); return;
+    refreshUI(); return;
   }
   if (act === 'confirm' && S.target) {
     var tgt = S.target;
     if (netOnline()) {
-      netSubmit({ t: 'act', uid: s.id, x: s.x, y: s.y,
-        a: S.mode === 'target' ? 'attack' : 'repair', tid: tgt.id });
-      S.target = null; deselect(); return;
+      submitMovedAction(s,S.mode==='target'?'attack':'repair',tgt);return;
     }
     if (S.mode === 'target') { doCombat(s, tgt); }
     else { doHeal(s, tgt); }
     S.target = null;
-    if (s.chp <= 0) { deselect(); if (!checkEnd()) {saveGame();queueAutoEnd();refreshUI();} return; }
+    if (s.chp <= 0) { deselect(true); if (!checkEnd()) {saveGame();requestNextUnit(s.id);queueAutoEnd();refreshUI();} return; }
     finishAct(s);
     return;
   }
@@ -4144,13 +4229,15 @@ function boot() {
   ctx = cv.getContext('2d');
   ctx.imageSmoothingEnabled = false;
   loadBest(); loadLooks(); netInit();
-  cv.addEventListener('pointerdown', function (e) {
-    e.preventDefault();
+  cv.addEventListener('click', function (e) {
+    if(e.button!==0 || replayOpen())return;
     var r = cv.getBoundingClientRect();
     var tx = Math.floor((e.clientX - r.left) / r.width * MAPW);
     var ty = Math.floor((e.clientY - r.top) / r.height * MAPH);
     if (inBounds(tx, ty)) onTile(tx, ty);
   });
+  cv.addEventListener('pointermove',function(e){if(e.pointerType==='touch'||S.mode!=='move'||!S.sel||S.busy||replayOpen())return;var r=cv.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)/r.width*MAPW),y=Math.floor((e.clientY-r.top)/r.height*MAPH),key=x+','+y;if(S.hoverKey===key)return;S.hoverKey=key;S.moveTrace=S.reach&&S.reach[key]!==undefined?pathTo(S.sel,x,y):null;});
+  cv.addEventListener('pointerleave',function(){S.hoverKey=null;if(S.mode==='move')S.moveTrace=null;});
   document.addEventListener('click', function (e) {
     var el = e.target;
     while (el && el !== document.body) {
@@ -4215,7 +4302,7 @@ if (typeof window !== 'undefined') {
     takenBy: takenBy, squadTotal: squadTotal, allPlayers: allPlayers, lobbyReady: lobbyReady,
     localOwners: localOwners, localAdvance: localAdvance, localEndRound: localEndRound,
     activeOwner: activeOwner, ownerName: ownerName, buildSquad: buildSquad, rosterStrip: rosterStrip,
-    ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS, paletteOf:paletteOf, paletteId:paletteId, lookOf:lookOf, getSpr:getSpr, netLooks:netLooks, wireUnit:wireUnit, unitFromWire:unitFromWire,
+    ALLCHARS: ALLCHARS, charByKey: charByKey, SCHEMES: SCHEMES, CHASSIS: CHASSIS, LOOKS: LOOKS, paletteOf:paletteOf, paletteId:paletteId, lookOf:lookOf, getSpr:getSpr, evolvedSprite:evolvedSprite, netLooks:netLooks, wireUnit:wireUnit, unitFromWire:unitFromWire,
     resetLooks:resetLooks, PROMO_GROWTH:PROMO_GROWTH, promoteUnit:promoteUnit, promotionOptions:promotionOptions, canPromote:canPromote, careerLevel:careerLevel, grantExp:grantExp, CLASS_SKILLS:CLASS_SKILLS, PROMO_SKILLS:PROMO_SKILLS, promotionSkills:promotionSkills, perk:perk, healPower:healPower, CLASS_PATHS:CLASS_PATHS, MAXLVL: MAXLVL, PROMOLVL: PROMOLVL, foeMark: foeMark, atMax: atMax,
     LAYOUTS: LAYOUTS, THEMES: THEMES, themeIdx: themeIdx, buildGrid: buildGrid, openTiles: openTiles,
     cvRef: function () { return cv; },
