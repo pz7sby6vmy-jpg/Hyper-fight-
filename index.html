@@ -2248,7 +2248,7 @@ function loadGame() {
     }
     if (!S.units.length) return false;
     S.levelups = d.levelups||[];
-    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.mapRevision=1;S.grid=buildGrid(d.terrain,d.layout,1);S.site=d.site;S.obj=d.ob;S.checkpoint=!!d.checkpointj;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
+    if(d.screen==='clear'&&S.route){S.resumeLayout=null;S.screen='clear';S.terrain=d.terrain;S.layout=d.layout;S.mapRevision=1;S.grid=buildGrid(d.terrain,d.layout,1);S.site=d.site;S.obj=d.obj||d.ob||'wipe';S.checkpoint=!!d.checkpoint;S.turn=d.turn;S.objTurns=d.objTurns;S.gameover=false;S.phase='player';}else startChapter();
     return true;
   } catch (e) { return false; }
 }
@@ -3332,6 +3332,7 @@ function netApply(intent, who) {
   if (S.screen !== 'map' || S.phase !== 'player'||S.busy||replayOpen()) { netSync(); return; }
 
   if (intent.t === 'end') {
+    if((intent.ch!==undefined&&intent.ch!==S.chapter)||(intent.turn!==undefined&&intent.turn!==S.turn)||(NET.local&&(S.handoff||String(who)!==String(activeOwner())))){netSync();return;}
     if(!localHasMoves(who)){netSync();return;}
     allies('ply').forEach(function(u){if(!u.autonomous&&String(u.owner)===String(who)){u.acted=true;u.extraAction=false;}});
     S.sel=null;S.mode='idle';
@@ -3341,7 +3342,7 @@ function netApply(intent, who) {
   }
   if (intent.t !== 'act' && intent.t !== 'move') return;
   if((intent.ch!==undefined&&intent.ch!==S.chapter)||(intent.turn!==undefined&&intent.turn!==S.turn)){netSync();return;}
-  if(NET.local&&String(who)!==String(activeOwner()))return;
+  if(NET.local&&(S.handoff||String(who)!==String(activeOwner()))){netSync();return;}
   if(S.sel&&S.origin&&String(who)!==String(activeOwner()))cancelPendingMove();
 
   var u = null, i;
@@ -3365,19 +3366,22 @@ function netApply(intent, who) {
     if(!Number.isInteger(intent.x)||!Number.isInteger(intent.y)){netSync();return;}
     tx = intent.x; ty = intent.y;
   }
+  /* Validate the whole intent before committing movement or spending an action. */
+  var t = null;
+  if (intent.a === 'attack' || intent.a === 'repair') {
+    t=S.units.find(function(v){return v.id===intent.tid;});
+    var range=t?Math.abs(tx-t.x)+Math.abs(ty-t.y):-1;
+    if(!t||t.chp<=0||range<u.wpn.rmin||range>wRange(u)||
+       (intent.a==='attack'?(t.side===u.side||!aiCanAttack(u)):
+        (!u.wpn.heal||t.side!==u.side||t===u||t.chp>=t.stats.hp))){netSync();return;}
+  }else if(intent.a==='kit'){
+    if(S.kits<=0||u.chp>=u.stats.hp){netSync();return;}
+  }else if(intent.a!=='wait'){netSync();return;}
   if(tx!==u.x||ty!==u.y)u.moved=true;
   u.x = tx; u.y = ty; u.px = tx; u.py = ty;
-
-  if (intent.a === 'attack' || intent.a === 'repair') {
-    var t = null;
-    for (i = 0; i < S.units.length; i++) if (S.units[i].id === intent.tid) t = S.units[i];
-    if (t && t.chp > 0 && canReachTarget(u, t)) {
-      if (intent.a === 'attack' && t.side !== u.side) doCombat(u, t);
-      else if (intent.a === 'repair' && t.side === u.side && t.id !== u.id) doHeal(u, t);
-    }
-  } else if (intent.a === 'kit' && S.kits > 0 && u.chp < u.stats.hp) {
-    useKit(u);
-  }
+  if(intent.a==='attack')doCombat(u,t);
+  else if(intent.a==='repair')doHeal(u,t);
+  else if(intent.a==='kit')useKit(u);
   actionComplete(u);
   if (!checkEnd()) {
     var left = S.units.filter(function (x) { return x.chp > 0 && x.side === 'ply' && !x.autonomous && !x.acted; });
@@ -4197,7 +4201,7 @@ function doAction(act, el) {
   if (act === 'end') {
     if(!canEndTurn())return;
     cancelPendingMove();
-    if(netOnline()){netSubmit({t:'end'});return;}
+    if(netOnline()){netSubmit({t:'end',ch:S.chapter,turn:S.turn});return;}
     endPlayerPhase();refreshUI();return;
   }
   if (act === 'danger') { S.danger = !S.danger; if (S.danger) computeDanger(); refreshUI(); return; }
@@ -4214,9 +4218,10 @@ function doAction(act, el) {
   if(act==='stay'&&S.mode==='move'){S.moveTrace=null;S.mode='act';refreshUI();return;}
   if(act==='removement')return;
   if(act==='choosemove'&&S.mode==='act'&&!s.moved){deselect(true);selectUnit(s);return;}
-  if (act === 'attack') { S.mode = 'target'; S.target = null; var t = attackableFrom(s); if (t.length === 1) S.target = t[0]; refreshUI(); return; }
-  if (act === 'repair') { S.mode = 'healt'; S.target = null; var hh = healableFrom(s); if (hh.length === 1) S.target = hh[0]; refreshUI(); return; }
+  if (act === 'attack') { if(!aiCanAttack(s))return;S.mode = 'target'; S.target = null; var t = attackableFrom(s); if (t.length === 1) S.target = t[0]; refreshUI(); return; }
+  if (act === 'repair') { if(!s.wpn.heal)return;S.mode = 'healt'; S.target = null; var hh = healableFrom(s); if (hh.length === 1) S.target = hh[0]; refreshUI(); return; }
   if (act === 'kit') {
+    if(S.kits<=0||s.chp>=s.stats.hp)return;
     if (netOnline()) { submitMovedAction(s,'kit'); return; }
     useKit(s); finishAct(s); return;
   }
@@ -4232,6 +4237,7 @@ function doAction(act, el) {
   }
   if (act === 'confirm' && S.target) {
     var tgt = S.target;
+    if(tgt.chp<=0||!canReachTarget(s,tgt)||(S.mode==='target'?(tgt.side===s.side||!aiCanAttack(s)):S.mode!=='healt'||!s.wpn.heal||tgt.side!==s.side||tgt===s||tgt.chp>=tgt.stats.hp)){S.target=null;S.mode='act';refreshUI();return;}
     if (netOnline()) {
       submitMovedAction(s,S.mode==='target'?'attack':'repair',tgt);return;
     }
