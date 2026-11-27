@@ -1585,10 +1585,17 @@ function aiPlan(u){
     if(!advance||score>advance.score)advance={kind:'move',x:tile.x,y:tile.y,score:score};
     if(progress>0&&(!urgentAdvance||progress>urgentAdvance.progress||progress===urgentAdvance.progress&&score>urgentAdvance.score))urgentAdvance={kind:'move',x:tile.x,y:tile.y,score:score,progress:progress};
   });
-  var nearest=enemies.reduce(function(n,e){return Math.min(n,dist(u,e));},Infinity);
-  if(u.ai==='guard'&&nearest>5&&S.turn<8&&!best)return {kind:'wait',x:u.x,y:u.y,score:0};
+  /* Opening advance: enemies engage immediately, including former stationary
+     guards. Choose the best attack/heal if available; otherwise prioritize
+     maximum legal path progress, breaking ties with tactical safety/cover.
+     On later turns keep normal tactical scoring, but never camp indefinitely
+     when a combat unit has no action and a reachable route toward a target. */
+  if(u.side==='foe'&&S.turn===1&&!u.moved){
+    if(best)return best;
+    if(urgentAdvance)return urgentAdvance;
+  }
   if(best){var reluctant=u.autonomous?8:Math.max(0,12-S.turn*2);if(!advance||best.score>=advance.score-reluctant||(!u.autonomous&&S.turn>=8))return best;}
-  if(!best&&!u.wpn.heal&&u.side==='foe'&&urgentAdvance&&(S.turn>=8||S.obj==='hold')&&advance&&advance.x===u.x&&advance.y===u.y)return urgentAdvance;
+  if(!best&&aiCanAttack(u)&&u.side==='foe'&&urgentAdvance&&advance&&advance.x===u.x&&advance.y===u.y)return urgentAdvance;
   return advance||best||{kind:'wait',x:u.x,y:u.y,score:0};
 }
 function aiAct(u,done){
